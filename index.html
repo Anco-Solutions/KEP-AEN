@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Υπολογιστής ΚΕΠ ΑΕΝ</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Υπολογιστής ΚΕΠ ΑΕΝ</h1>
+
+<p><strong>Επιλέξτε ΚΕΠ</strong></p>
+
+<label>
+<input type="radio" name="kep" value="1" checked>
+ΚΕΠ 1
+</label>
+
+<label style="margin-left:20px;">
+<input type="radio" name="kep" value="2">
+ΚΕΠ 2
+</label>
+
+<hr>
+
+<label>Ημερομηνία Επιβίβασης</label>
+<input type="date" id="embark">
+
+<label>Ημερομηνία Απόλυσης</label>
+<input type="date" id="discharge">
+
+<label>Βαθμός</label>
+
+<select id="rank">
+<option>Δόκιμος Μηχανικός</option>
+<option>Γ' Μηχανικός</option>
+<option>Β' Μηχανικός</option>
+<option>Α' Μηχανικός</option>
+</select>
+
+<button id="addTrip">Προσθήκη Ταξιδιού</button>
+
+<h2>Ταξίδια</h2>
+
+<div id="tripList">
+Δεν υπάρχουν ακόμη ταξίδια.
+</div>
+
+<button id="calculate">
+Υπολογισμός ΚΕΠ
+</button>
+
+<div id="result"></div>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
