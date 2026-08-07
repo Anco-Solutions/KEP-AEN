@@ -1,0 +1,106 @@
+let trips = [];
+
+document.getElementById("addTrip").addEventListener("click", function () {
+
+    const embark = document.getElementById("embark").value;
+    const discharge = document.getElementById("discharge").value;
+    const rank = document.getElementById("rank").value;
+
+    if (!embark || !discharge) {
+        alert("Συμπλήρωσε την ημερομηνία επιβίβασης και απόλυσης.");
+        return;
+    }
+
+    const start = new Date(embark);
+    const end = new Date(discharge);
+
+    if (end < start) {
+        alert("Η ημερομηνία απόλυσης δεν μπορεί να είναι πριν από την επιβίβαση.");
+        return;
+    }
+
+    trips.push({
+        embark: embark,
+        discharge: discharge,
+        rank: rank
+    });
+
+    document.getElementById("embark").value = "";
+    document.getElementById("discharge").value = "";
+
+    showTrips();
+});
+
+
+function calculateDays(startDate, endDate) {
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    return Math.floor(
+        (end - start) / (1000 * 60 * 60 * 24)
+    ) + 1;
+}
+
+
+function showTrips() {
+
+    const list = document.getElementById("tripList");
+
+    if (trips.length === 0) {
+        list.innerHTML = "Δεν υπάρχουν ακόμη ταξίδια.";
+        return;
+    }
+
+    let html = "";
+
+    trips.forEach(function (trip, index) {
+
+        const days = calculateDays(
+            trip.embark,
+            trip.discharge
+        );
+
+        html += `
+            <div style="margin-bottom:15px;padding:10px;background:white;border-radius:8px;">
+                <strong>Πλοίο ${index + 1}</strong><br>
+                Επιβίβαση: ${trip.embark}<br>
+                Απόλυση: ${trip.discharge}<br>
+                Ειδικότητα: ${trip.rank}<br>
+                Υπηρεσία: ${days} ημέρες
+            </div>
+        `;
+    });
+
+    list.innerHTML = html;
+}
+
+
+document.getElementById("calculate").addEventListener("click", function () {
+
+    if (trips.length === 0) {
+        alert("Πρόσθεσε τουλάχιστον ένα ταξίδι.");
+        return;
+    }
+
+    let totalDays = 0;
+
+    trips.forEach(function (trip) {
+
+        totalDays += calculateDays(
+            trip.embark,
+            trip.discharge
+        );
+
+    });
+
+    const months = Math.floor(totalDays / 30);
+    const days = totalDays % 30;
+
+    document.getElementById("result").innerHTML = `
+        <h3>Συνολική Υπηρεσία</h3>
+        <p><strong>${months} μήνες και ${days} ημέρες</strong></p>
+        <p>Σύνολο: ${totalDays} ημέρες</p>
+    `;
+
+});
