@@ -80,17 +80,69 @@ document.getElementById("calculate").addEventListener("click", function () {
         return;
     }
 
-    let totalDays = 0;
+    // Μετατροπή ημερομηνίας σε τοπική ημερομηνία
+    function toDate(dateString) {
+        const [year, month, day] = dateString.split("-").map(Number);
+        return new Date(year, month - 1, day);
+    }
 
-    trips.forEach(function (trip) {
+    // Υπολογισμός ημερών μετρώντας και την ημέρα
+    // επιβίβασης και την ημέρα απόλυσης
+    function daysInclusive(start, end) {
+        const oneDay = 1000 * 60 * 60 * 24;
+        return Math.floor((end - start) / oneDay) + 1;
+    }
 
-        totalDays += calculateDays(
-            trip.embark,
-            trip.discharge
-        );
-
+    // Δημιουργία διαστημάτων υπηρεσίας
+    const intervals = trips.map(function (trip) {
+        return {
+            start: toDate(trip.embark),
+            end: toDate(trip.discharge)
+        };
     });
 
+    // Ταξινόμηση κατά ημερομηνία επιβίβασης
+    intervals.sort(function (a, b) {
+        return a.start - b.start;
+    });
+
+    // Ενοποίηση επικαλυπτόμενων ταξιδιών
+    let totalDays = 0;
+
+    let currentStart = intervals[0].start;
+    let currentEnd = intervals[0].end;
+
+    for (let i = 1; i < intervals.length; i++) {
+
+        const next = intervals[i];
+
+        // Αν το επόμενο ταξίδι επικαλύπτεται
+        // ή συνεχίζεται αμέσως μετά
+        const dayAfterCurrentEnd = new Date(currentEnd);
+        dayAfterCurrentEnd.setDate(dayAfterCurrentEnd.getDate() + 1);
+
+        if (next.start <= dayAfterCurrentEnd) {
+
+            // Επέκταση του υπάρχοντος διαστήματος
+            if (next.end > currentEnd) {
+                currentEnd = next.end;
+            }
+
+        } else {
+
+            // Ολοκλήρωση προηγούμενου διαστήματος
+            totalDays += daysInclusive(currentStart, currentEnd);
+
+            // Έναρξη νέου διαστήματος
+            currentStart = next.start;
+            currentEnd = next.end;
+        }
+    }
+
+    // Προσθήκη τελευταίου διαστήματος
+    totalDays += daysInclusive(currentStart, currentEnd);
+
+    // 30 ημέρες = 1 μήνας
     const months = Math.floor(totalDays / 30);
     const days = totalDays % 30;
 
@@ -99,4 +151,5 @@ document.getElementById("calculate").addEventListener("click", function () {
         <p><strong>${months} μήνες και ${days} ημέρες</strong></p>
         <p>Σύνολο: ${totalDays} ημέρες</p>
     `;
+
 });
