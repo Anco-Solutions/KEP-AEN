@@ -31,6 +31,7 @@ document.getElementById("addTrip").addEventListener("click", function () {
     showTrips();
 });
 
+
 function calculateDays(startDate, endDate) {
 
     const start = new Date(startDate);
@@ -40,6 +41,7 @@ function calculateDays(startDate, endDate) {
         (end - start) / (1000 * 60 * 60 * 24)
     ) + 1;
 }
+
 
 function showTrips() {
 
@@ -73,6 +75,7 @@ function showTrips() {
     list.innerHTML = html;
 }
 
+
 document.getElementById("calculate").addEventListener("click", function () {
 
     if (trips.length === 0) {
@@ -80,20 +83,17 @@ document.getElementById("calculate").addEventListener("click", function () {
         return;
     }
 
-    // Μετατροπή ημερομηνίας σε τοπική ημερομηνία
     function toDate(dateString) {
         const [year, month, day] = dateString.split("-").map(Number);
         return new Date(year, month - 1, day);
     }
 
-    // Υπολογισμός ημερών μετρώντας και την ημέρα
-    // επιβίβασης και την ημέρα απόλυσης
     function daysInclusive(start, end) {
         const oneDay = 1000 * 60 * 60 * 24;
         return Math.floor((end - start) / oneDay) + 1;
     }
 
-    // Δημιουργία διαστημάτων υπηρεσίας
+    // Δημιουργία διαστημάτων
     const intervals = trips.map(function (trip) {
         return {
             start: toDate(trip.embark),
@@ -101,12 +101,22 @@ document.getElementById("calculate").addEventListener("click", function () {
         };
     });
 
-    // Ταξινόμηση κατά ημερομηνία επιβίβασης
+    // Συνολικές ημέρες όλων των ταξιδιών
+    let rawTotalDays = 0;
+
+    intervals.forEach(function (interval) {
+        rawTotalDays += daysInclusive(
+            interval.start,
+            interval.end
+        );
+    });
+
+    // Ταξινόμηση
     intervals.sort(function (a, b) {
         return a.start - b.start;
     });
 
-    // Ενοποίηση επικαλυπτόμενων ταξιδιών
+    // Ενοποίηση διαστημάτων για να βρούμε την πραγματική υπηρεσία
     let totalDays = 0;
 
     let currentStart = intervals[0].start;
@@ -116,40 +126,76 @@ document.getElementById("calculate").addEventListener("click", function () {
 
         const next = intervals[i];
 
-        // Αν το επόμενο ταξίδι επικαλύπτεται
-        // ή συνεχίζεται αμέσως μετά
         const dayAfterCurrentEnd = new Date(currentEnd);
-        dayAfterCurrentEnd.setDate(dayAfterCurrentEnd.getDate() + 1);
+        dayAfterCurrentEnd.setDate(
+            dayAfterCurrentEnd.getDate() + 1
+        );
 
         if (next.start <= dayAfterCurrentEnd) {
 
-            // Επέκταση του υπάρχοντος διαστήματος
             if (next.end > currentEnd) {
                 currentEnd = next.end;
             }
 
         } else {
 
-            // Ολοκλήρωση προηγούμενου διαστήματος
-            totalDays += daysInclusive(currentStart, currentEnd);
+            totalDays += daysInclusive(
+                currentStart,
+                currentEnd
+            );
 
-            // Έναρξη νέου διαστήματος
             currentStart = next.start;
             currentEnd = next.end;
         }
     }
 
     // Προσθήκη τελευταίου διαστήματος
-    totalDays += daysInclusive(currentStart, currentEnd);
+    totalDays += daysInclusive(
+        currentStart,
+        currentEnd
+    );
+
+    // Η διαφορά είναι οι επικαλυπτόμενες ημέρες
+    const overlappingDays = rawTotalDays - totalDays;
 
     // 30 ημέρες = 1 μήνας
     const months = Math.floor(totalDays / 30);
     const days = totalDays % 30;
 
+    let overlapMessage = "";
+
+    if (overlappingDays > 0) {
+
+        const dayText =
+            overlappingDays === 1
+                ? "ημέρα"
+                : "ημέρες";
+
+        overlapMessage = `
+            <p style="
+                color:red;
+                font-weight:bold;
+                margin-top:15px;
+            ">
+                ⚠️ Επικαλυπτόμενες ημέρες ταξιδιών:
+                ${overlappingDays} ${dayText}
+            </p>
+        `;
+    }
+
     document.getElementById("result").innerHTML = `
         <h3>Συνολική Υπηρεσία</h3>
-        <p><strong>${months} μήνες και ${days} ημέρες</strong></p>
-        <p>Σύνολο: ${totalDays} ημέρες</p>
-    `;
 
+        <p>
+            <strong>
+                ${months} μήνες και ${days} ημέρες
+            </strong>
+        </p>
+
+        <p>
+            Σύνολο: ${totalDays} ημέρες
+        </p>
+
+        ${overlapMessage}
+    `;
 });
