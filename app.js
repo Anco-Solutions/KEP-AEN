@@ -151,7 +151,9 @@ function calculateServiceFromDates(dateSet) {
         Array.from(dateSet).sort();
 
 
-    // Ομαδοποίηση ημερομηνιών ανά μήνα
+    // ==========================================
+    // ΟΜΑΔΟΠΟΙΗΣΗ ΑΝΑ ΜΗΝΑ
+    // ==========================================
 
     const monthGroups = {};
 
@@ -161,6 +163,7 @@ function calculateServiceFromDates(dateSet) {
         const [year, month, day] =
             dateString.split("-").map(Number);
 
+
         const key =
             year + "-" +
             String(month).padStart(2, "0");
@@ -169,19 +172,38 @@ function calculateServiceFromDates(dateSet) {
         if (!monthGroups[key]) {
 
             monthGroups[key] = {
+
                 year: year,
+
                 month: month,
+
                 days: []
+
             };
         }
 
+
         monthGroups[key].days.push(day);
+
     });
 
 
     let months = 0;
+
     let days = 0;
 
+
+    // ==========================================
+    // ΥΠΟΛΟΓΙΣΜΟΣ ΚΑΘΕ ΜΗΝΑ
+    //
+    // Πλήρης μήνας:
+    //     1 → τελευταία ημέρα
+    //     = 1 μήνας
+    //
+    // Μερικός μήνας:
+    //     υπολογίζεται με βάση τις 30 ημέρες
+    //
+    // ==========================================
 
     Object.values(monthGroups).forEach(
         function (group) {
@@ -197,15 +219,14 @@ function calculateServiceFromDates(dateSet) {
             const firstDay =
                 Math.min(...group.days);
 
+
             const lastCoveredDay =
                 Math.max(...group.days);
 
 
-            // Πλήρης μήνας
-            //
-            // Πρέπει να υπάρχουν όλες
-            // οι ημερομηνίες από 1 έως
-            // την τελευταία ημέρα του μήνα.
+            // --------------------------------------
+            // ΠΛΗΡΗΣ ΜΗΝΑΣ
+            // --------------------------------------
 
             const fullMonth =
                 group.days.length === lastDay &&
@@ -215,21 +236,54 @@ function calculateServiceFromDates(dateSet) {
 
             if (fullMonth) {
 
+                // Ολόκληρος ο μήνας
+                // μετράει ως 1 μήνας
+
                 months++;
+
+                return;
+            }
+
+
+            // --------------------------------------
+            // ΜΕΡΙΚΟΣ ΜΗΝΑΣ
+            // --------------------------------------
+
+            let partialDays;
+
+
+            if (firstDay === 1) {
+
+                // Από την 1η μέχρι κάποια ημέρα
+
+                partialDays =
+                    lastCoveredDay;
 
             } else {
 
-                days += group.days.length;
+                // Από κάποια ημέρα μέχρι
+                // το τέλος του μήνα
+
+                partialDays =
+                    30 -
+                    firstDay +
+                    1;
             }
+
+
+            days += partialDays;
+
         }
     );
 
 
-    // Κάθε 30 ημέρες μερικής υπηρεσίας
-    // γίνονται ένας μήνας.
+    // ==========================================
+    // ΚΑΘΕ 30 ΜΕΡΙΚΕΣ ΗΜΕΡΕΣ = 1 ΜΗΝΑΣ
+    // ==========================================
 
     months +=
         Math.floor(days / 30);
+
 
     days =
         days % 30;
@@ -243,6 +297,7 @@ function calculateServiceFromDates(dateSet) {
 
         totalDays:
             months * 30 + days
+
     };
 }
 
