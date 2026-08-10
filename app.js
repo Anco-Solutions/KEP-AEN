@@ -1065,7 +1065,15 @@ function calculateService() {
             "result"
         );
 
+const calculationDateTime = new Date();
 
+const formattedDateTime =
+    calculationDateTime.toLocaleString("el-GR", {
+        dateStyle: "short",
+        timeStyle: "short"
+    });
+    
+    
     // ======================================
     // ΚΕΠ 1
     // ======================================
