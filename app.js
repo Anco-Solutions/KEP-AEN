@@ -1468,32 +1468,36 @@ function calculateService() {
             remaining % 30;
 
 
-        twelveMonthMessage = `
+twelveMonthMessage = `
 
-            <div style="
-                color:#dc3545;
-                font-weight:bold;
-                padding:14px;
-                background:#fff5f5;
-                border-radius:8px;
-                margin-top:15px;
-            ">
+    <div style="
+        color:#dc3545;
+        font-weight:bold;
+        padding:14px;
+        background:#fff5f5;
+        border-radius:8px;
+        margin-top:15px;
+    ">
 
-                ❌ Δεν έχουν συμπληρωθεί
-                οι απαιτούμενοι 12 μήνες υπηρεσίας.
+        ❌ Δεν έχουν συμπληρωθεί
+        οι απαιτούμενοι 12 μήνες υπηρεσίας.
 
-                <br><br>
+        <br><br>
 
-                Υπολείπονται:
+        Υπολείπονται:
 
-                ${remainingMonths}
-                μήνες και
-                ${remainingDays}
-                ημέρες.
+        ${remainingMonths}
+        μήνες και
+        ${remainingDays}
+        ημέρες.
 
-            </div>
+        <br><br>
 
-        `;
+        Το ΚΕΠ δεν μπορεί να εξεταστεί.
+
+    </div>
+
+`;
 
     }
 
