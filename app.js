@@ -940,3 +940,151 @@ function calculateService() {
 // ==========================================
 
 showTrips();
+
+// ==========================================
+// ΕΛΕΓΧΟΣ ΥΠΗΡΕΣΙΑΣ ΚΕΠ 1
+// ==========================================
+
+function checkKEP1Status() {
+
+    const kepStatus =
+        document.getElementById("kepStatus");
+
+    if (!kepStatus) {
+        return;
+    }
+
+
+    // Αν δεν υπάρχουν ταξίδια
+    if (trips.length === 0) {
+
+        kepStatus.innerHTML = "";
+
+        return;
+    }
+
+
+    // ------------------------------------------
+    // Όλες οι μοναδικές ημέρες υπηρεσίας
+    // ------------------------------------------
+
+    const allDates = new Set();
+
+
+    trips.forEach(function (trip) {
+
+        const start =
+            toDate(trip.embark);
+
+        const end =
+            toDate(trip.discharge);
+
+
+        getTripDates(
+            start,
+            end
+        ).forEach(function (date) {
+
+            allDates.add(date);
+
+        });
+
+    });
+
+
+    // ------------------------------------------
+    // Υπολογισμός με τον ίδιο κανόνα
+    // που χρησιμοποιεί όλη η εφαρμογή
+    // ------------------------------------------
+
+    const result =
+        calculateServiceFromDates(
+            allDates
+        );
+
+
+    const totalDays =
+        result.totalDays;
+
+
+    // ==========================================
+    // ΚΑΤΩ ΑΠΟ 3 ΜΗΝΕΣ
+    // ==========================================
+
+    if (totalDays < 90) {
+
+        kepStatus.innerHTML = `
+
+            <div style="
+                background:#fff5f5;
+                color:#dc3545;
+                padding:14px;
+                border-radius:8px;
+                font-weight:bold;
+            ">
+
+                ❌ Δεν έχει δικαίωμα εξέτασης.
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    // ==========================================
+    // ΑΠΟ 3 ΕΩΣ 6 ΜΗΝΕΣ
+    // ==========================================
+
+    if (totalDays <= 180) {
+
+        kepStatus.innerHTML = `
+
+            <div style="
+                background:#f0fff4;
+                color:#198754;
+                padding:14px;
+                border-radius:8px;
+                font-weight:bold;
+            ">
+
+                ✅ Μπορεί να εξεταστεί,
+                αλλά δεν έχει συμπληρωθεί
+                η απαιτούμενη υπηρεσία
+                των έξι μηνών.
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    // ==========================================
+    // ΠΑΝΩ ΑΠΟ 6 ΜΗΝΕΣ
+    // ==========================================
+
+    kepStatus.innerHTML = `
+
+        <div style="
+            background:#f0fff4;
+            color:#198754;
+            padding:14px;
+            border-radius:8px;
+            font-weight:bold;
+        ">
+
+            ✅ Έχει ξεπεράσει την απαιτούμενη
+            υπηρεσία των έξι μηνών.
+
+            <br><br>
+
+            Στο δεύτερο ΚΕΠ θα ληφθούν υπόψη
+            μόνο οι έξι μήνες υπηρεσίας.
+
+        </div>
+
+    `;
+}
