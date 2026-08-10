@@ -889,15 +889,7 @@ function calculateService() {
 
                     <br>
 
-                    <span style="
-                        font-size:14px;
-                    ">
-
-                        Σύνολο:
-                        ${rankResult.totalDays}
-                        ημέρες
-
-                    </span>
+        
 
                 </div>
 
