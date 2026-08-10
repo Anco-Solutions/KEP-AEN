@@ -876,11 +876,16 @@ document
                     currentKEP = "1";
 
 
-                    document.getElementById(
-                        "kep1PreviousService"
-                    ).style.display =
-                        "none";
+        document.getElementById(
+    "kep1PreviousService"
+).style.display =
+    "block";
 
+document.getElementById(
+    "kep2Section"
+).style.display =
+    "none";
+    
                 }
 
 
