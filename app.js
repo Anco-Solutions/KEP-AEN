@@ -94,16 +94,21 @@ function calculateServiceFromDates(dateSet) {
 
 
         const key =
-            year + "-" +
+            year +
+            "-" +
             String(month).padStart(2, "0");
 
 
         if (!monthGroups[key]) {
 
             monthGroups[key] = {
+
                 year: year,
+
                 month: month,
+
                 days: []
+
             };
         }
 
@@ -149,6 +154,7 @@ function calculateServiceFromDates(dateSet) {
             } else {
 
                 days += group.days.length;
+
             }
 
         }
@@ -173,31 +179,6 @@ function calculateServiceFromDates(dateSet) {
             months * 30 + days
 
     };
-}
-
-
-// ==========================================
-// ΥΠΗΡΕΣΙΑ ΕΝΟΣ ΤΑΞΙΔΙΟΥ
-// ==========================================
-
-function calculateTripDays(start, end) {
-
-    const dates =
-        new Set(
-            getTripDates(
-                start,
-                end
-            )
-        );
-
-
-    const result =
-        calculateServiceFromDates(
-            dates
-        );
-
-
-    return result.totalDays;
 }
 
 
@@ -250,15 +231,21 @@ document
         function () {
 
             const embark =
-                document.getElementById("embark").value;
+                document.getElementById(
+                    "embark"
+                ).value;
 
 
             const discharge =
-                document.getElementById("discharge").value;
+                document.getElementById(
+                    "discharge"
+                ).value;
 
 
             const rank =
-                document.getElementById("rank").value;
+                document.getElementById(
+                    "rank"
+                ).value;
 
 
             if (!embark || !discharge) {
@@ -344,7 +331,9 @@ document
 function showTrips() {
 
     const list =
-        document.getElementById("tripList");
+        document.getElementById(
+            "tripList"
+        );
 
 
     if (trips.length === 0) {
@@ -361,23 +350,10 @@ function showTrips() {
 
     trips.forEach(function (trip, index) {
 
-        const start =
-            toDate(trip.embark);
-
-
-        const end =
-            toDate(trip.discharge);
-
-
         const service =
-            calculateServiceFromDates(
-                new Set(
-                    getTripDates(
-                        start,
-                        end
-                    )
-                )
-            );
+            calculateTripsService([
+                trip
+            ]);
 
 
         html += `
@@ -396,12 +372,16 @@ function showTrips() {
                 <br>
 
                 Ναυτολόγηση:
-                ${formatGreekDate(trip.embark)}
+                ${formatGreekDate(
+                    trip.embark
+                )}
 
                 <br>
 
                 Απόλυση:
-                ${formatGreekDate(trip.discharge)}
+                ${formatGreekDate(
+                    trip.discharge
+                )}
 
                 <br>
 
@@ -457,6 +437,7 @@ function showTrips() {
             </div>
 
         `;
+
     });
 
 
@@ -525,20 +506,26 @@ function deleteTrip(index) {
 
     const answer =
         confirm(
+
             "Θέλετε να διαγράψετε το ταξίδι;\n\n" +
 
             "Ναυτολόγηση: " +
-            formatGreekDate(trip.embark) +
+            formatGreekDate(
+                trip.embark
+            ) +
 
             "\n" +
 
             "Απόλυση: " +
-            formatGreekDate(trip.discharge) +
+            formatGreekDate(
+                trip.discharge
+            ) +
 
             "\n" +
 
             "Ειδικότητα: " +
             trip.rank
+
         );
 
 
@@ -606,11 +593,13 @@ function createRankMessage(tripList) {
     ranks.forEach(function (rank) {
 
         const rankTrips =
-            tripList.filter(function (trip) {
+            tripList.filter(
+                function (trip) {
 
-                return trip.rank === rank;
+                    return trip.rank === rank;
 
-            });
+                }
+            );
 
 
         if (rankTrips.length === 0) {
@@ -658,85 +647,7 @@ function createRankMessage(tripList) {
 
 
 // ==========================================
-// ΥΠΟΛΟΓΙΣΜΟΣ ΚΕΠ 1
-// ==========================================
-
-function calculateKEP1Status(service) {
-
-    if (service.totalDays < 90) {
-
-        return `
-
-            <div style="
-                color:#dc3545;
-                font-weight:bold;
-                margin-top:20px;
-                padding:14px;
-                background:#fff5f5;
-                border-radius:8px;
-            ">
-
-                ❌ Δεν έχει δικαίωμα εξέτασης.
-
-            </div>
-
-        `;
-
-    }
-
-
-    if (service.totalDays <= 180) {
-
-        return `
-
-            <div style="
-                color:#198754;
-                font-weight:bold;
-                margin-top:20px;
-                padding:14px;
-                background:#f0fff4;
-                border-radius:8px;
-            ">
-
-                ✅ Μπορεί να εξεταστεί,
-                αλλά δεν έχει συμπληρωθεί
-                η απαιτούμενη υπηρεσία
-                των έξι μηνών.
-
-            </div>
-
-        `;
-
-    }
-
-
-    return `
-
-        <div style="
-            color:#198754;
-            font-weight:bold;
-            margin-top:20px;
-            padding:14px;
-            background:#f0fff4;
-            border-radius:8px;
-        ">
-
-            ✅ Έχει ξεπεράσει την απαιτούμενη
-            υπηρεσία των έξι μηνών.
-
-            <br><br>
-
-            Στο δεύτερο ΚΕΠ θα ληφθούν υπόψη
-            μόνο οι έξι μήνες υπηρεσίας.
-
-        </div>
-
-    `;
-}
-
-
-// ==========================================
-// ΚΕΠ 2 - ΧΕΙΡΟΚΙΝΗΤΗ ΥΠΗΡΕΣΙΑ ΚΕΠ 1
+// ΥΠΗΡΕΣΙΑ ΚΕΠ 1 — ΧΕΙΡΟΚΙΝΗΤΗ
 // ==========================================
 
 function getKEP1ManualService() {
@@ -771,7 +682,7 @@ function getKEP1ManualService() {
 
 
 // ==========================================
-// ΜΗΝΥΜΑ ΧΕΙΡΟΚΙΝΗΤΗΣ ΥΠΗΡΕΣΙΑΣ
+// ΜΗΝΥΜΑ ΥΠΗΡΕΣΙΑΣ ΚΕΠ 1
 // ==========================================
 
 function updateKEP1ManualStatus() {
@@ -780,6 +691,12 @@ function updateKEP1ManualStatus() {
         document.getElementById(
             "kep1InputStatus"
         );
+
+
+    if (!status) {
+
+        return;
+    }
 
 
     if (currentKEP !== "2") {
@@ -794,11 +711,14 @@ function updateKEP1ManualStatus() {
         getKEP1ManualService();
 
 
-    // ==========================================
-    // ΕΛΕΓΧΟΣ ΗΜΕΡΩΝ
-    // ==========================================
+    // ------------------------------------------
+    // ΜΗ ΕΓΚΥΡΕΣ ΗΜΕΡΕΣ
+    // ------------------------------------------
 
-    if (service.days > 29) {
+    if (
+        service.days < 0 ||
+        service.days > 29
+    ) {
 
         status.innerHTML = `
 
@@ -822,11 +742,13 @@ function updateKEP1ManualStatus() {
     }
 
 
-    // ==========================================
+    // ------------------------------------------
     // ΚΕΠ 1 < 3 ΜΗΝΕΣ
-    // ==========================================
+    // ------------------------------------------
 
-    if (service.totalDays < 90) {
+    if (
+        service.totalDays < 90
+    ) {
 
         status.innerHTML = `
 
@@ -855,118 +777,32 @@ function updateKEP1ManualStatus() {
     }
 
 
-    // ==========================================
+    // ------------------------------------------
     // ΚΕΠ 1 >= 3 ΜΗΝΕΣ
-    // ==========================================
-
-    if (service.totalDays >= 90) {
-
-        status.innerHTML = `
-
-            <div style="
-                color:#198754;
-                font-weight:bold;
-                margin-top:10px;
-                padding:12px;
-                background:#f0fff4;
-                border-radius:8px;
-            ">
-
-                ✅ Η υπηρεσία ΚΕΠ 1 είναι
-                ${service.months}
-                μήνες και
-                ${service.days}
-                ημέρες.
-
-                <br><br>
-
-                Το ΚΕΠ μπορεί να εξεταστεί.
-
-            </div>
-
-        `;
-
-    }
-
-}
-
-
-    const service =
-        getKEP1ManualService();
-
-
-    if (service.days > 29) {
-
-        status.innerHTML = `
-
-            <span style="
-                color:#dc3545;
-                font-weight:bold;
-            ">
-
-                Οι ημέρες πρέπει να είναι από 0 έως 29.
-
-            </span>
-
-        `;
-
-        return;
-    }
-
-
-    if (service.totalDays < 90) {
-
-        status.innerHTML = `
-
-            <span style="
-                color:#dc3545;
-                font-weight:bold;
-            ">
-
-                Η υπηρεσία ΚΕΠ 1 είναι μικρότερη
-                από τρεις μήνες.
-                Δεν έχει δικαίωμα εξέτασης.
-
-            </span>
-
-        `;
-
-        return;
-    }
-
-
-    if (service.totalDays > 180) {
-
-        status.innerHTML = `
-
-            <span style="
-                color:#198754;
-                font-weight:bold;
-            ">
-
-                Έχει ξεπεράσει την απαιτούμενη
-                υπηρεσία των έξι μηνών.
-                Στο δεύτερο ΚΕΠ θα ληφθούν υπόψη
-                μόνο οι έξι μήνες υπηρεσίας.
-
-            </span>
-
-        `;
-
-        return;
-    }
-
+    // ------------------------------------------
 
     status.innerHTML = `
 
-        <span style="
+        <div style="
             color:#198754;
             font-weight:bold;
+            margin-top:10px;
+            padding:12px;
+            background:#f0fff4;
+            border-radius:8px;
         ">
 
-            Η υπηρεσία ΚΕΠ 1 είναι εντάξει.
+            ✅ Η υπηρεσία ΚΕΠ 1 είναι
+            ${service.months}
+            μήνες και
+            ${service.days}
+            ημέρες.
 
-        </span>
+            <br><br>
+
+            Το ΚΕΠ μπορεί να εξεταστεί.
+
+        </div>
 
     `;
 }
@@ -986,22 +822,25 @@ document
             "change",
             function () {
 
-                if (radio.value === "2") {
+                if (
+                    radio.value === "2"
+                ) {
 
-                    // Αποθηκεύουμε τα ταξίδια του ΚΕΠ 1.
+                    // Αποθήκευση ΚΕΠ 1
 
                     kep1SavedTrips =
-                        trips.map(function (trip) {
+                        trips.map(
+                            function (trip) {
 
-                            return {
-                                ...trip
-                            };
+                                return {
+                                    ...trip
+                                };
 
-                        });
+                            }
+                        );
 
 
-                    // Ξεκινάμε καθαρή λίστα
-                    // για το ΚΕΠ 2.
+                    // Νέα λίστα για ΚΕΠ 2
 
                     trips = [];
 
@@ -1018,7 +857,7 @@ document
 
                 } else {
 
-                    // Επιστροφή στο ΚΕΠ 1.
+                    // Επιστροφή στο ΚΕΠ 1
 
                     trips =
                         kep1SavedTrips.map(
@@ -1072,7 +911,7 @@ document
 
 
 // ==========================================
-// ΑΛΛΑΓΗ ΧΕΙΡΟΚΙΝΗΤΩΝ ΜΗΝΩΝ / ΗΜΕΡΩΝ
+// ΕΝΗΜΕΡΩΣΗ ΜΗΝΩΝ / ΗΜΕΡΩΝ ΚΕΠ 1
 // ==========================================
 
 document
@@ -1096,6 +935,113 @@ document
 
 
 // ==========================================
+// ΕΛΕΓΧΟΣ ΚΕΠ 1
+// ==========================================
+
+function calculateKEP1Status(
+    service
+) {
+
+    if (
+        service.totalDays < 90
+    ) {
+
+        return `
+
+            <div style="
+                color:#dc3545;
+                font-weight:bold;
+                margin-top:20px;
+                padding:14px;
+                background:#fff5f5;
+                border-radius:8px;
+            ">
+
+                ❌ Η υπηρεσία ΚΕΠ 1 είναι
+                μικρότερη από την ελάχιστα
+                απαιτούμενη υπηρεσία των 3 μηνών.
+
+                <br><br>
+
+                Το ΚΕΠ δεν μπορεί να εξεταστεί.
+
+            </div>
+
+        `;
+
+    }
+
+
+    if (
+        service.totalDays > 180
+    ) {
+
+        return `
+
+            <div style="
+                color:#198754;
+                font-weight:bold;
+                margin-top:20px;
+                padding:14px;
+                background:#f0fff4;
+                border-radius:8px;
+            ">
+
+                ✅ Η υπηρεσία ΚΕΠ 1 είναι
+                ${service.months}
+                μήνες και
+                ${service.days}
+                ημέρες.
+
+                <br><br>
+
+                Το ΚΕΠ μπορεί να εξεταστεί.
+
+                <br><br>
+
+                Έχει ξεπεράσει την απαιτούμενη
+                υπηρεσία των έξι μηνών.
+
+                <br>
+
+                Θα ληφθούν υπόψη μόνο
+                οι έξι μήνες υπηρεσίας.
+
+            </div>
+
+        `;
+
+    }
+
+
+    return `
+
+        <div style="
+            color:#198754;
+            font-weight:bold;
+            margin-top:20px;
+            padding:14px;
+            background:#f0fff4;
+            border-radius:8px;
+        ">
+
+            ✅ Η υπηρεσία ΚΕΠ 1 είναι
+            ${service.months}
+            μήνες και
+            ${service.days}
+            ημέρες.
+
+            <br><br>
+
+            Το ΚΕΠ μπορεί να εξεταστεί.
+
+        </div>
+
+    `;
+}
+
+
+// ==========================================
 // ΚΥΡΙΟΣ ΥΠΟΛΟΓΙΣΜΟΣ
 // ==========================================
 
@@ -1111,15 +1057,186 @@ document
 
 function calculateService() {
 
-    if (trips.length === 0) {
-
+    const resultElement =
         document.getElementById(
             "result"
-        ).innerHTML = "";
+        );
+
+
+    // ======================================
+    // ΚΕΠ 1
+    // ======================================
+
+    if (
+        currentKEP === "1"
+    ) {
+
+        if (
+            trips.length === 0
+        ) {
+
+            resultElement.innerHTML = "";
+
+            return;
+        }
+
+
+        const kep1Service =
+            calculateTripsService(
+                trips
+            );
+
+
+        const rankMessage =
+            createRankMessage(
+                trips
+            );
+
+
+        resultElement.innerHTML = `
+
+            <h3>
+                Συνολική Υπηρεσία
+            </h3>
+
+            <p>
+
+                <strong>
+
+                    ${kep1Service.months}
+                    μήνες και
+                    ${kep1Service.days}
+                    ημέρες
+
+                </strong>
+
+            </p>
+
+            ${rankMessage}
+
+            ${calculateKEP1Status(
+                kep1Service
+            )}
+
+        `;
+
 
         return;
     }
 
+
+    // ======================================
+    // ΚΕΠ 2
+    // ======================================
+
+    const kep1Service =
+        getKEP1ManualService();
+
+
+    // ======================================
+    // ΕΛΕΓΧΟΣ ΚΕΠ 1
+    // ======================================
+
+    if (
+        kep1Service.days < 0 ||
+        kep1Service.days > 29
+    ) {
+
+        resultElement.innerHTML = `
+
+            <div style="
+                color:#dc3545;
+                font-weight:bold;
+                padding:14px;
+                background:#fff5f5;
+                border-radius:8px;
+            ">
+
+                ❌ Οι ημέρες της υπηρεσίας
+                ΚΕΠ 1 πρέπει να είναι
+                από 0 έως 29.
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    if (
+        kep1Service.totalDays < 90
+    ) {
+
+        resultElement.innerHTML = `
+
+            <div style="
+                color:#dc3545;
+                font-weight:bold;
+                padding:14px;
+                background:#fff5f5;
+                border-radius:8px;
+            ">
+
+                ❌ Η υπηρεσία ΚΕΠ 1 είναι
+                μικρότερη από την ελάχιστα
+                απαιτούμενη υπηρεσία των 3 μηνών.
+
+                <br><br>
+
+                Το ΚΕΠ δεν μπορεί να εξεταστεί.
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    // ======================================
+    // ΜΕΓΙΣΤΟ ΚΕΠ 1 = 6 ΜΗΝΕΣ
+    // ======================================
+
+    const kep1CountedDays =
+        Math.min(
+            kep1Service.totalDays,
+            180
+        );
+
+
+    // ======================================
+    // ΥΠΗΡΕΣΙΑ ΚΕΠ 2
+    // ======================================
+
+    const kep2Service =
+        calculateTripsService(
+            trips
+        );
+
+
+    // ======================================
+    // ΣΥΝΟΛΟ ΚΕΠ 1 + ΚΕΠ 2
+    // ======================================
+
+    const combinedDays =
+        kep1CountedDays +
+        kep2Service.totalDays;
+
+
+    const combinedMonths =
+        Math.floor(
+            combinedDays / 30
+        );
+
+
+    const combinedRemainder =
+        combinedDays % 30;
+
+
+    // ======================================
+    // ΕΠΙΚΑΛΥΨΕΙΣ ΚΕΠ 2
+    // ======================================
 
     const allDates =
         new Set();
@@ -1131,18 +1248,10 @@ function calculateService() {
     trips.forEach(
         function (trip, index) {
 
-            const start =
-                toDate(trip.embark);
-
-
-            const end =
-                toDate(trip.discharge);
-
-
             const dates =
                 getTripDates(
-                    start,
-                    end
+                    toDate(trip.embark),
+                    toDate(trip.discharge)
                 );
 
 
@@ -1152,7 +1261,9 @@ function calculateService() {
                     allDates.add(date);
 
 
-                    if (!dateTrips[date]) {
+                    if (
+                        !dateTrips[date]
+                    ) {
 
                         dateTrips[date] = [];
 
@@ -1169,16 +1280,6 @@ function calculateService() {
         }
     );
 
-
-    const totalResult =
-        calculateServiceFromDates(
-            allDates
-        );
-
-
-    // ======================================
-    // ΕΠΙΚΑΛΥΨΕΙΣ
-    // ======================================
 
     const overlappingDates =
         Object.keys(dateTrips)
@@ -1197,7 +1298,9 @@ function calculateService() {
     let overlapMessage = "";
 
 
-    if (overlappingDates.length > 0) {
+    if (
+        overlappingDates.length > 0
+    ) {
 
         let overlapList = "";
 
@@ -1271,151 +1374,7 @@ function calculateService() {
 
 
     // ======================================
-    // ΚΕΠ 1
-    // ======================================
-
-    if (currentKEP === "1") {
-
-        const rankMessage =
-            createRankMessage(
-                trips
-            );
-
-
-        document.getElementById(
-            "result"
-        ).innerHTML = `
-
-            <h3>
-                Συνολική Υπηρεσία
-            </h3>
-
-
-            <p>
-
-                <strong>
-
-                    ${totalResult.months}
-                    μήνες και
-                    ${totalResult.days}
-                    ημέρες
-
-                </strong>
-
-            </p>
-
-
-            ${overlapMessage}
-
-
-            ${rankMessage}
-
-
-            ${calculateKEP1Status(
-                totalResult
-            )}
-
-        `;
-
-
-        return;
-    }
-
-
-    // ======================================
-    // ΚΕΠ 2
-    // ======================================
-
-    const kep1Service =
-        getKEP1ManualService();
-
-
-    if (kep1Service.days > 29) {
-
-        document.getElementById(
-            "result"
-        ).innerHTML = `
-
-            <div style="
-                color:#dc3545;
-                font-weight:bold;
-                padding:14px;
-                background:#fff5f5;
-                border-radius:8px;
-            ">
-
-                ❌ Οι ημέρες της υπηρεσίας
-                ΚΕΠ 1 πρέπει να είναι από 0 έως 29.
-
-            </div>
-
-        `;
-
-        return;
-    }
-
-
-    if (kep1Service.totalDays < 90) {
-
-        document.getElementById(
-            "result"
-        ).innerHTML = `
-
-            <div style="
-                color:#dc3545;
-                font-weight:bold;
-                padding:14px;
-                background:#fff5f5;
-                border-radius:8px;
-            ">
-
-                ❌ Δεν έχει δικαίωμα εξέτασης.
-
-                <br><br>
-
-                Η υπηρεσία του ΚΕΠ 1 είναι
-                μικρότερη από τρεις μήνες.
-
-            </div>
-
-        `;
-
-        return;
-    }
-
-
-    // ======================================
-    // ΜΕΓΙΣΤΟ ΚΕΠ 1 = 6 ΜΗΝΕΣ
-    // ======================================
-
-    const kep1CountedDays =
-        Math.min(
-            kep1Service.totalDays,
-            180
-        );
-
-
-    const kep2Service =
-        totalResult;
-
-
-    const combinedDays =
-        kep1CountedDays +
-        kep2Service.totalDays;
-
-
-    const combinedMonths =
-        Math.floor(
-            combinedDays / 30
-        );
-
-
-    const combinedRemainder =
-        combinedDays % 30;
-
-
-    // ======================================
-    // ΜΗΝΥΜΑ 6 ΜΗΝΩΝ
+    // ΜΗΝΥΜΑ ΓΙΑ ΠΑΝΩ ΑΠΟ 6 ΜΗΝΕΣ
     // ======================================
 
     let sixMonthMessage = "";
@@ -1430,19 +1389,27 @@ function calculateService() {
             <div style="
                 color:#198754;
                 font-weight:bold;
-                padding:12px;
+                padding:14px;
                 background:#f0fff4;
                 border-radius:8px;
                 margin-top:15px;
             ">
+
+                Η υπηρεσία ΚΕΠ 1 είναι
+                ${kep1Service.months}
+                μήνες και
+                ${kep1Service.days}
+                ημέρες.
+
+                <br><br>
 
                 Έχει ξεπεράσει την απαιτούμενη
                 υπηρεσία των έξι μηνών.
 
                 <br>
 
-                Στο δεύτερο ΚΕΠ θα ληφθούν υπόψη
-                μόνο οι έξι μήνες υπηρεσίας.
+                Θα ληφθούν υπόψη μόνο
+                οι έξι μήνες υπηρεσίας.
 
             </div>
 
@@ -1458,7 +1425,9 @@ function calculateService() {
     let twelveMonthMessage = "";
 
 
-    if (combinedDays >= 360) {
+    if (
+        combinedDays >= 360
+    ) {
 
         twelveMonthMessage = `
 
@@ -1474,7 +1443,7 @@ function calculateService() {
                 ✅ Έχει συμπληρωθεί η απαιτούμενη
                 συνολική υπηρεσία των 12 μηνών.
 
-                <br>
+                <br><br>
 
                 Το ΚΕΠ 2 μπορεί να εξεταστεί.
 
@@ -1485,7 +1454,8 @@ function calculateService() {
     } else {
 
         const remaining =
-            360 - combinedDays;
+            360 -
+            combinedDays;
 
 
         const remainingMonths =
@@ -1528,6 +1498,10 @@ function calculateService() {
     }
 
 
+    // ======================================
+    // ΥΠΗΡΕΣΙΑ ΑΝΑ ΕΙΔΙΚΟΤΗΤΑ
+    // ======================================
+
     const rankMessage =
         createRankMessage(
             trips
@@ -1535,12 +1509,10 @@ function calculateService() {
 
 
     // ======================================
-    // ΤΕΛΙΚΗ ΕΜΦΑΝΙΣΗ ΚΕΠ 2
+    // ΤΕΛΙΚΗ ΕΜΦΑΝΙΣΗ
     // ======================================
 
-    document.getElementById(
-        "result"
-    ).innerHTML = `
+    resultElement.innerHTML = `
 
         <h3>
             Συνολική Υπηρεσία ΚΕΠ 2
@@ -1575,7 +1547,10 @@ function calculateService() {
         ">
 
             <h3 style="margin-top:0;">
-                Συνολική Υπηρεσία ΚΕΠ 1 + ΚΕΠ 2
+
+                Συνολική Υπηρεσία
+                ΚΕΠ 1 + ΚΕΠ 2
+
             </h3>
 
 
