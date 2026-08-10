@@ -933,14 +933,6 @@ function calculateService() {
         </p>
 
 
-        <p>
-
-            Σύνολο:
-            ${totalResult.totalDays}
-            ημέρες
-
-        </p>
-
 
         ${overlapMessage}
 
