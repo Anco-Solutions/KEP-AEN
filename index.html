@@ -212,6 +212,7 @@
 
 </div>
 
+<div id="tripForm" style="display:none;">
 
 <!-- ==========================================
      ΗΜΕΡΟΜΗΝΙΕΣ
@@ -341,6 +342,8 @@
 
 </div>
 
+</div>
+
 
 <!-- ==========================================
      ΕΜΦΑΝΙΣΗ / ΑΠΟΚΡΥΨΗ ΕΝΟΤΗΤΩΝ ΚΕΠ
@@ -371,6 +374,10 @@ document
                         "kep2Section"
                     );
 
+const tripForm =
+    document.getElementById(
+        "tripForm"
+    );
 
                 if (radio.value === "1") {
 
@@ -384,7 +391,9 @@ document
 
                     kep2Section.style.display =
                         "none";
-
+                        
+tripForm.style.display =
+    "block";
 
                 } else {
 
@@ -398,7 +407,10 @@ document
 
                     kep2Section.style.display =
                         "block";
-
+                        
+                        
+tripForm.style.display =
+    "block";
                 }
 
             }
