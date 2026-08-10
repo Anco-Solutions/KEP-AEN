@@ -848,7 +848,7 @@ currentKEP = "2";
 
 document.getElementById(
     "kep1PreviousService"
-).style.display = "none";
+).style.display = "block";
 
 document.getElementById(
     "kep2Section"
