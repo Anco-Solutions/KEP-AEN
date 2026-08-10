@@ -403,7 +403,7 @@ const tripResult =
                 <br>
 
                 Υπηρεσία:
-                ${days} ημέρες
+                
 
 
                 <div style="
