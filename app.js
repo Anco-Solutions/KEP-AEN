@@ -846,7 +846,7 @@ document
 
                     editingIndex = -1;
 
-                    currentKEP = "2";
+                    currentKEP = "";
 
 document.getElementById(
     "kep1PreviousService"
