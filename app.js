@@ -358,11 +358,18 @@ function showTrips() {
             toDate(trip.discharge);
 
 
-        const days =
-            calculateTripDays(
-                start,
-                end
-            );
+        const dates =
+    new Set(
+        getTripDates(
+            start,
+            end
+        )
+    );
+
+const tripResult =
+    calculateServiceFromDates(
+        dates
+    );
 
 
         html += `
