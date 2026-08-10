@@ -403,7 +403,8 @@ const tripResult =
                 <br>
 
                 Υπηρεσία:
-                
+${tripResult.months} μήνες και
+${tripResult.days} ημέρες
 
 
                 <div style="
