@@ -932,6 +932,9 @@ function calculateService() {
         ${rankMessage}
 
     `;
+    
+    checkKEP1Status();
+    
 }
 
 
@@ -1088,8 +1091,3 @@ function checkKEP1Status() {
 
     `;
 }
-// Ενεργοποίηση ελέγχου ΚΕΠ 1
-document.getElementById("calculate").addEventListener(
-    "click",
-    checkKEP1Status
-);
