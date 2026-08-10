@@ -878,13 +878,11 @@ document.getElementById(
 
         document.getElementById(
     "kep1PreviousService"
-).style.display =
-    "block";
+).style.display = "none";
 
 document.getElementById(
     "kep2Section"
-).style.display =
-    "none";
+).style.display = "none";
     
                 }
 
