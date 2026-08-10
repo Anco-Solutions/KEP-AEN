@@ -442,6 +442,32 @@ tripForm.style.display =
 
 </script>
 
+<script>
+function updateDateTime() {
+    const element = document.getElementById("calculationDateTime");
+
+    if (!element) return;
+
+    const now = new Date();
+
+    const date = now.toLocaleDateString("el-GR");
+    const time = now.toLocaleTimeString("el-GR", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+    });
+
+    element.textContent =
+        "Ημερομηνία & ώρα: " + date + " " + time;
+}
+
+updateDateTime();
+
+setInterval(updateDateTime, 1000);
+
+window.addEventListener("beforeprint", updateDateTime);
+</script>
+
 
 <script src="app.js?v=4"></script>
 
