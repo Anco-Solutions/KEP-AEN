@@ -1106,6 +1106,11 @@ const formattedDateTime =
 
         resultElement.innerHTML = `
 
+<p>
+    <strong>Μητρώο εξεταζόμενου:</strong>
+    ${document.getElementById("registryNumber").value}
+</p>
+
             <h3>
                 Συνολική Υπηρεσία
             </h3>
