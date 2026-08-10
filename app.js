@@ -1060,30 +1060,12 @@ document
 
 function calculateService() {
 
-const now = new Date();
-
-const calculationDateTime = now.toLocaleString("el-GR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-});
-
     const resultElement =
         document.getElementById(
             "result"
         );
 
-const calculationDateTime = new Date();
 
-const formattedDateTime =
-    calculationDateTime.toLocaleString("el-GR", {
-        dateStyle: "short",
-        timeStyle: "short"
-    });
-    
-    
     // ======================================
     // ΚΕΠ 1
     // ======================================
@@ -1115,15 +1097,6 @@ const formattedDateTime =
 
 
         resultElement.innerHTML = `
-
-<div style="font-size:14px; color:#666; margin-bottom:10px;">
-Ημερομηνία & ώρα υπολογισμού: ${formattedDateTime}
-</div>
-
-<p>
-    <strong>Μητρώο εξεταζόμενου:</strong>
-    ${document.getElementById("registryNumber").value}
-</p>
 
             <h3>
                 Συνολική Υπηρεσία
@@ -1547,16 +1520,6 @@ twelveMonthMessage = `
     // ======================================
 
     resultElement.innerHTML = `
-
-<p>
-    <strong>Ημερομηνία & ώρα υπολογισμού:</strong>
-    ${calculationDateTime}
-</p>
-
-<p>
-    <strong>Μητρώο εξεταζόμενου:</strong>
-    ${document.getElementById("registryNumber").value}
-</p>
 
         <h3>
             Συνολική Υπηρεσία ΚΕΠ 2
