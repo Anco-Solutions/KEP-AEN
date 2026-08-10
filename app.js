@@ -848,11 +848,10 @@ document
 
                     currentKEP = "2";
 
-
-                    document.getElementById(
-                        "kep1PreviousService"
-                    ).style.display =
-                        "block";
+document.getElementById(
+    "kep1PreviousService"
+).style.display =
+    "none";
 
 
                 } else {
