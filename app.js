@@ -1116,6 +1116,10 @@ const formattedDateTime =
 
         resultElement.innerHTML = `
 
+<div style="font-size:14px; color:#666; margin-bottom:10px;">
+Ημερομηνία & ώρα υπολογισμού: ${formattedDateTime}
+</div>
+
 <p>
     <strong>Μητρώο εξεταζόμενου:</strong>
     ${document.getElementById("registryNumber").value}
