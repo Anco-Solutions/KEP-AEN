@@ -1,7 +1,7 @@
 let trips = [];
 let editingIndex = -1;
 
-let currentKEP = "1";
+let currentKEP = "";
 let kep1SavedTrips = [];
 
 
