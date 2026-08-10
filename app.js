@@ -1060,6 +1060,16 @@ document
 
 function calculateService() {
 
+const now = new Date();
+
+const calculationDateTime = now.toLocaleString("el-GR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+});
+
     const resultElement =
         document.getElementById(
             "result"
@@ -1533,6 +1543,16 @@ twelveMonthMessage = `
     // ======================================
 
     resultElement.innerHTML = `
+
+<p>
+    <strong>Ημερομηνία & ώρα υπολογισμού:</strong>
+    ${calculationDateTime}
+</p>
+
+<p>
+    <strong>Μητρώο εξεταζόμενου:</strong>
+    ${document.getElementById("registryNumber").value}
+</p>
 
         <h3>
             Συνολική Υπηρεσία ΚΕΠ 2
