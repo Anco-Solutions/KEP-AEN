@@ -843,15 +843,16 @@ document
                     // Νέα λίστα για ΚΕΠ 2
 
                     trips = [];
-
-                    editingIndex = -1;
-
-                    currentKEP = "";
+editingIndex = -1;
+currentKEP = "2";
 
 document.getElementById(
     "kep1PreviousService"
-).style.display =
-    "none";
+).style.display = "none";
+
+document.getElementById(
+    "kep2Section"
+).style.display = "block";
 
 
                 } else {
