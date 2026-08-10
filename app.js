@@ -794,6 +794,107 @@ function updateKEP1ManualStatus() {
         getKEP1ManualService();
 
 
+    // ==========================================
+    // ΕΛΕΓΧΟΣ ΗΜΕΡΩΝ
+    // ==========================================
+
+    if (service.days > 29) {
+
+        status.innerHTML = `
+
+            <div style="
+                color:#dc3545;
+                font-weight:bold;
+                margin-top:10px;
+                padding:12px;
+                background:#fff5f5;
+                border-radius:8px;
+            ">
+
+                ❌ Οι ημέρες πρέπει να είναι
+                από 0 έως 29.
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    // ==========================================
+    // ΚΕΠ 1 < 3 ΜΗΝΕΣ
+    // ==========================================
+
+    if (service.totalDays < 90) {
+
+        status.innerHTML = `
+
+            <div style="
+                color:#dc3545;
+                font-weight:bold;
+                margin-top:10px;
+                padding:12px;
+                background:#fff5f5;
+                border-radius:8px;
+            ">
+
+                ❌ Η υπηρεσία ΚΕΠ 1 είναι
+                μικρότερη από την ελάχιστα
+                απαιτούμενη υπηρεσία των 3 μηνών.
+
+                <br><br>
+
+                Το ΚΕΠ δεν μπορεί να εξεταστεί.
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    // ==========================================
+    // ΚΕΠ 1 >= 3 ΜΗΝΕΣ
+    // ==========================================
+
+    if (service.totalDays >= 90) {
+
+        status.innerHTML = `
+
+            <div style="
+                color:#198754;
+                font-weight:bold;
+                margin-top:10px;
+                padding:12px;
+                background:#f0fff4;
+                border-radius:8px;
+            ">
+
+                ✅ Η υπηρεσία ΚΕΠ 1 είναι
+                ${service.months}
+                μήνες και
+                ${service.days}
+                ημέρες.
+
+                <br><br>
+
+                Το ΚΕΠ μπορεί να εξεταστεί.
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+    const service =
+        getKEP1ManualService();
+
+
     if (service.days > 29) {
 
         status.innerHTML = `
