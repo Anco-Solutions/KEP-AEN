@@ -1,98 +1,198 @@
 <!DOCTYPE html>
 <html lang="el">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
 <title>Υπολογιστής Υπηρεσίας ΚΕΠ</title>
 
-<link rel="stylesheet" href="style.css">
+<link
+    rel="stylesheet"
+    href="style.css"
+>
+
 </head>
+
 
 <body>
 
+
 <div class="container">
 
-<h1>Υπολογιστής Υπηρεσίας ΚΕΠ</h1>
 
-<p><strong>Επιλέξτε ΚΕΠ</strong></p>
+<h1>
+    Υπολογιστής Υπηρεσίας ΚΕΠ
+</h1>
+
+
+<!-- ==========================================
+     ΕΠΙΛΟΓΗ ΚΕΠ
+     ========================================== -->
+
+<p>
+    <strong>Επιλέξτε ΚΕΠ</strong>
+</p>
+
 
 <label>
-<input type="radio" name="kep" value="1" checked>
-ΚΕΠ 1
+
+    <input
+        type="radio"
+        name="kep"
+        value="1"
+        checked
+    >
+
+    ΚΕΠ 1
+
 </label>
 
+
 <label style="margin-left:1px;">
-<input type="radio" name="kep" value="2">
-ΚΕΠ 2
+
+    <input
+        type="radio"
+        name="kep"
+        value="2"
+    >
+
+    ΚΕΠ 2
+
 </label>
+
 
 <hr>
 
-<label>Ημερομηνία Ναυτολόγησης</label>
-<input type="date" id="embark">
 
-<label>Ημερομηνία Απόλυσης</label>
-<input type="date" id="discharge">
+<!-- ==========================================
+     ΗΜΕΡΟΜΗΝΙΕΣ
+     ========================================== -->
 
-<label>Βαθμός</label>
+<label>
+    Ημερομηνία Ναυτολόγησης
+</label>
+
+
+<input
+    type="date"
+    id="embark"
+>
+
+
+<label>
+    Ημερομηνία Απόλυσης
+</label>
+
+
+<input
+    type="date"
+    id="discharge"
+>
+
+
+<!-- ==========================================
+     ΒΑΘΜΟΣ / ΕΙΔΙΚΟΤΗΤΑ
+     ========================================== -->
+
+<label>
+    Βαθμός
+</label>
+
 
 <select id="rank">
-       <option value="Δόκιμος Μηχανικός">Δόκιμος Μηχανικός</option>
-     <option value="Καθαριστής">Καθαριστής</option>
-    <option value="Μηχανοδηγός / Λιπαντής">Μηχανοδηγός / Λιπαντής</option>
-    <option value="Βοηθός Ηλεκτρολόγου">Βοηθός Ηλεκτρολόγου</option>
-    <option value="Δόκιμος Ηλεκτρολόγος">Δόκιμος Ηλεκτρολόγος</option>
+
+    <option value="Δόκιμος Μηχανικός">
+        Δόκιμος Μηχανικός
+    </option>
+
+    <option value="Καθαριστής">
+        Καθαριστής
+    </option>
+
+    <option value="Μηχανοδηγός / Λιπαντής">
+        Μηχανοδηγός / Λιπαντής
+    </option>
+
+    <option value="Βοηθός Ηλεκτρολόγου">
+        Βοηθός Ηλεκτρολόγου
+    </option>
+
+    <option value="Δόκιμος Ηλεκτρολόγος">
+        Δόκιμος Ηλεκτρολόγος
+    </option>
+
 </select>
 
-<div style="
-    background:white;
-    padding:15px;
-    margin-bottom:15px;
-    border-radius:8px;
-">
 
-    <label for="kepType">
-        <strong>Επιλογή ΚΕΠ</strong>
-    </label>
+<!-- ==========================================
+     ΜΗΝΥΜΑ ΚΕΠ
+     ========================================== -->
 
-    <select id="kepType" style="
-        width:100%;
-        padding:10px;
-        margin-top:8px;
-        border-radius:6px;
-        border:1px solid #ccc;
-    ">
+<div
+    id="kepStatus"
+    style="
+        margin-bottom:15px;
+    "
+></div>
 
-        <option value="KEP1">ΚΕΠ 1</option>
-        <option value="KEP2">ΚΕΠ 2</option>
 
-    </select>
+<!-- ==========================================
+     ΠΡΟΣΘΗΚΗ ΤΑΞΙΔΙΟΥ
+     ========================================== -->
 
-</div>
+<button id="addTrip">
 
-<div id="kepStatus" style="
+    Προσθήκη Ταξιδιού
 
-    margin-bottom:15px;
+</button>
 
-"></div>
 
-<button id="addTrip">Προσθήκη Ταξιδιού</button>
+<!-- ==========================================
+     ΛΙΣΤΑ ΤΑΞΙΔΙΩΝ
+     ========================================== -->
 
-<h2>Ταξίδια</h2>
+<h2>
+    Ταξίδια
+</h2>
+
 
 <div id="tripList">
-Δεν υπάρχουν ακόμη ταξίδια.
+
+    Δεν υπάρχουν ακόμη ταξίδια.
+
 </div>
 
+
+<!-- ==========================================
+     ΥΠΟΛΟΓΙΣΜΟΣ ΥΠΗΡΕΣΙΑΣ
+     ========================================== -->
+
 <button id="calculate">
-Υπολογισμός Υπηρεσίας
+
+    Υπολογισμός Υπηρεσίας
+
 </button>
+
+
+<!-- ==========================================
+     ΑΠΟΤΕΛΕΣΜΑ
+     ========================================== -->
 
 <div id="result"></div>
 
+
 </div>
+
 
 <script src="app.js"></script>
 
+
 </body>
+
 </html>
