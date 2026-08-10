@@ -72,13 +72,43 @@
 
 <!-- ==========================================
      ΥΠΗΡΕΣΙΑ ΚΕΠ 1
+     ΓΙΑ ΤΟ ΙΔΙΟ ΤΟ ΚΕΠ 1
+     ========================================== -->
+
+<div
+    id="kep1CurrentService"
+    style="
+        display:block;
+        background:white;
+        padding:15px;
+        margin-bottom:15px;
+        border-radius:8px;
+    "
+>
+
+    <h3 style="margin-top:0;">
+        Υπηρεσία ΚΕΠ 1
+    </h3>
+
+
+    <p>
+        Συμπληρώστε την υπηρεσία που έχει πραγματοποιηθεί
+        στο ΚΕΠ 1.
+    </p>
+
+</div>
+
+
+<!-- ==========================================
+     ΥΠΗΡΕΣΙΑ ΚΕΠ 1
+     ΠΟΥ ΕΙΧΕ ΠΡΑΓΜΑΤΟΠΟΙΗΘΕΙ ΠΡΙΝ ΑΠΟ ΤΟ ΚΕΠ 2
      ΕΜΦΑΝΙΖΕΤΑΙ ΜΟΝΟ ΣΤΟ ΚΕΠ 2
      ========================================== -->
 
 <div
     id="kep1PreviousService"
     style="
-        display:block;
+        display:none;
         background:white;
         padding:15px;
         margin-bottom:15px;
@@ -153,35 +183,34 @@
         "
     ></div>
 
-
-    <!-- ======================================
-         ΥΠΗΡΕΣΙΑ ΚΕΠ 2
-         ΕΜΦΑΝΙΖΕΤΑΙ ΜΟΝΟ ΣΤΟ ΚΕΠ 2
-         ====================================== -->
-
-    <div
-        id="kep2Section"
-        style="
-            display:none;
-            background:white;
-            padding:15px;
-            margin-top:20px;
-            border-radius:8px;
-        "
-    >
-
-        <h3 style="margin-top:0;">
-            Υπηρεσία ΚΕΠ 2
-        </h3>
+</div>
 
 
-        <p>
-            Συμπληρώστε την υπηρεσία που έχει πραγματοποιηθεί
-            στο ΚΕΠ 2.
-        </p>
+<!-- ==========================================
+     ΥΠΗΡΕΣΙΑ ΚΕΠ 2
+     ΕΜΦΑΝΙΖΕΤΑΙ ΜΟΝΟ ΣΤΟ ΚΕΠ 2
+     ========================================== -->
 
-    </div>
+<div
+    id="kep2Section"
+    style="
+        display:none;
+        background:white;
+        padding:15px;
+        margin-bottom:15px;
+        border-radius:8px;
+    "
+>
 
+    <h3 style="margin-top:0;">
+        Υπηρεσία ΚΕΠ 2
+    </h3>
+
+
+    <p>
+        Συμπληρώστε την υπηρεσία που έχει πραγματοποιηθεί
+        στο ΚΕΠ 2.
+    </p>
 
 </div>
 
@@ -315,7 +344,75 @@
 </div>
 
 
-<script src="app.js?v=3"></script>
+<!-- ==========================================
+     ΕΜΦΑΝΙΣΗ / ΑΠΟΚΡΥΨΗ ΕΝΟΤΗΤΩΝ ΚΕΠ
+     ========================================== -->
+
+<script>
+
+document
+    .querySelectorAll('input[name="kep"]')
+    .forEach(function (radio) {
+
+        radio.addEventListener(
+            "change",
+            function () {
+
+                const kep1Current =
+                    document.getElementById(
+                        "kep1CurrentService"
+                    );
+
+                const kep1Previous =
+                    document.getElementById(
+                        "kep1PreviousService"
+                    );
+
+                const kep2Section =
+                    document.getElementById(
+                        "kep2Section"
+                    );
+
+
+                if (radio.value === "1") {
+
+                    // ΚΕΠ 1
+
+                    kep1Current.style.display =
+                        "block";
+
+                    kep1Previous.style.display =
+                        "none";
+
+                    kep2Section.style.display =
+                        "none";
+
+
+                } else {
+
+                    // ΚΕΠ 2
+
+                    kep1Current.style.display =
+                        "none";
+
+                    kep1Previous.style.display =
+                        "block";
+
+                    kep2Section.style.display =
+                        "block";
+
+                }
+
+            }
+
+        );
+
+    });
+
+</script>
+
+
+<script src="app.js?v=4"></script>
 
 
 </body>
