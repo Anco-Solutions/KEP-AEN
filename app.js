@@ -1071,7 +1071,7 @@ function calculateService() {
     // ======================================
 
     if (
-        currentKEP === ""
+        currentKEP === "2"
     ) {
 
         if (
