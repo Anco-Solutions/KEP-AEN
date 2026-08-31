@@ -1,4 +1,4 @@
-/* SeaService Calculator — structured KEP archive / print / email enhancements */
+/* SeaService Calculator — structured KEP archive / print / PDF / email enhancements */
 (function () {
     const ARCHIVE_KEY = "seaServiceArchive";
     function readArchive(){try{return JSON.parse(localStorage.getItem(ARCHIVE_KEY)||"[]")}catch(e){return[]}}
@@ -10,55 +10,26 @@
     function ensurePanel(){const p=document.getElementById("examinationPanel");if(p)p.style.display="block"}
     function resultText(){const r=document.getElementById("result");return r?r.innerText.trim():""}
     function isServiceBlocked(text){return /δεν μπορεί να εξεταστεί|μικρότερη από την ελάχιστα απαιτούμενη|ανεπαρκή υπηρεσία/i.test(text||"")}
-
     function syncExaminationFields(){
         const text=resultText();if(!text)return;ensurePanel();
         const blocked=isServiceBlocked(text),docs=val("documentsStatus");
         const status=document.getElementById("examinationStatus"),grade=document.getElementById("examGrade"),decision=document.getElementById("finalDecision"),warning=document.getElementById("examWarning");
-        if(blocked){
-            if(status)status.value="Δεν εξετάστηκε";
-            if(grade)grade.value="Δεν βαθμολογήθηκε";
-            if(decision)decision.value="Δεν εξετάστηκε λόγω ανεπαρκούς υπηρεσίας";
-            if(warning){warning.style.display="block";warning.textContent="Η απαιτούμενη υπηρεσία δεν έχει συμπληρωθεί. Η εξέταση δεν μπορεί να ολοκληρωθεί."}
-        }else if(docs==="Ελλιπή"){
-            if(status)status.value="Δεν εξετάστηκε";
-            if(grade)grade.value="Δεν βαθμολογήθηκε";
-            if(decision)decision.value="Δεν ολοκληρώθηκε λόγω ελλιπών δικαιολογητικών";
-            if(warning){warning.style.display="block";warning.textContent="Τα δικαιολογητικά είναι ελλιπή. Η εξέταση δεν ολοκληρώνεται μέχρι να συμπληρωθούν."}
-        }else{
-            if(warning){warning.style.display="none";warning.textContent=""}
-            if(status&&status.value==="Δεν εξετάστηκε")status.value="Εξετάστηκε - Επιτυχής";
-            if(decision&&(decision.value==="Σε αναμονή"||decision.value==="Δεν εξετάστηκε λόγω ανεπαρκούς υπηρεσίας"||decision.value==="Δεν ολοκληρώθηκε λόγω ελλιπών δικαιολογητικών"))decision.value="Μπορεί να προχωρήσει";
-        }
+        if(blocked){if(status)status.value="Δεν εξετάστηκε";if(grade)grade.value="Δεν βαθμολογήθηκε";if(decision)decision.value="Δεν εξετάστηκε λόγω ανεπαρκούς υπηρεσίας";if(warning){warning.style.display="block";warning.textContent="Η απαιτούμενη υπηρεσία δεν έχει συμπληρωθεί. Η εξέταση δεν μπορεί να ολοκληρωθεί."}}
+        else if(docs==="Ελλιπή"){if(status)status.value="Δεν εξετάστηκε";if(grade)grade.value="Δεν βαθμολογήθηκε";if(decision)decision.value="Δεν ολοκληρώθηκε λόγω ελλιπών δικαιολογητικών";if(warning){warning.style.display="block";warning.textContent="Τα δικαιολογητικά είναι ελλιπή. Η εξέταση δεν ολοκληρώνεται μέχρι να συμπληρωθούν."}}
+        else{if(warning){warning.style.display="none";warning.textContent=""}if(status&&status.value==="Δεν εξετάστηκε")status.value="Εξετάστηκε - Επιτυχής";if(decision&&(decision.value==="Σε αναμονή"||decision.value==="Δεν εξετάστηκε λόγω ανεπαρκούς υπηρεσίας"||decision.value==="Δεν ολοκληρώθηκε λόγω ελλιπών δικαιολογητικών"))decision.value="Μπορεί να προχωρήσει"}
     }
-
     function buildRecord(){
-        const reg=val("registryNumber"),name=val("fullName"),text=resultText();
-        if(!reg||!name||!text)return null;
-        syncExaminationFields();const n=now(),docs=val("documentsStatus")||"Δεν έχει ελεγχθεί",blocked=isServiceBlocked(text);
-        const status=blocked||docs==="Ελλιπή"?"Δεν εξετάστηκε":val("examinationStatus")||"Δεν εξετάστηκε";
-        const grade=blocked||docs!=="Εντάξει"?"Δεν βαθμολογήθηκε":val("examGrade")||"Δεν βαθμολογήθηκε";
-        let decision=val("finalDecision")||"Σε αναμονή";
-        if(blocked)decision="Δεν εξετάστηκε λόγω ανεπαρκούς υπηρεσίας";else if(docs==="Ελλιπή")decision="Δεν ολοκληρώθηκε λόγω ελλιπών δικαιολογητικών";
-        return {id:Date.now(),timestamp:n.iso,date:n.date,time:n.time,registryNumber:reg,fullName:name,kep:currentKep()?"ΚΕΠ "+currentKep():"",service:val("serviceKep1")||val("serviceKep2")||"",serviceKep1:val("serviceKep1"),serviceKep2:val("serviceKep2"),documents:docs,examinationStatus:status,grade:grade,finalDecision:decision,result:text,success:status==="Εξετάστηκε - Επιτυχής"&&decision==="Μπορεί να προχωρήσει",trips:[]};
-    }
-
+        const reg=val("registryNumber"),name=val("fullName"),text=resultText();if(!reg||!name||!text)return null;syncExaminationFields();const n=now(),docs=val("documentsStatus")||"Δεν έχει ελεγχθεί",blocked=isServiceBlocked(text);const status=blocked||docs==="Ελλιπή"?"Δεν εξετάστηκε":val("examinationStatus")||"Δεν εξετάστηκε";const grade=blocked||docs!=="Εντάξει"?"Δεν βαθμολογήθηκε":val("examGrade")||"Δεν βαθμολογήθηκε";let decision=val("finalDecision")||"Σε αναμονή";if(blocked)decision="Δεν εξετάστηκε λόγω ανεπαρκούς υπηρεσίας";else if(docs==="Ελλιπή")decision="Δεν ολοκληρώθηκε λόγω ελλιπών δικαιολογητικών";return {id:Date.now(),timestamp:n.iso,date:n.date,time:n.time,registryNumber:reg,fullName:name,kep:currentKep()?"ΚΕΠ "+currentKep():"",service:val("serviceKep1")||val("serviceKep2")||"",serviceKep1:val("serviceKep1"),serviceKep2:val("serviceKep2"),documents:docs,examinationStatus:status,grade:grade,finalDecision:decision,result:text,success:status==="Εξετάστηκε - Επιτυχής"&&decision==="Μπορεί να προχωρήσει",trips:Array.isArray(window.trips)?window.trips:[]}}
     function archiveCurrent(){const r=buildRecord();if(!r){alert("Συμπλήρωσε Μητρώο, Ονοματεπώνυμο και ολοκλήρωσε πρώτα τον υπολογισμό.");return}const a=readArchive();a.unshift(r);saveArchive(a);alert("Η εξέταση καταχωρήθηκε στο Αρχείο Εξέτασης ΚΕΠ.")}
-    function printCurrent(){if(!resultText()){alert("Κάνε πρώτα τον Υπολογισμό Υπηρεσίας.");return}syncExaminationFields();window.print()}
+    function pdfElement(element,filename){if(!element)return;if(window.html2pdf){const opt={margin:[8,8,8,8],filename:filename,image:{type:"jpeg",quality:0.98},html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff"},jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},pagebreak:{mode:["css","legacy"]}};window.html2pdf().set(opt).from(element).save()}else{alert("Η δημιουργία PDF δεν φόρτωσε. Θα ανοίξει η εκτύπωση του browser.");window.print()}}
+    function printCurrent(){
+        const r=resultText();if(!r){alert("Κάνε πρώτα τον Υπολογισμό Υπηρεσίας.");return}syncExaminationFields();const n=now(),wrap=document.createElement("div");wrap.style.cssText="background:#fff;color:#111;padding:8px;font-family:Arial,sans-serif;font-size:12px;line-height:1.4;position:absolute;left:-10000px;top:0;width:190mm;";
+        const cell="border:1px solid #bbb;padding:7px;text-align:left;";
+        wrap.innerHTML='<h1 style="text-align:center;font-size:20px;margin:0 0 4px;">Αρχείο Εξέτασης ΚΕΠ</h1><div style="text-align:center;color:#666;margin-bottom:14px;">SeaService Calculator</div><table style="width:100%;border-collapse:collapse;margin-bottom:10px;"><tr><th style="'+cell+'">Ημερομηνία καταχώρισης</th><th style="'+cell+'">Ώρα καταχώρισης</th></tr><tr><td style="'+cell+'">'+n.date+'</td><td style="'+cell+'">'+n.time+'</td></tr><tr><th style="'+cell+'">Αριθμός Μητρώου</th><th style="'+cell+'">Ονοματεπώνυμο</th></tr><tr><td style="'+cell+'">'+val("registryNumber")+'</td><td style="'+cell+'">'+val("fullName")+'</td></tr><tr><th style="'+cell+'">ΚΕΠ</th><th style="'+cell+'">Δικαιολογητικά</th></tr><tr><td style="'+cell+'">'+(currentKep()?"ΚΕΠ "+currentKep():"Δεν έχει καταχωρηθεί")+'</td><td style="'+cell+'">'+(val("documentsStatus")||"Δεν έχει ελεγχθεί")+'</td></tr><tr><th style="'+cell+'">Κατάσταση εξέτασης</th><th style="'+cell+'">Βαθμός εξέτασης</th></tr><tr><td style="'+cell+'">'+(val("examinationStatus")||"Δεν εξετάστηκε")+'</td><td style="'+cell+'">'+(val("examGrade")||"Δεν βαθμολογήθηκε")+'</td></tr><tr><th style="'+cell+'">Τελική απόφαση</th><th style="'+cell+'">Υπηρεσία</th></tr><tr><td style="'+cell+'">'+(val("finalDecision")||"Σε αναμονή")+'</td><td style="'+cell+'">'+(val("serviceKep1")||val("serviceKep2")||"Δεν έχει καταχωρηθεί")+'</td></tr></table><div style="border:1px solid #bbb;padding:9px;"><strong>Αποτέλεσμα / Παρατηρήσεις</strong><div style="white-space:pre-wrap;margin-top:6px;">'+r.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+'</div></div>';
+        document.body.appendChild(wrap);pdfElement(wrap,"Arxeio-Eksetasis-KEP-"+(val("registryNumber")||"x")+".pdf");setTimeout(()=>wrap.remove(),2000);
+    }
     function emailCurrent(){const r=buildRecord();if(!r){alert("Συμπλήρωσε Μητρώο, Ονοματεπώνυμο και ολοκλήρωσε πρώτα τον υπολογισμό.");return}const subject=encodeURIComponent("Αρχείο Εξέτασης ΚΕΠ — "+r.fullName+" — "+r.registryNumber),body=encodeURIComponent("Αρχείο Εξέτασης ΚΕΠ\n\nΜητρώο: "+r.registryNumber+"\nΟνοματεπώνυμο: "+r.fullName+"\nΚΕΠ: "+r.kep+"\nΗμερομηνία: "+r.date+"\nΏρα: "+r.time+"\nΥπηρεσία ΚΕΠ 1: "+(r.serviceKep1||"—")+"\nΥπηρεσία ΚΕΠ 2: "+(r.serviceKep2||"—")+"\nΔικαιολογητικά: "+r.documents+"\nΚατάσταση εξέτασης: "+r.examinationStatus+"\nΒαθμός: "+r.grade+"\nΤελική απόφαση: "+r.finalDecision+"\n\n"+r.result);window.location.href="mailto:?subject="+subject+"&body="+body}
-
-    function addActions(){
-        if(document.getElementById("archiveActions"))return;const result=document.getElementById("result");if(!result)return;
-        const p=document.createElement("div");p.id="archiveActions";p.style.cssText="display:flex;gap:8px;flex-wrap:wrap;margin-top:15px";
-        p.innerHTML='<button type="button" id="printResult">🖨️ Εκτύπωση / PDF</button><button type="button" id="emailResult">✉️ Αποστολή με email</button><button type="button" id="saveArchive">📁 Καταχώριση στο Αρχείο</button>';
-        result.parentNode.insertBefore(p,result.nextSibling);document.getElementById("printResult").onclick=printCurrent;document.getElementById("emailResult").onclick=emailCurrent;document.getElementById("saveArchive").onclick=archiveCurrent;
-    }
-
-    function init(){
-        addActions();const reg=document.getElementById("registryNumber");if(reg){reg.addEventListener("blur",showNameFromArchive);reg.addEventListener("input",showNameFromArchive)}
-        const calculate=document.getElementById("calculate");if(calculate)calculate.addEventListener("click",()=>setTimeout(()=>{addActions();syncExaminationFields()},100));
-        ["documentsStatus","examinationStatus","examGrade","finalDecision","serviceKep1","serviceKep2"].forEach(id=>{const e=document.getElementById(id);if(e)e.addEventListener("change",()=>{if(id==="documentsStatus")syncExaminationFields()})});
-        document.querySelectorAll('input[name="kep"]').forEach(r=>r.addEventListener("change",()=>setTimeout(ensurePanel,50)));
-    }
+    function addActions(){if(document.getElementById("archiveActions"))return;const result=document.getElementById("result");if(!result)return;const p=document.createElement("div");p.id="archiveActions";p.style.cssText="display:flex;gap:8px;flex-wrap:wrap;margin-top:15px";p.innerHTML='<button type="button" id="printResult">📄 Δημιουργία PDF</button><button type="button" id="emailResult">✉️ Αποστολή με email</button><button type="button" id="saveArchive">📁 Καταχώριση στο Αρχείο</button>';result.parentNode.insertBefore(p,result.nextSibling);document.getElementById("printResult").onclick=printCurrent;document.getElementById("emailResult").onclick=emailCurrent;document.getElementById("saveArchive").onclick=archiveCurrent}
+    function init(){addActions();const reg=document.getElementById("registryNumber");if(reg){reg.addEventListener("blur",showNameFromArchive);reg.addEventListener("input",showNameFromArchive)}const calculate=document.getElementById("calculate");if(calculate)calculate.addEventListener("click",()=>setTimeout(()=>{addActions();syncExaminationFields()},100));["documentsStatus","examinationStatus","examGrade","finalDecision","serviceKep1","serviceKep2"].forEach(id=>{const e=document.getElementById(id);if(e)e.addEventListener("change",()=>{if(id==="documentsStatus")syncExaminationFields()})});document.querySelectorAll('input[name="kep"]').forEach(r=>r.addEventListener("change",()=>setTimeout(ensurePanel,50)))}
     if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();
