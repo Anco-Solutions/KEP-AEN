@@ -3,23 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SeaService Calc</title>
+<title>SeaService Calculator</title>
 <link rel="stylesheet" href="style.css">
 <link rel="apple-touch-icon" href="sea-service-icon.PNG">
 <style>
-@media print {
-    body { background:#fff !important; }
-    .container { max-width:none !important; box-shadow:none !important; }
-    input, select, button, label input, #archiveActions, .archive-link, hr { display:none !important; }
-    footer { display:block !important; }
-}
+@media print { body{background:#fff!important}.container{max-width:none!important;box-shadow:none!important}input,select,button,label input,#archiveActions,.archive-link,hr{display:none!important}footer{display:block!important} }
+.archive-link{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:9px;text-decoration:none;font-weight:700;border:1px solid rgba(0,0,0,.12);background:#f5f7f9;color:inherit;box-shadow:0 2px 5px rgba(0,0,0,.08);transition:transform .15s ease,box-shadow .15s ease}.archive-link:active{transform:scale(.98);box-shadow:0 1px 3px rgba(0,0,0,.08)}
 </style>
 </head>
 <body>
 <div class="container">
 <h1>SeaService Calculator</h1>
 <div id="calculationDateTime" style="margin-top:25px;margin-bottom:15px;font-weight:bold;">Ημερομηνία &amp; ώρα:</div>
-<div style="text-align:center;margin:10px 0 22px;"><a href="archive.html" class="archive-link" style="display:inline-block;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:bold;">📁 Αρχείο Εξέτασης ΚΕΠ</a></div>
+<div style="text-align:center;margin:10px 0 22px;"><a href="archive.html" class="archive-link" aria-label="Άνοιγμα Αρχείου Εξέτασης ΚΕΠ">📁 <span>Αρχείο Εξέτασης ΚΕΠ</span> →</a></div>
 <label><strong>Μητρώο εξεταζόμενου</strong></label>
 <input type="text" id="registryNumber" inputmode="numeric" placeholder="Αριθμός Μητρώου">
 <label><strong>Ονοματεπώνυμο εξεταζόμενου</strong></label>
@@ -40,7 +36,7 @@
 <h2>Ταξίδια</h2><div id="tripList">Δεν υπάρχουν ακόμη ταξίδια.</div>
 <button id="calculate">Υπολογισμός Υπηρεσίας</button>
 <div id="result"></div>
-<div style="margin-top:20px;text-align:center;"><a href="archive.html" class="archive-link" style="display:inline-block;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:bold;">📁 Αρχείο Εξέτασης ΚΕΠ</a></div>
+<div style="margin-top:20px;text-align:center;"><a href="archive.html" class="archive-link" aria-label="Άνοιγμα Αρχείου Εξέτασης ΚΕΠ">📁 <span>Αρχείο Εξέτασης ΚΕΠ</span> →</a></div>
 </div>
 </div>
 <script>
