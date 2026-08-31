@@ -6,16 +6,18 @@
 <title>SeaService Calculator — Αρχείο Εξέτασης ΚΕΠ</title>
 <link rel="stylesheet" href="style.css">
 <style>
-.archive-page{max-width:1100px;margin:30px auto;padding:20px}.archive-page h1{text-align:center}.filters{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}.filters input{padding:12px;border:1px solid #ccc;border-radius:8px}.filters button{padding:12px 16px;border:0;border-radius:8px;cursor:pointer}.archive-table{width:100%;border-collapse:collapse;background:#fff}.archive-table th,.archive-table td{padding:10px;border:1px solid #ddd;text-align:left}.archive-table th{background:#f5f5f5}.empty{text-align:center;padding:30px;background:#fff;border-radius:10px}.success{font-weight:bold}.failed{font-weight:bold}.footer{text-align:center;margin-top:30px;font-size:13px;color:#777}.footer em{font-style:italic}
+.archive-page{max-width:1100px;margin:30px auto;padding:20px}.archive-page h1{text-align:center}.filters{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}.filters input{padding:12px;border:1px solid #ccc;border-radius:8px;flex:1;min-width:180px}.filters button,.back{padding:12px 16px;border:0;border-radius:8px;cursor:pointer;text-decoration:none}.archive-table{width:100%;border-collapse:collapse;background:#fff}.archive-table th,.archive-table td{padding:10px;border:1px solid #ddd;text-align:left;vertical-align:top}.archive-table th{background:#f5f5f5}.empty{text-align:center;padding:30px;background:#fff;border-radius:10px}.success{font-weight:bold}.failed{font-weight:bold}.footer{text-align:center;margin-top:30px;font-size:13px;color:#777}.footer em{font-style:italic}.topbar{text-align:center;margin-bottom:20px}
+@media(max-width:700px){.archive-table{font-size:12px}.archive-table th,.archive-table td{padding:7px}.archive-page{padding:12px;margin:10px auto}}
 </style>
 </head>
 <body>
 <main class="archive-page">
-<h1>SeaService Calculator</h1>
-<h2>Αρχείο Εξέτασης ΚΕΠ</h2>
-<p>Αναζήτηση με αριθμό μητρώου, ημερομηνία ή συνδυασμό και των δύο.</p>
+<div class="topbar"><a href="index.html" class="back">← SeaService Calculator</a></div>
+<h1>Αρχείο Εξέτασης ΚΕΠ</h1>
+<p>Αναζήτηση παλαιών εξετάσεων με <strong>Μητρώο</strong>, <strong>Ονοματεπώνυμο</strong>, <strong>Ημερομηνία</strong> ή συνδυασμό τους.</p>
 <div class="filters">
 <input id="registryFilter" placeholder="Αριθμός Μητρώου" inputmode="numeric">
+<input id="nameFilter" placeholder="Ονοματεπώνυμο">
 <input id="dateFilter" type="date">
 <button type="button" id="searchArchive">🔎 Αναζήτηση</button>
 <button type="button" id="clearArchive">Καθαρισμός</button>
@@ -26,8 +28,9 @@
 <script>
 const STORAGE_KEY='seaServiceArchive';
 function records(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch(e){return[]}}
-function render(){const reg=document.getElementById('registryFilter').value.trim();const date=document.getElementById('dateFilter').value;const data=records().filter(x=>(!reg||String(x.registryNumber||'').includes(reg))&&(!date||x.date===date));const box=document.getElementById('archiveResults');if(!data.length){box.className='empty';box.textContent='Δεν βρέθηκαν καταχωρήσεις.';return}box.className='';let html='<table class="archive-table"><thead><tr><th>Ημερομηνία</th><th>Μητρώο</th><th>Ονοματεπώνυμο</th><th>ΚΕΠ</th><th>Υπηρεσία</th><th>Δικαιολογητικά</th><th>Αποτέλεσμα</th></tr></thead><tbody>';data.forEach(x=>{html+=`<tr><td>${x.date||''}</td><td>${x.registryNumber||''}</td><td>${x.fullName||''}</td><td>${x.kep||''}</td><td>${x.service||''}</td><td>${x.documents||''}</td><td class="${x.success?'success':'failed'}">${x.result||''}</td></tr>`});box.innerHTML=html+'</tbody></table>'}
-document.getElementById('searchArchive').onclick=render;document.getElementById('clearArchive').onclick=()=>{document.getElementById('registryFilter').value='';document.getElementById('dateFilter').value='';render()};render();
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function render(){const reg=document.getElementById('registryFilter').value.trim().toLowerCase();const name=document.getElementById('nameFilter').value.trim().toLowerCase();const date=document.getElementById('dateFilter').value;const data=records().filter(x=>(!reg||String(x.registryNumber||'').toLowerCase().includes(reg))&&(!name||String(x.fullName||'').toLowerCase().includes(name))&&(!date||x.date===date));const box=document.getElementById('archiveResults');if(!data.length){box.className='empty';box.textContent='Δεν βρέθηκαν καταχωρήσεις.';return}box.className='';let html='<table class="archive-table"><thead><tr><th>Ημερομηνία</th><th>Μητρώο</th><th>Ονοματεπώνυμο</th><th>ΚΕΠ</th><th>Υπηρεσία</th><th>Δικαιολογητικά</th><th>Αποτέλεσμα / Παρατηρήσεις</th></tr></thead><tbody>';data.forEach(x=>{html+=`<tr><td>${esc(x.date)}</td><td>${esc(x.registryNumber)}</td><td>${esc(x.fullName)}</td><td>${esc(x.kep)}</td><td>${esc(x.service)}</td><td>${esc(x.documents)}</td><td class="${x.success?'success':'failed'}">${esc(x.result)}</td></tr>`});box.innerHTML=html+'</tbody></table>'}
+document.getElementById('searchArchive').onclick=render;document.getElementById('clearArchive').onclick=()=>{document.getElementById('registryFilter').value='';document.getElementById('nameFilter').value='';document.getElementById('dateFilter').value='';render()};render();
 </script>
 </body>
 </html>
