@@ -7,8 +7,9 @@
 <link rel="stylesheet" href="style.css">
 <link rel="apple-touch-icon" href="sea-service-icon.PNG">
 <style>
-@media print { body{background:#fff!important}.container{max-width:none!important;box-shadow:none!important}input,select,button,label input,#archiveActions,.archive-link,hr{display:none!important}footer{display:block!important} }
+@media print { body{background:#fff!important}.container{max-width:none!important;box-shadow:none!important}input,select,button,label input,#archiveActions,.archive-link,hr,#examinationPanel{display:none!important}footer{display:block!important} }
 .archive-link{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:9px;text-decoration:none;font-weight:700;border:1px solid rgba(0,0,0,.12);background:#f5f7f9;color:inherit;box-shadow:0 2px 5px rgba(0,0,0,.08);transition:transform .15s ease,box-shadow .15s ease}.archive-link:active{transform:scale(.98);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.examination-panel{display:none;background:rgba(255,255,255,.9);padding:16px;margin:18px 0;border-radius:10px;border:1px solid rgba(0,0,0,.08);box-shadow:0 2px 8px rgba(0,0,0,.04)}.examination-panel h3{margin:0 0 12px}.exam-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.exam-grid label{display:block;font-weight:600}.exam-grid input,.exam-grid select{width:100%;box-sizing:border-box;margin-top:5px}.exam-note{font-size:12px;color:#666;margin-top:8px}.exam-warning{margin-top:12px;padding:10px;border-radius:8px;background:#fff5f5;color:#9b1c1c;font-weight:700;display:none}@media(max-width:700px){.exam-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -35,6 +36,19 @@
 <button id="addTrip">Προσθήκη Ταξιδιού</button>
 <h2>Ταξίδια</h2><div id="tripList">Δεν υπάρχουν ακόμη ταξίδια.</div>
 <button id="calculate">Υπολογισμός Υπηρεσίας</button>
+<div id="examinationPanel" class="examination-panel">
+<h3>Στοιχεία Εξέτασης ΚΕΠ</h3>
+<div class="exam-grid">
+<label>Υπηρεσία ΚΕΠ 1<input type="text" id="serviceKep1" placeholder="π.χ. Αρχική υπηρεσία / ειδικότητα"></label>
+<label>Υπηρεσία ΚΕΠ 2<input type="text" id="serviceKep2" placeholder="π.χ. Προηγούμενη υπηρεσία / ειδικότητα"></label>
+<label>Δικαιολογητικά<select id="documentsStatus"><option value="Δεν έχει ελεγχθεί">Δεν έχει ελεγχθεί</option><option value="Εντάξει">Εντάξει</option><option value="Ελλιπή">Ελλιπή</option></select></label>
+<label>Κατάσταση εξέτασης<select id="examinationStatus"><option value="Δεν εξετάστηκε">Δεν εξετάστηκε</option><option value="Εξετάστηκε - Επιτυχής">Εξετάστηκε - Επιτυχής</option><option value="Εξετάστηκε - Ανεπιτυχής">Εξετάστηκε - Ανεπιτυχής</option></select></label>
+<label>Βαθμός εξέτασης<select id="examGrade"><option value="Δεν βαθμολογήθηκε">Δεν βαθμολογήθηκε</option><option value="Καλώς (5,00–6,49)">Καλώς (5,00–6,49)</option><option value="Λίαν Καλώς (6,50–8,49)">Λίαν Καλώς (6,50–8,49)</option><option value="Άριστα (8,50–10,00)">Άριστα (8,50–10,00)</option><option value="Ανεπιτυχώς (0–4,99)">Ανεπιτυχώς (0–4,99)</option></select></label>
+<label>Τελική απόφαση<select id="finalDecision"><option value="Σε αναμονή">Σε αναμονή</option><option value="Μπορεί να προχωρήσει">Μπορεί να προχωρήσει</option><option value="Δεν μπορεί να προχωρήσει">Δεν μπορεί να προχωρήσει</option><option value="Δεν εξετάστηκε λόγω ανεπαρκούς υπηρεσίας">Δεν εξετάστηκε λόγω ανεπαρκούς υπηρεσίας</option><option value="Δεν ολοκληρώθηκε λόγω ελλιπών δικαιολογητικών">Δεν ολοκληρώθηκε λόγω ελλιπών δικαιολογητικών</option></select></label>
+</div>
+<div class="exam-note">Η κλίμακα ακολουθεί τη συνήθη πανεπιστημιακή κλίμακα 0–10: Καλώς 5,00–6,49 · Λίαν Καλώς 6,50–8,49 · Άριστα 8,50–10,00. citeturn0search0turn0search15</div>
+<div id="examWarning" class="exam-warning"></div>
+</div>
 <div id="result"></div>
 <div style="margin-top:20px;text-align:center;"><a href="archive.html" class="archive-link" aria-label="Άνοιγμα Αρχείου Εξέτασης ΚΕΠ">📁 <span>Αρχείο Εξέτασης ΚΕΠ</span> →</a></div>
 </div>
@@ -44,7 +58,7 @@ document.querySelectorAll('input[name="kep"]').forEach(function(radio){radio.add
 function updateDateTime(){const e=document.getElementById("calculationDateTime");if(!e)return;const n=new Date();e.textContent="Ημερ/νία & ώρα: "+n.toLocaleDateString("el-GR")+" "+n.toLocaleTimeString("el-GR",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});}updateDateTime();setInterval(updateDateTime,1000);window.addEventListener("beforeprint",updateDateTime);
 </script>
 <script src="app.js?v=4"></script>
-<script src="enhancements.js?v=1"></script>
+<script src="enhancements.js?v=2"></script>
 <footer style="text-align:center;margin:30px 0 15px;font-size:13px;color:#777;"><div>© 2026 SeaService Calculator. All rights reserved.</div><div>Σχεδιασμός &amp; Ανάπτυξη: <em>Tassos Ballas</em></div></footer>
 </body>
 </html>
