@@ -17,445 +17,129 @@
     href="style.css"
 >
 
-
 <link rel="apple-touch-icon" href="sea-service-icon.PNG">
 
-    
 </head>
-
 
 <body>
 
-
 <div class="container">
 
+<h1>SeaService Calculator</h1>
 
-<h1>
-    SeaService Calculator
-</h1>
-
-
-<!-- ==========================================
-     ΕΠΙΛΟΓΗ ΚΕΠ
-     ========================================== -->
-
-<div
-    id="calculationDateTime"
-    style="
-        
-        margin-top:25px;
-        margin-bottom:15px;
-        font-weight:bold;
-    "
->
+<div id="calculationDateTime" style="margin-top:25px;margin-bottom:15px;font-weight:bold;">
     Ημερομηνία &amp; ώρα:
 </div>
 
-<label>
-    <strong>Μητρώο εξεταζόμενου</strong>
-</label>
+<label><strong>Μητρώο εξεταζόμενου</strong></label>
 
-<input
-    type="text"
-    id="registryNumber"
-    inputmode="numeric"
-    placeholder="Αριθμός Μητρώου"
->
+<input type="text" id="registryNumber" inputmode="numeric" placeholder="Αριθμός Μητρώου">
 
-<p>
-    <strong>Επιλέξτε ΚΕΠ</strong>
-</p>
-
+<p><strong>Επιλέξτε ΚΕΠ</strong></p>
 
 <label>
-
-    <input
-        type="radio"
-        name="kep"
-        value="1"
-
-    >
-
+    <input type="radio" name="kep" value="1">
     ΚΕΠ 1
-
 </label>
-
 
 <label style="margin-left:1px;">
-
-    <input
-        type="radio"
-        name="kep"
-        value="2"
-    >
-
+    <input type="radio" name="kep" value="2">
     ΚΕΠ 2
-
 </label>
-
 
 <hr>
 
-
-<!-- ==========================================
-     ΥΠΗΡΕΣΙΑ ΚΕΠ 1
-     ΓΙΑ ΤΟ ΙΔΙΟ ΤΟ ΚΕΠ 1
-     ========================================== -->
-
-<div
-    id="kep1CurrentService"
-    style="
-        display:none;
-        background:white;
-        padding:15px;
-        margin-bottom:15px;
-        border-radius:8px;
-    "
->
-
-    <h3 style="margin-top:0;">
-        Υπηρεσία ΚΕΠ 1
-    </h3>
-
-
-    <p>
-        Συμπληρώστε την υπηρεσία που έχει πραγματοποιηθεί
-        στο ΚΕΠ 1.
-    </p>
-
+<div id="kep1CurrentService" style="display:none;background:white;padding:15px;margin-bottom:15px;border-radius:8px;">
+    <h3 style="margin-top:0;">Υπηρεσία ΚΕΠ 1</h3>
+    <p>Συμπληρώστε την υπηρεσία που έχει πραγματοποιηθεί στο ΚΕΠ 1.</p>
 </div>
 
-
-<!-- ==========================================
-     ΥΠΗΡΕΣΙΑ ΚΕΠ 1
-     ΠΟΥ ΕΙΧΕ ΠΡΑΓΜΑΤΟΠΟΙΗΘΕΙ ΠΡΙΝ ΑΠΟ ΤΟ ΚΕΠ 2
-     ΕΜΦΑΝΙΖΕΤΑΙ ΜΟΝΟ ΣΤΟ ΚΕΠ 2
-     ========================================== -->
-
-<div
-    id="kep1PreviousService"
-    style="
-        display:none;
-        background:white;
-        padding:15px;
-        margin-bottom:15px;
-        border-radius:8px;
-    "
->
-
-    <h3 style="margin-top:0;">
-        Υπηρεσία ΚΕΠ 1
-    </h3>
-
-
-    <p>
-    Συμπληρώστε την υπηρεσία που έχει πραγματοποιηθεί για το ΚΕΠ 1.
-</p>
-
-
-    <div style="
-        display:flex;
-        gap:15px;
-        flex-wrap:wrap;
-    ">
-
-
+<div id="kep1PreviousService" style="display:none;background:white;padding:15px;margin-bottom:15px;border-radius:8px;">
+    <h3 style="margin-top:0;">Υπηρεσία ΚΕΠ 1</h3>
+    <p>Συμπληρώστε την υπηρεσία που έχει πραγματοποιηθεί για το ΚΕΠ 1.</p>
+    <div style="display:flex;gap:15px;flex-wrap:wrap;">
         <label>
-
             Μήνες
-
-            <input
-                type="number"
-                id="kep1Months"
-                min="0"
-                step="1"
-                value="0"
-                style="
-                    width:80px;
-                    margin-left:5px;
-                "
-            >
-
+            <input type="number" id="kep1Months" min="0" step="1" value="0" style="width:80px;margin-left:5px;">
         </label>
-
-
         <label>
-
             Ημέρες
-
-            <input
-                type="number"
-                id="kep1Days"
-                min="0"
-                max="29"
-                step="1"
-                value="0"
-                style="
-                    width:80px;
-                    margin-left:5px;
-                "
-            >
-
+            <input type="number" id="kep1Days" min="0" max="29" step="1" value="0" style="width:80px;margin-left:5px;">
         </label>
-
-
     </div>
-
-
-    <div
-        id="kep1InputStatus"
-        style="
-            margin-top:12px;
-        "
-    ></div>
-
+    <div id="kep1InputStatus" style="margin-top:12px;"></div>
 </div>
 
-
-<!-- ==========================================
-     ΥΠΗΡΕΣΙΑ ΚΕΠ 2
-     ΕΜΦΑΝΙΖΕΤΑΙ ΜΟΝΟ ΣΤΟ ΚΕΠ 2
-     ========================================== -->
-
-<div
-    id="kep2Section"
-    style="
-        display:none;
-        background:white;
-        padding:15px;
-        margin-bottom:15px;
-        border-radius:8px;
-    "
->
-
-    <h3 style="margin-top:0;">
-        Υπηρεσία ΚΕΠ 2
-    </h3>
-
-
-    <p>
-    Συμπληρώστε την υπηρεσία που έχει πραγματοποιηθεί για το ΚΕΠ 2.
-</p>
-
+<div id="kep2Section" style="display:none;background:white;padding:15px;margin-bottom:15px;border-radius:8px;">
+    <h3 style="margin-top:0;">Υπηρεσία ΚΕΠ 2</h3>
+    <p>Συμπληρώστε την υπηρεσία που έχει πραγματοποιηθεί για το ΚΕΠ 2.</p>
 </div>
 
 <div id="tripForm" style="display:none;">
 
-<!-- ==========================================
-     ΗΜΕΡΟΜΗΝΙΕΣ
-     ========================================== -->
+<label>Ημερομηνία Ναυτολόγησης</label>
+<input type="date" id="embark">
 
-<label>
-    Ημερομηνία Ναυτολόγησης
-</label>
+<label>Ημερομηνία Απόλυσης</label>
+<input type="date" id="discharge">
 
-
-<input
-    type="date"
-    id="embark"
->
-
-
-<label>
-    Ημερομηνία Απόλυσης
-</label>
-
-
-<input
-    type="date"
-    id="discharge"
->
-
-
-<!-- ==========================================
-     ΒΑΘΜΟΣ / ΕΙΔΙΚΟΤΗΤΑ
-     ========================================== -->
-
-<label>
-    Βαθμός
-</label>
-
-
+<label>Βαθμός</label>
 <select id="rank">
-
-
-    <option value="Δόκιμος Μηχανικός">
-        Δόκιμος Μηχανικός
-    </option>
-
-
-    <option value="Καθαριστής">
-        Καθαριστής
-    </option>
-
-
-    <option value="Μηχανοδηγός / Λιπαντής">
-        Μηχανοδηγός / Λιπαντής
-    </option>
-
-
-    <option value="Βοηθός Ηλεκτρολόγου">
-        Βοηθός Ηλεκτρολόγου
-    </option>
-
-
-    <option value="Δόκιμος Ηλεκτρολόγος">
-        Δόκιμος Ηλεκτρολόγος
-    </option>
-
-
+    <option value="Δόκιμος Μηχανικός">Δόκιμος Μηχανικός</option>
+    <option value="Καθαριστής">Καθαριστής</option>
+    <option value="Μηχανοδηγός / Λιπαντής">Μηχανοδηγός / Λιπαντής</option>
+    <option value="Βοηθός Ηλεκτρολόγου">Βοηθός Ηλεκτρολόγου</option>
+    <option value="Δόκιμος Ηλεκτρολόγος">Δόκιμος Ηλεκτρολόγος</option>
 </select>
 
+<div id="kepStatus" style="display:none;"></div>
 
-<!-- ==========================================
-     ΠΑΛΙΟ ΠΛΑΙΣΙΟ ΚΕΠ
-     ΚΡΥΜΜΕΝΟ
-     ========================================== -->
+<button id="addTrip">Προσθήκη Ταξιδιού</button>
 
-<div
-    id="kepStatus"
-    style="
-        display:none;
-    "
-></div>
+<h2>Ταξίδια</h2>
+<div id="tripList">Δεν υπάρχουν ακόμη ταξίδια.</div>
 
-
-<!-- ==========================================
-     ΠΡΟΣΘΗΚΗ ΤΑΞΙΔΙΟΥ
-     ========================================== -->
-
-<button id="addTrip">
-
-    Προσθήκη Ταξιδιού
-
-</button>
-
-
-<!-- ==========================================
-     ΛΙΣΤΑ ΤΑΞΙΔΙΩΝ
-     ========================================== -->
-
-<h2>
-
-    Ταξίδια
-
-</h2>
-
-
-<div id="tripList">
-
-    Δεν υπάρχουν ακόμη ταξίδια.
-
-</div>
-
-
-<!-- ==========================================
-     ΥΠΟΛΟΓΙΣΜΟΣ
-     ========================================== -->
-
-<button id="calculate">
-
-    Υπολογισμός Υπηρεσίας
-
-</button>
-
-
-<!-- ==========================================
-     ΑΠΟΤΕΛΕΣΜΑ
-     ========================================== -->
+<button id="calculate">Υπολογισμός Υπηρεσίας</button>
 
 <div id="result"></div>
 
-
+<!-- ΑΡΧΕΙΟ ΕΞΕΤΑΣΗΣ ΚΕΠ -->
+<div style="margin-top:20px;text-align:center;">
+    <a href="archive.html" class="archive-link" style="display:inline-block;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:bold;">
+        📁 Αρχείο Εξέτασης ΚΕΠ
+    </a>
 </div>
 
 </div>
-
-
-<!-- ==========================================
-     ΕΜΦΑΝΙΣΗ / ΑΠΟΚΡΥΨΗ ΕΝΟΤΗΤΩΝ ΚΕΠ
-     ========================================== -->
+</div>
 
 <script>
+document.querySelectorAll('input[name="kep"]').forEach(function (radio) {
+    radio.addEventListener("change", function () {
+        const kep1Current = document.getElementById("kep1CurrentService");
+        const kep1Previous = document.getElementById("kep1PreviousService");
+        const kep2Section = document.getElementById("kep2Section");
+        const tripForm = document.getElementById("tripForm");
 
-document
-    .querySelectorAll('input[name="kep"]')
-    .forEach(function (radio) {
-
-        radio.addEventListener(
-            "change",
-            function () {
-
-                const kep1Current =
-                    document.getElementById(
-                        "kep1CurrentService"
-                    );
-
-                const kep1Previous =
-                    document.getElementById(
-                        "kep1PreviousService"
-                    );
-
-                const kep2Section =
-                    document.getElementById(
-                        "kep2Section"
-                    );
-
-const tripForm =
-    document.getElementById(
-        "tripForm"
-    );
-
-                if (radio.value === "1") {
-
-                    // ΚΕΠ 1
-
-                    kep1Current.style.display =
-                        "block";
-
-                    kep1Previous.style.display =
-                        "none";
-
-                    kep2Section.style.display =
-                        "none";
-                        
-tripForm.style.display =
-    "block";
-
-                } else {
-
-                    // ΚΕΠ 2
-
-                    kep1Current.style.display =
-                        "none";
-
-                    kep1Previous.style.display =
-                        "block";
-
-                    kep2Section.style.display =
-                        "block";
-                        
-                        
-tripForm.style.display =
-    "block";
-                }
-
-            }
-
-        );
-
+        if (radio.value === "1") {
+            kep1Current.style.display = "block";
+            kep1Previous.style.display = "none";
+            kep2Section.style.display = "none";
+        } else {
+            kep1Current.style.display = "none";
+            kep1Previous.style.display = "block";
+            kep2Section.style.display = "block";
+        }
+        tripForm.style.display = "block";
     });
-
+});
 </script>
 
 <script>
 function updateDateTime() {
     const element = document.getElementById("calculationDateTime");
-
     if (!element) return;
-
     const now = new Date();
-
     const date = now.toLocaleDateString("el-GR");
     const time = now.toLocaleTimeString("el-GR", {
         hour: "2-digit",
@@ -463,22 +147,18 @@ function updateDateTime() {
         second: "2-digit",
         hour12: false
     });
-
-    element.textContent =
-        "Ημερ/νία & ώρα: " + date + " " + time;
+    element.textContent = "Ημερ/νία & ώρα: " + date + " " + time;
 }
-
 updateDateTime();
-
 setInterval(updateDateTime, 1000);
-
 window.addEventListener("beforeprint", updateDateTime);
 </script>
 
-
 <script src="app.js?v=4"></script>
 
+<footer style="text-align:center;margin:30px 0 15px;font-size:13px;color:#777;">
+    Designed &amp; Developed by <em>Tassos Ballas</em> <em>2026</em>
+</footer>
 
 </body>
-
 </html>
