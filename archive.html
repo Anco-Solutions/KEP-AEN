@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SeaService Calculator — Αρχείο</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.archive-page{max-width:1100px;margin:30px auto;padding:20px}.archive-page h1{text-align:center}.filters{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}.filters input{padding:12px;border:1px solid #ccc;border-radius:8px}.filters button{padding:12px 16px;border:0;border-radius:8px;cursor:pointer}.archive-table{width:100%;border-collapse:collapse;background:#fff}.archive-table th,.archive-table td{padding:10px;border:1px solid #ddd;text-align:left}.archive-table th{background:#f5f5f5}.empty{text-align:center;padding:30px;background:#fff;border-radius:10px}.success{font-weight:bold}.failed{font-weight:bold}.footer{text-align:center;margin-top:30px;font-size:13px;color:#777}.footer em{font-style:italic}
+</style>
+</head>
+<body>
+<main class="archive-page">
+<h1>SeaService Calculator</h1>
+<h2>Αρχείο Εξετάσεων</h2>
+<p>Αναζήτηση με αριθμό μητρώου, ημερομηνία ή συνδυασμό και των δύο.</p>
+<div class="filters">
+<input id="registryFilter" placeholder="Αριθμός Μητρώου" inputmode="numeric">
+<input id="dateFilter" type="date">
+<button type="button" id="searchArchive">🔎 Αναζήτηση</button>
+<button type="button" id="clearArchive">Καθαρισμός</button>
+</div>
+<div id="archiveResults" class="empty">Δεν υπάρχουν ακόμη καταχωρήσεις στο Αρχείο.</div>
+<div class="footer">Designed &amp; Developed by <em>Tassos Ballas © 2026</em></div>
+</main>
+<script>
+const STORAGE_KEY='seaServiceArchive';
+function records(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch(e){return[]}}
+function render(){const reg=document.getElementById('registryFilter').value.trim();const date=document.getElementById('dateFilter').value;const data=records().filter(x=>(!reg||String(x.registryNumber||'').includes(reg))&&(!date||x.date===date));const box=document.getElementById('archiveResults');if(!data.length){box.className='empty';box.textContent='Δεν βρέθηκαν καταχωρήσεις.';return}box.className='';let html='<table class="archive-table"><thead><tr><th>Ημερομηνία</th><th>Μητρώο</th><th>Ονοματεπώνυμο</th><th>ΚΕΠ</th><th>Υπηρεσία</th><th>Δικαιολογητικά</th><th>Αποτέλεσμα</th></tr></thead><tbody>';data.forEach(x=>{html+=`<tr><td>${x.date||''}</td><td>${x.registryNumber||''}</td><td>${x.fullName||''}</td><td>${x.kep||''}</td><td>${x.service||''}</td><td>${x.documents||''}</td><td class="${x.success?'success':'failed'}">${x.result||''}</td></tr>`});box.innerHTML=html+'</tbody></table>'}
+document.getElementById('searchArchive').onclick=render;document.getElementById('clearArchive').onclick=()=>{document.getElementById('registryFilter').value='';document.getElementById('dateFilter').value='';render()};render();
+</script>
+</body>
+</html>
