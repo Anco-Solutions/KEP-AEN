@@ -10,8 +10,8 @@
 @media print { body{background:#fff!important}.container{max-width:none!important;box-shadow:none!important}input,select,button,label input,#archiveActions,.archive-link,hr{display:none!important}#examinationPanel{display:block!important;box-shadow:none!important;border:1px solid #ccc!important}#examinationPanel input,#examinationPanel select{display:block!important;border:0!important;background:transparent!important;padding:0!important;margin-top:2px!important;font-weight:600!important}footer{display:block!important} }
 .archive-link{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:9px;text-decoration:none;font-weight:700;border:1px solid rgba(0,0,0,.12);background:#f5f7f9;color:inherit;box-shadow:0 2px 5px rgba(0,0,0,.08);transition:transform .15s ease,box-shadow .15s ease}.archive-link:active{transform:scale(.98);box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .examination-panel{display:none;background:rgba(255,255,255,.9);padding:16px;margin:18px 0;border-radius:10px;border:1px solid rgba(0,0,0,.08);box-shadow:0 2px 8px rgba(0,0,0,.04)}.examination-panel h3{margin:0 0 12px}.exam-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.exam-grid label{display:block;font-weight:600}.exam-grid input,.exam-grid select{width:100%;box-sizing:border-box;margin-top:5px}.exam-note{font-size:12px;color:#666;margin-top:8px}.exam-warning{margin-top:12px;padding:10px;border-radius:8px;background:#fff5f5;color:#9b1c1c;font-weight:700;display:none}
-.examiner-box{grid-column:1/-1;background:#f5f7fa;border:1px solid #dfe3e8;border-radius:10px;padding:14px;margin-bottom:2px}.examiner-title{font-size:18px;font-weight:800;color:#26344f;margin-bottom:12px}.examiner-select-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.examiner-select-grid label{display:block;font-weight:700}.examiner-select-grid select{width:100%;box-sizing:border-box;margin-top:6px}.manage-examiners{display:block;margin:12px auto 0;padding:8px 14px;border:1px solid #cfd5dc;border-radius:8px;background:#fff;color:#26344f;font:inherit;font-weight:700;cursor:pointer}.examiner-manager{margin-top:10px}.examiner-manager-card{background:#fff;border:1px solid #dfe3e8;border-radius:10px;padding:12px}.examiner-manager-heading{font-weight:800;margin-bottom:8px}.examiner-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid #eee}.remove-examiner{width:42px;height:36px;border:1px solid #ddd;border-radius:7px;background:#fff;cursor:pointer}.examiner-add-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}.new-examiner-input{width:100%;min-height:44px;padding:10px 12px;border:1px solid #bbb;border-radius:8px;font:inherit}.add-examiner{padding:9px 14px;border:0;border-radius:8px;background:#2673e8;color:#fff;font:inherit;font-weight:700;white-space:nowrap}.examiner-empty{color:#777}
-@media(max-width:700px){.exam-grid{grid-template-columns:1fr}.examiner-select-grid{grid-template-columns:1fr}.examiner-add-row{grid-template-columns:1fr}.add-examiner{min-height:42px}}
+.inline-examiner{display:none;align-items:center;gap:8px;margin:8px 0 14px;padding:9px 11px;background:#f5f7fa;border:1px solid #dfe3e8;border-radius:9px}.inline-examiner.active{display:flex}.inline-examiner strong{white-space:nowrap}.inline-examiner select{flex:1;min-width:0;box-sizing:border-box;padding:8px 10px;border:1px solid #c8ced6;border-radius:7px;background:#fff;font:inherit}.examiner-management{display:none;margin:0 0 16px;padding:12px;background:#fff;border:1px solid #dfe3e8;border-radius:10px}.examiner-management.open{display:block}.manage-examiners{padding:7px 12px;border:1px solid #cfd5dc;border-radius:8px;background:#fff;color:#26344f;font:inherit;font-weight:700;cursor:pointer}.examiner-manager-card{background:#fff;border:1px solid #dfe3e8;border-radius:10px;padding:12px}.examiner-manager-heading{font-weight:800;margin-bottom:8px}.examiner-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid #eee}.remove-examiner{width:42px;height:36px;border:1px solid #ddd;border-radius:7px;background:#fff;cursor:pointer}.examiner-add-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}.new-examiner-input{width:100%;min-height:44px;padding:10px 12px;border:1px solid #bbb;border-radius:8px;font:inherit}.add-examiner{padding:9px 14px;border:0;border-radius:8px;background:#2673e8;color:#fff;font:inherit;font-weight:700;white-space:nowrap}.examiner-empty{color:#777}
+@media(max-width:700px){.inline-examiner{align-items:stretch;flex-direction:column}.inline-examiner select{width:100%}.examiner-add-row{grid-template-columns:1fr}.add-examiner{min-height:42px}}
 </style>
 </head>
 <body>
@@ -24,8 +24,10 @@
 <label><strong>Ονοματεπώνυμο εξεταζόμενου</strong></label>
 <input type="text" id="fullName" autocomplete="name" placeholder="Ονοματεπώνυμο">
 <p><strong>Επιλέξτε ΚΕΠ</strong></p>
-<label><input type="radio" name="kep" value="1"> ΚΕΠ 1</label>
-<label style="margin-left:1px;"><input type="radio" name="kep" value="2"> ΚΕΠ 2</label>
+<div id="kep1Choice" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="margin:0;"><input type="radio" name="kep" value="1"> ΚΕΠ 1</label><div id="kep1Examiner" class="inline-examiner"><strong>Εξεταστής</strong><select id="examinerKep1"><option value="">— Επιλέξτε εξεταστή —</option></select></div></div>
+<div id="kep2Choice" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px;"><label style="margin:0;"><input type="radio" name="kep" value="2"> ΚΕΠ 2</label><div id="kep2Examiner" class="inline-examiner"><strong>Εξεταστής</strong><select id="examinerKep2"><option value="">— Επιλέξτε εξεταστή —</option></select></div></div>
+<div style="margin:10px 0 14px 0;"><button type="button" id="manageExaminers" class="manage-examiners">＋ Διαχείριση εξεταστών</button></div>
+<div id="examinerManager" class="examiner-management"></div>
 <hr>
 <div id="kep1CurrentService" style="display:none;background:white;padding:15px;margin-bottom:15px;border-radius:8px;"><h3 style="margin-top:0;">Υπηρεσία ΚΕΠ 1</h3><p>Η υπηρεσία υπολογίζεται από τα καταχωρημένα ταξίδια.</p></div>
 <div id="kep1PreviousService" style="display:none;background:white;padding:15px;margin-bottom:15px;border-radius:8px;"><h3 style="margin-top:0;">Υπηρεσία ΚΕΠ 1</h3><p>Η προηγούμενη υπηρεσία του ΚΕΠ 1 ανακτάται αυτόματα από το Αρχείο όταν υπάρχει ίδιο Μητρώο.</p><div id="kep1InputStatus" style="margin-top:12px;"></div></div>
@@ -41,18 +43,9 @@
 <div id="examinationPanel" class="examination-panel">
 <h3>Στοιχεία Εξέτασης ΚΕΠ</h3>
 <div class="exam-grid">
-<div class="examiner-box">
-<div class="examiner-title">Εξεταστής</div>
-<div class="examiner-select-grid">
-<label>Εξεταστής ΚΕΠ 1<select id="examinerKep1"><option value="">— Επιλέξτε εξεταστή —</option></select></label>
-<label>Εξεταστής ΚΕΠ 2<select id="examinerKep2"><option value="">— Επιλέξτε εξεταστή —</option></select></label>
-</div>
-<button type="button" id="manageExaminers" class="manage-examiners">⚙️ Διαχείριση εξεταστών</button>
-<div id="examinerManager" class="examiner-manager" style="display:none"></div>
-</div>
 <label>Δικαιολογητικά<select id="documentsStatus"><option value="Δεν έχει ελεγχθεί">Δεν έχει ελεγχθεί</option><option value="Εντάξει">Εντάξει</option><option value="Ελλιπή">Ελλιπή</option></select></label>
 <label>Κατάσταση εξέτασης<select id="examinationStatus"><option value="Δεν εξετάστηκε">Δεν εξετάστηκε</option><option value="Εξετάστηκε - Επιτυχής">Εξετάστηκε - Επιτυχής</option><option value="Εξετάστηκε - Ανεπιτυχής">Εξετάστηκε - Ανεπιτυχής</option></select></label>
-<label>Βαθμός εξέτασης<select id="examGrade"><option value="Δεν βαθμολογήθηκε">Δεν βαθμολογήθηκε</option><option value="Καλώς (5,00–6,49)">Καλώς (5,00–6,49)</option><option value="Λίαν Καλώς (6,50–8,49)">Λίαν Καλώς (6,50–8,49)</option><option value="Άριστα (8,50–10,00)">Άριστα (8,50–10,00)</option><option value="Ανεπιτυχώς (0–4,99)">Ανεπιτυχώς (0–4,99)</option></select></label>
+<label>Βαθμός εξέτασης<select id="examGrade"><option value="Δεν βαθμολογήθηκε">Δεν βαθμολογήθηκε</option><option value="Καλώς (5,00–6,49)">Καλώς (5,00–6,49)</option><option value="Λίαν Καλώς (6,50–8,49)">Λίαν Καλώς (6,50–8,49)</option><option value="Άριστα (8,50–10,00)">Άριστα (8,50–10,00</option><option value="Ανεπιτυχώς (0–4,99)">Ανεπιτυχώς (0–4,99)</option></select></label>
 <label>Τελική απόφαση<select id="finalDecision"><option value="Σε αναμονή">Σε αναμονή</option><option value="Μπορεί να προχωρήσει">Μπορεί να προχωρήσει</option><option value="Δεν μπορεί να προχωρήσει">Δεν μπορεί να προχωρήσει</option><option value="Δεν εξετάστηκε λόγω ανεπαρκούς υπηρεσίας">Δεν εξετάστηκε λόγω ανεπαρκούς υπηρεσίας</option><option value="Δεν ολοκληρώθηκε λόγω ελλιπών δικαιολογητικών">Δεν ολοκληρώθηκε λόγω ελλιπών δικαιολογητικών</option></select></label>
 </div>
 <div class="exam-note">Κλίμακα αξιολόγησης: Καλώς 5,00–6,49 · Λίαν Καλώς 6,50–8,49 · Άριστα 8,50–10,00.</div>
@@ -63,13 +56,36 @@
 </div>
 </div>
 <script>
-document.querySelectorAll('input[name="kep"]').forEach(function(radio){radio.addEventListener("change",function(){const a=document.getElementById("kep1CurrentService"),b=document.getElementById("kep1PreviousService"),c=document.getElementById("kep2Section"),d=document.getElementById("tripForm");if(radio.value==="1"){a.style.display="block";b.style.display="none";c.style.display="none";}else{a.style.display="none";b.style.display="block";c.style.display="block";}d.style.display="block";});});
+(function(){
+  const kepRadios=document.querySelectorAll('input[name="kep"]');
+  const e1=document.getElementById('kep1Examiner'), e2=document.getElementById('kep2Examiner');
+  const box1=document.getElementById('kep1Examiner'), box2=document.getElementById('kep2Examiner');
+  function showKep(){const selected=document.querySelector('input[name="kep"]:checked')?.value;box1.classList.toggle('active',selected==='1');box2.classList.toggle('active',selected==='2');}
+  kepRadios.forEach(r=>r.addEventListener('change',showKep));
+  showKep();
+  function loadExaminers(){
+    let list=[]; try{list=JSON.parse(localStorage.getItem('seaServiceExaminers')||'[]');}catch(e){list=[];}
+    if(!Array.isArray(list)) list=[];
+    [e1,e2].forEach(sel=>{const current=sel.value;sel.innerHTML='<option value="">— Επιλέξτε εξεταστή —</option>';list.forEach(x=>{const name=typeof x==='string'?x:(x.name||x.fullName||'');if(name){const o=document.createElement('option');o.value=name;o.textContent=name;sel.appendChild(o);}});if(list.some(x=>(typeof x==='string'?x:(x.name||x.fullName||''))===current))sel.value=current;});
+  }
+  loadExaminers();
+  window.addEventListener('storage',loadExaminers);
+  const manage=document.getElementById('manageExaminers'), manager=document.getElementById('examinerManager');
+  manage.addEventListener('click',function(){manager.classList.toggle('open');if(manager.classList.contains('open')) renderManager();});
+  function renderManager(){
+    let list=[];try{list=JSON.parse(localStorage.getItem('seaServiceExaminers')||'[]');}catch(e){list=[];}if(!Array.isArray(list))list=[];
+    manager.innerHTML='<div class="examiner-manager-card"><div class="examiner-manager-heading">Διαχείριση Εξεταστών</div><div id="examinerRows"></div><div class="examiner-add-row"><input class="new-examiner-input" id="newExaminerName" placeholder="Ονοματεπώνυμο εξεταστή"><button type="button" class="add-examiner" id="addExaminerBtn">＋ Προσθήκη</button></div></div>';
+    const rows=manager.querySelector('#examinerRows');if(!list.length)rows.innerHTML='<div class="examiner-empty">Δεν υπάρχουν εξεταστές.</div>';else list.forEach((x,i)=>{const name=typeof x==='string'?x:(x.name||x.fullName||'');const row=document.createElement('div');row.className='examiner-row';row.innerHTML='<span>'+name.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</span><button type="button" class="remove-examiner" data-index="'+i+'" title="Διαγραφή">🗑️</button>';rows.appendChild(row);});
+    manager.querySelector('#addExaminerBtn').addEventListener('click',function(){const input=manager.querySelector('#newExaminerName');const name=input.value.trim();if(!name)return;list.push(name);localStorage.setItem('seaServiceExaminers',JSON.stringify(list));loadExaminers();renderManager();});
+    manager.querySelectorAll('.remove-examiner').forEach(btn=>btn.addEventListener('click',function(){list.splice(Number(btn.dataset.index),1);localStorage.setItem('seaServiceExaminers',JSON.stringify(list));loadExaminers();renderManager();}));
+  }
+})();
 function updateDateTime(){const e=document.getElementById("calculationDateTime");if(!e)return;const n=new Date();e.textContent="Ημερ/νία & ώρα: "+n.toLocaleDateString("el-GR")+" "+n.toLocaleTimeString("el-GR",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});}updateDateTime();setInterval(updateDateTime,1000);window.addEventListener("beforeprint",updateDateTime);
 </script>
-<script src="app.js?v=5"></script>
+<script src="app.js?v=6"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="enhancements.js?v=5"></script>
-<script src="examiner-history.js?v=5"></script>
+<script src="enhancements.js?v=6"></script>
+<script src="examiner-history.js?v=6"></script>
 <footer style="text-align:center;margin:30px 0 15px;font-size:13px;color:#777;"><div>© 2026 SeaService Calculator. All rights reserved.</div><div>Σχεδιασμός &amp; Ανάπτυξη: <em>Tassos Ballas</em></div></footer>
 </body>
 </html>
