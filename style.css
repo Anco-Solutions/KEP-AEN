@@ -91,10 +91,27 @@ button:active{
 @media(max-width:700px){.record-actions{justify-content:stretch}.record-actions button{flex:1}.edit-grid{grid-template-columns:1fr}.edit-full{grid-column:auto}.edit-foot{position:sticky;bottom:0;background:#fff}.examiner-select-grid{grid-template-columns:1fr}.examiner-add-row{display:flex!important;flex-direction:row!important;align-items:center!important}.new-examiner-input{flex:1 1 auto!important}.add-examiner{flex:0 0 auto!important;width:auto!important}.manage-examiners{width:auto!important;max-width:max-content!important}}
 @media print{.record-actions{display:none!important}}
 
-/* FIX: keep the inline examiner control visible and wide enough beside the KEP option */
+/* Inline examiner control */
 .inline-examiner{flex:1 1 260px!important;min-width:240px!important;width:auto!important;box-sizing:border-box!important;display:none;align-items:center;gap:8px;margin:0!important;padding:7px 9px;background:#f5f7fa;border:1px solid #dfe3e8;border-radius:9px}
 .inline-examiner.active{display:flex!important}
 .inline-examiner strong{display:inline-block!important;flex:0 0 auto!important;white-space:nowrap!important;color:#243044!important;font-size:15px!important}
 .inline-examiner select{display:block!important;flex:1 1 auto!important;width:100%!important;min-width:0!important;margin:0!important;padding:8px 10px!important;border:1px solid #c8ced6!important;border-radius:7px!important;background:#fff!important;color:#202735!important;font:inherit!important}
 #kep1Choice,#kep2Choice{width:100%!important;box-sizing:border-box!important}
 @media(max-width:700px){.inline-examiner{flex:1 1 100%!important;min-width:0!important;margin-top:6px!important}.inline-examiner select{width:100%!important}}
+
+/* FIX: selecting KEP must reveal the complete examination/service form.
+   The trip form is intentionally hidden in the HTML until a KEP is selected.
+   The examiner fix previously revealed only the examiner control, leaving the
+   actual service/date/examination fields hidden. */
+#kep1Choice:has(input[value="1"]:checked) ~ #tripForm,
+#kep2Choice:has(input[value="2"]:checked) ~ #tripForm{
+    display:block!important;
+}
+
+#kep2Choice:has(input[value="2"]:checked) ~ #kep2Section{
+    display:block!important;
+}
+
+@media(max-width:700px){
+    #tripForm{width:100%;box-sizing:border-box}
+}
