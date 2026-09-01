@@ -4,8 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>SeaService Calculator — Αρχείο Εξέτασης ΚΕΠ</title>
-<meta http-equiv="refresh" content="0;url=archive-final.html">
-<script>location.replace('archive-final.html');</script>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f2f2f7}
+#appFrame{display:block;width:100%;height:100%;border:0}
+</style>
 </head>
-<body>Μεταφορά στο Αρχείο Εξέτασης ΚΕΠ…</body>
+<body>
+<iframe id="appFrame" src="archive-final.html" title="Αρχείο Εξέτασης ΚΕΠ"></iframe>
+<script>
+const frame=document.getElementById('appFrame');
+frame.addEventListener('load',()=>{
+  const w=frame.contentWindow;
+  if(w.__masterPdfPatched)return;
+  const original=w.reportHtml;
+  if(typeof original!=='function')return;
+  w.reportHtml=function(r){
+    let html=original(r);
+    // Το MASTER πρότυπο δεν έχει ξεχωριστή «Παρατήρηση / Ιστορικό» κάτω από το Τελικό Αποτέλεσμα.
+    html=html.replace(/<div class="pdf-notes">[\s\S]*?<\/div><div class="final-box/,'<div class="final-box');
+    // Footer: η περιγραφή είναι κανονική γραφή· μόνο το όνομα είναι bold + italic.
+    html=html.replace('Σχεδιασμός &amp; Ανάπτυξη: <em>Tassos Ballas</em>','Σχεδιασμός &amp; Ανάπτυξη: <strong><em>Tassos Ballas</em></strong>');
+    return html;
+  };
+  w.__masterPdfPatched=true;
+});
+</script>
+</body>
 </html>
