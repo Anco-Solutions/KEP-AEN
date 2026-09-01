@@ -1,4 +1,4 @@
-/* KEP workflow v8 — compact examination controls and automatic grade scale */
+/* KEP workflow v9 — clearly mark recovered archive service */
 (function(){
 'use strict';
 const $=id=>document.getElementById(id),val=id=>(($(id)?.value)||'').trim(),archiveKey='seaServiceArchive';
@@ -13,9 +13,10 @@ function writeArchive(a){localStorage.setItem(archiveKey,JSON.stringify(a))}
 function getTrips(){try{return typeof window.getSeaServiceTrips==='function'?window.getSeaServiceTrips():[]}catch(e){return[]}}
 function setTrips(list){try{if(typeof window.setSeaServiceTrips!=='function')return false;window.setSeaServiceTrips(list);return true}catch(e){return false}}
 function tripKey(t){return [t?.embark||'',t?.discharge||'',t?.rank||''].join('|')}
+function recoveredTrip(t){return {...t,rank:'Ανάκτηση Αρχείου — '+(t?.rank||'Προηγούμενη υπηρεσία')}}
 function mergeTrips(a,b){const out=[],seen=new Set();[...(a||[]),...(b||[])].forEach(t=>{const k=tripKey(t);if(!k||seen.has(k))return;seen.add(k);out.push({...t})});return out}
 function parseServiceDays(text){const m=String(text||'').match(/(\d+)\s*μήνες(?:\s*και\s*(\d+)\s*ημέρες)?/i);if(!m)return 0;return Number(m[1]||0)*30+Number(m[2]||0)}
-function legacyTripsFromRecord(rec){const existing=Array.isArray(rec?.trips)?rec.trips:[];if(existing.length)return existing;const days=parseServiceDays(rec?.result||'');if(!days)return [];const out=[];let remaining=days,index=0;while(remaining>0){const block=Math.min(30,remaining);const start=new Date(1900,0,1+index*31);const end=new Date(start);end.setDate(end.getDate()+block-1);out.push({embark:start.toISOString().slice(0,10),discharge:end.toISOString().slice(0,10),rank:'Ανακτημένη υπηρεσία'});remaining-=block;index++}return out}
+function legacyTripsFromRecord(rec){const existing=Array.isArray(rec?.trips)?rec.trips:[];if(existing.length)return existing.map(recoveredTrip);const days=parseServiceDays(rec?.result||'');if(!days)return [];const out=[];let remaining=days,index=0;while(remaining>0){const block=Math.min(30,remaining);const start=new Date(1900,0,1+index*31);const end=new Date(start);end.setDate(end.getDate()+block-1);out.push({embark:start.toISOString().slice(0,10),discharge:end.toISOString().slice(0,10),rank:'Ανάκτηση Αρχείου — Προηγούμενη υπηρεσία'});remaining-=block;index++}return out}
 function candidateRecord(){const r=val('registryNumber'),k=kep();if(!r||!k)return null;return readArchive().find(x=>String(x.registryNumber||'').trim()===r&&String(x.kep||'').trim()==='ΚΕΠ '+k)||null}
 function ensureArchivedTripsBeforeNewTrip(){const rec=candidateRecord();if(!rec)return;const oldTrips=legacyTripsFromRecord(rec),current=getTrips(),merged=mergeTrips(oldTrips,current);if(oldTrips.length&&merged.length!==current.length)setTrips(merged)}
 function restoreArchivedService(){const r=val('registryNumber'),k=kep();if(!r||!k)return null;const rec=candidateRecord();if(!rec)return null;const oldTrips=legacyTripsFromRecord(rec),current=getTrips(),merged=mergeTrips(oldTrips,current);if(oldTrips.length&&merged.length!==current.length)setTrips(merged);const key=r+'|'+k,result=$('result');if(result&&rec.result&&lastKey!==key){lastKey=key;const note='<div id="archiveRestoreNotice" style="margin:10px 0;padding:12px;border-radius:8px;background:#f5f7fa;border:1px solid #dfe3e8"><strong>Βρέθηκε προηγούμενη καταχώριση στο Αρχείο.</strong><br>Η προηγούμενη υπηρεσία του υποψηφίου ανακτήθηκε και <strong>υπολογίζεται μαζί με τη νέα υπηρεσία</strong>.</div>';if(!result.innerText.trim())result.innerHTML=note+rec.result}return rec}
