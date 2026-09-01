@@ -10,164 +10,47 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f2f2f7}
 </style>
 </head>
 <body>
-<iframe id="appFrame" src="archive-final.html?v=20260901-7" title="Αρχείο Εξέτασης ΚΕΠ"></iframe>
+<iframe id="appFrame" src="archive-final.html?v=20260901-master" title="Αρχείο Εξέτασης ΚΕΠ"></iframe>
 <script>
 const frame=document.getElementById('appFrame');
 let patched=false;
-
 function patchMaster(){
   if(patched)return true;
   const w=frame.contentWindow;
-  if(!w||typeof w.reportHtml!=='function')return false;
-
+  if(!w)return false;
+  const original=w.reportHtml;
+  if(typeof original!=='function')return false;
   w.reportHtml=function(r){
-    const ok=w.finalStatus(r)==='ΕΠΙΤΥΧΗΣ';
-    const bg=ok?'#eaf4ec':'#fbecec';
-    const border=ok?'#a8c8ae':'#e0a0a0';
-    const accent=ok?'#1f6b35':'#8f3030';
-    const service=w.serviceText(r);
-    let reason=ok?'Η εξέταση ολοκληρώθηκε επιτυχώς.':(r.result?w.normalizeGreek(r.result):'Η εξέταση δεν ολοκληρώθηκε επιτυχώς.');
-    reason=reason.replace(/\s*Το ΚΕΠ δεν μπορεί να εξεταστεί\.?\s*$/i,'').trim();
-
-    return `<section class="pdf-report">
-<header class="header"><div class="brand">SeaService Calculator</div><div class="title">ΑΡΧΕΙΟ ΕΞΕΤΑΣΗΣ ΚΕΠ</div><div class="sub">Εκτύπωση εξέτασης</div></header>
-<h2>ΣΤΟΙΧΕΙΑ ΝΑΥΤΙΚΟΥ</h2>
-<table><tr><th>Αριθμός Μητρώου</th><td>${w.display(r.registryNumber,'—')}</td></tr><tr><th>Ονοματεπώνυμο</th><td>${w.display(r.fullName,'—')}</td></tr></table>
-<h2>${w.display(r.kep,'ΚΕΠ')}</h2>
-<table>
-<tr><th>Ημερομηνία &amp; ώρα καταχώρισης</th><td>${w.display(w.fmtDateWeekday(r.date),'—')} — ${w.display(r.time,'—')}</td></tr>
-<tr><th>Εξεταστής</th><td>${w.display(r.examiner,'—')}</td></tr>
-${r.kep==='ΚΕΠ 1'?`<tr><th>Συνολική υπηρεσία</th><td>${w.esc(service)}</td></tr><tr><th>Ελάχιστη απαιτούμενη υπηρεσία</th><td>3 μήνες</td></tr><tr><th>Αποτέλεσμα υπολογισμού</th><td>${w.display(w.normalizeGreek(r.result),'—')}</td></tr>`:`<tr><th>Υπηρεσία ΚΕΠ 1 / προηγούμενη καταχώριση</th><td>Ανακτάται από το ίδιο Μητρώο όταν υπάρχει διαθέσιμη καταχώριση.</td></tr><tr><th>Νέα υπηρεσία ΚΕΠ 2</th><td>${w.esc(service)}</td></tr><tr><th>Αποτέλεσμα υπολογισμού</th><td>${w.display(w.normalizeGreek(r.result),'—')}</td></tr>`}
-<tr><th>Δικαιολογητικά</th><td>${w.display(r.documents,'—')}</td></tr>
-<tr><th>Κατάσταση εξέτασης</th><td>${w.display(r.examinationStatus,'—')}</td></tr>
-<tr><th>Βαθμολογία</th><td>${w.display(r.grade,'—')}</td></tr>
-</table>
-<h2>ΤΕΛΙΚΟ ΑΠΟΤΕΛΕΣΜΑ</h2>
-<div class="final-box" style="background:${bg};border-color:${border};color:${accent}">
-<div class="final-state">${ok?'ΕΠΙΤΥΧΗΣ':'ΜΗ ΕΠΙΤΥΧΗΣ'}</div>
-<div class="final-details">
-<div class="summary-line"><span class="summary-x">✖</span><strong>Συνολική Υπηρεσία ${w.esc(service)}</strong></div>
-<div class="specialty-line"><strong>Υπηρεσία ανά Ειδικότητα:</strong> ${w.esc(r.rank||'Δόκιμος Μηχανικός')} — ${w.esc(service)}</div>
-${ok?'':'<div class="failure-line"><span class="failure-x">✖</span><span class="failure-text">'+w.esc(reason)+'</span></div>'}
-<div class="cannot">${ok?'Η εξέταση ολοκληρώθηκε επιτυχώς.':'Το ΚΕΠ δεν μπορεί να εξεταστεί.'}</div>
-</div>
-</div>
-<footer class="footer"><div class="footer-left"><div>© 2026 SeaService Calculator</div><div class="rights">All rights reserved.</div></div><div class="footer-right"><span class="credit-label">Σχεδιασμός &amp; Ανάπτυξη: </span><strong><em>Tassos Ballas</em></strong></div></footer>
-</section>`;
-  };
-
-  const pdfCss=`
-.pdf-report{width:794px;min-height:1123px;background:#fff;padding:34px 28px 22px;box-sizing:border-box;font-family:Arial,sans-serif;color:#222;page-break-after:always;display:flex;flex-direction:column}
-.pdf-report .header{text-align:center;margin-bottom:24px}.pdf-report .brand{font-size:28px;font-weight:800;color:#214f83}.pdf-report .title{font-size:22px;font-weight:800;color:#214f83;margin-top:3px}.pdf-report .sub{font-size:13px;color:#777;margin-top:8px}
-.pdf-report h2{font-size:17px;color:#214f83;margin:16px 0 7px;letter-spacing:.2px}
-.pdf-report table{width:100%;border-collapse:collapse;font-size:13px}.pdf-report th,.pdf-report td{border:1px solid #cfd6df;padding:8px 10px;text-align:left;vertical-align:middle}.pdf-report th{width:34%;background:#f0f3f7;font-weight:800}.pdf-report td{background:#fff}
-.pdf-report .final-box{border:1px solid;padding:14px 18px;margin-top:4px;box-sizing:border-box;page-break-inside:avoid}.pdf-report .final-state{text-align:center;font-size:17px;font-weight:800;margin-bottom:12px}.pdf-report .final-details{text-align:left;font-size:13px;line-height:1.5}.pdf-report .summary-line{margin:0 0 8px;font-weight:800;display:flex;align-items:flex-start}.pdf-report .summary-x{font-size:19px;font-weight:900;display:inline-block;margin-right:10px;line-height:1.25;flex:0 0 auto}.pdf-report .specialty-line{margin:0 0 8px}.pdf-report .failure-line{margin-top:8px;display:flex;align-items:flex-start;gap:10px}.pdf-report .failure-x{font-size:22px;font-weight:900;line-height:1.1;flex:0 0 auto}.pdf-report .failure-text{font-weight:600}.pdf-report .cannot{text-align:center;font-size:14px;font-weight:800;margin-top:14px}
-.pdf-report .footer{border-top:1px solid #d5dbe2;margin-top:auto;padding-top:8px;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#777;line-height:1.35}.pdf-report .footer-left{text-align:left}.pdf-report .footer-left .rights{display:block}.pdf-report .footer-right{text-align:right;white-space:nowrap}.pdf-report .footer-right .credit-label{font-style:normal}.pdf-report .footer-right strong{font-weight:800}.pdf-report .footer-right em{font-style:italic}
-`;
-
-  async function buildPdfBlob(data){
-    if(!w.html2canvas||!w.jspdf)throw new Error('Δεν φορτώθηκαν οι βιβλιοθήκες PDF.');
-    const holder=w.document.createElement('div');
-    holder.style.cssText='position:fixed;left:-10000px;top:0;width:794px;background:#fff;color:#111;z-index:-1';
-    const css=w.document.createElement('style');
-    css.textContent=pdfCss;
-    holder.appendChild(css);
-    data.forEach(r=>{const d=w.document.createElement('div');d.innerHTML=w.reportHtml(r);if(d.firstElementChild)holder.appendChild(d.firstElementChild)});
-    w.document.body.appendChild(holder);
-    await new Promise(resolve=>w.requestAnimationFrame(()=>w.requestAnimationFrame(resolve)));
-
-    const {jsPDF}=w.jspdf;
-    const pdf=new jsPDF({unit:'mm',format:'a4',orientation:'portrait'});
-    const margin=8,wmm=194,maxH=281;
-    const pages=holder.querySelectorAll('.pdf-report');
-    if(!pages.length){holder.remove();throw new Error('Δεν βρέθηκαν εξετάσεις για δημιουργία PDF.');}
-
-    for(let i=0;i<pages.length;i++){
-      const page=pages[i];
-      const canvas=await w.html2canvas(page,{scale:2,useCORS:true,backgroundColor:'#fff'});
-      const pxPerMm=canvas.width/wmm;
-      const pagePx=Math.floor(maxH*pxPerMm);
-      let y=0,first=true;
-      while(y<canvas.height){
-        const sliceH=Math.min(pagePx,canvas.height-y);
-        const slice=w.document.createElement('canvas');
-        slice.width=canvas.width;slice.height=sliceH;
-        slice.getContext('2d').drawImage(canvas,0,y,canvas.width,sliceH,0,0,canvas.width,sliceH);
-        if(!first||i||y)pdf.addPage();
-        pdf.addImage(slice.toDataURL('image/jpeg',.96),'JPEG',margin,margin,wmm,sliceH/pxPerMm);
-        first=false;
-        y+=sliceH;
-      }
-    }
-    holder.remove();
-    return pdf.output('blob');
-  }
-
-  w.makePdf=async function(data){
+    let html=original(r);
     try{
-      const blob=await buildPdfBlob(data||[]);
-      const url=w.URL.createObjectURL(blob);
-      const opened=w.open(url,'_blank');
-      if(!opened){
-        const a=w.document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.click();
+      const doc=new DOMParser().parseFromString(html,'text/html');
+      [...doc.body.querySelectorAll('*')].forEach(el=>{
+        const text=(el.textContent||'').trim();
+        if(/^Παρατήρηση\s*:/i.test(text) && el.children.length<=3)el.remove();
+      });
+      const credit=doc.querySelector('.footer-right');
+      if(credit){
+        credit.innerHTML='Σχεδιασμός &amp; Ανάπτυξη: <strong><em>Tassos Ballas</em></strong>';
+        credit.style.fontStyle='normal';
+      }else{
+        [...doc.body.querySelectorAll('*')].forEach(el=>{
+          if((el.textContent||'').includes('Σχεδιασμός & Ανάπτυξη:') && el.children.length<=4){
+            el.innerHTML='Σχεδιασμός &amp; Ανάπτυξη: <strong><em>Tassos Ballas</em></strong>';
+            el.style.fontStyle='normal';
+          }
+        });
       }
-      setTimeout(()=>w.URL.revokeObjectURL(url),60000);
-    }catch(err){
-      alert(err&&err.message?err.message:'Αποτυχία δημιουργίας PDF.');
+      return '<!DOCTYPE html>'+doc.documentElement.outerHTML;
+    }catch(e){
+      html=html.replace(/<div[^>]*>\s*Παρατήρηση\s*:[\s\S]*?<\/div>/gi,'');
+      html=html.replace(/Σχεδιασμός\s*&amp;\s*Ανάπτυξη\s*:\s*(?:<[^>]*>)*Tassos Ballas(?:<[^>]*>)*/i,'Σχεδιασμός &amp; Ανάπτυξη: <strong><em>Tassos Ballas</em></strong>');
+      return html;
     }
   };
-
-  w.makePdfForEmail=async function(data){
-    try{
-      const blob=await buildPdfBlob(data||[]);
-      const fileName='Αρχείο-Εξέτασης-ΚΕΠ.pdf';
-      const file=new w.File([blob],fileName,{type:'application/pdf'});
-      if(w.navigator.share&&(!w.navigator.canShare||w.navigator.canShare({files:[file]}))){
-        await w.navigator.share({title:'Αρχείο Εξέτασης ΚΕΠ',text:'Αρχείο Εξέτασης ΚΕΠ',files:[file]});
-        return;
-      }
-      const url=w.URL.createObjectURL(blob);
-      const a=w.document.createElement('a');
-      a.href=url;a.download=fileName;a.click();
-      setTimeout(()=>w.URL.revokeObjectURL(url),60000);
-      w.location.href='mailto:?subject='+encodeURIComponent('Αρχείο Εξέτασης ΚΕΠ')+'&body='+encodeURIComponent('Το PDF δημιουργήθηκε και αποθηκεύτηκε ως «'+fileName+'». Επισύναψέ το στο email.');
-    }catch(err){
-      if(err&&err.name==='AbortError')return;
-      alert(err&&err.message?err.message:'Αποτυχία δημιουργίας PDF για email.');
-    }
-  };
-
-  function getDataForArchive(){
-    if(typeof w.getFiltered==='function')return w.getFiltered();
-    if(typeof w.records==='function')return w.records();
-    return [];
-  }
-
-  function replaceButton(id,handler){
-    const old=w.document.getElementById(id);
-    if(!old)return;
-    const fresh=old.cloneNode(true);
-    old.replaceWith(fresh);
-    fresh.addEventListener('click',handler);
-  }
-
-  replaceButton('printArchive',()=>{
-    const data=getDataForArchive();
-    if(!data.length){w.alert('Δεν υπάρχουν καταχωρήσεις για εκτύπωση.');return;}
-    w.makePdf(data);
-  });
-
-  replaceButton('emailArchive',()=>{
-    const data=getDataForArchive();
-    if(!data.length){w.alert('Δεν υπάρχουν καταχωρήσεις για αποστολή με email.');return;}
-    w.makePdfForEmail(data);
-  });
-
   patched=true;
   w.__masterPdfPatched=true;
   return true;
 }
-
 frame.addEventListener('load',()=>{
   if(patchMaster())return;
   const timer=setInterval(()=>{if(patchMaster())clearInterval(timer)},50);
