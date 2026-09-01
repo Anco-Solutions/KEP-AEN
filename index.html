@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SeaService Calculator</title>
-<link rel="stylesheet" href="style.css?v=8">
+<link rel="stylesheet" href="style.css?v=9">
 <link rel="apple-touch-icon" href="sea-service-icon.PNG">
 <style>
 @media print { body{background:#fff!important}.container{max-width:none!important;box-shadow:none!important}input,select,button,label input,#archiveActions,.archive-link,hr{display:none!important}#examinationPanel{display:block!important;box-shadow:none!important;border:1px solid #ccc!important}#examinationPanel input,#examinationPanel select{display:block!important;border:0!important;background:transparent!important;padding:0!important;margin-top:2px!important;font-weight:600!important}footer{display:block!important} }
@@ -58,7 +58,7 @@
 <script>
 (function(){
   const kepRadios=document.querySelectorAll('input[name="kep"]');
-  const e1=document.getElementById('kep1Examiner'), e2=document.getElementById('kep2Examiner');
+  const e1=document.getElementById('examinerKep1'), e2=document.getElementById('examinerKep2');
   const box1=document.getElementById('kep1Examiner'), box2=document.getElementById('kep2Examiner');
   function showKep(){const selected=document.querySelector('input[name="kep"]:checked')?.value;box1.classList.toggle('active',selected==='1');box2.classList.toggle('active',selected==='2');}
   kepRadios.forEach(r=>r.addEventListener('change',showKep));
