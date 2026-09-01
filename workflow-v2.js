@@ -1,4 +1,4 @@
-/* KEP workflow v4 — archive service is always part of current calculation */
+/* KEP workflow v5 — archive service is part of the real calculator state */
 (function(){
 'use strict';
 const $=id=>document.getElementById(id),val=id=>(($(id)?.value)||'').trim(),archiveKey='seaServiceArchive';
@@ -10,15 +10,25 @@ function examiner(){return val(kep()==='1'?'examinerKep1':'examinerKep2')}
 function now(){const d=new Date();return{iso:d.toISOString(),date:d.toLocaleDateString('el-GR',{day:'2-digit',month:'2-digit',year:'numeric'}),time:d.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false})}}
 function readArchive(){try{return JSON.parse(localStorage.getItem(archiveKey)||'[]')}catch(e){return[]}}
 function writeArchive(a){localStorage.setItem(archiveKey,JSON.stringify(a))}
-function getTrips(){try{const t=window.eval('trips');return Array.isArray(t)?t:[]}catch(e){return[]}}
-function setTrips(list){try{window.eval('trips=JSON.parse('+JSON.stringify(JSON.stringify(list))+')');return true}catch(e){return false}}
+function getTrips(){try{return typeof window.getSeaServiceTrips==='function'?window.getSeaServiceTrips():[]}catch(e){return[]}}
+function setTrips(list){try{if(typeof window.setSeaServiceTrips!=='function')return false;window.setSeaServiceTrips(list);return true}catch(e){return false}}
 function tripKey(t){return [t?.embark||'',t?.discharge||'',t?.rank||''].join('|')}
 function mergeTrips(a,b){const out=[],seen=new Set();[...(a||[]),...(b||[])].forEach(t=>{const k=tripKey(t);if(!k||seen.has(k))return;seen.add(k);out.push({...t})});return out}
+function parseServiceDays(text){const m=String(text||'').match(/(\d+)\s*μήνες(?:\s*και\s*(\d+)\s*ημέρες)?/i);if(!m)return 0;return Number(m[1]||0)*30+Number(m[2]||0)}
+function legacyTripsFromRecord(rec){
+ const existing=Array.isArray(rec?.trips)?rec.trips:[];
+ if(existing.length)return existing;
+ const days=parseServiceDays(rec?.result||'');
+ if(!days)return [];
+ const out=[];let remaining=days,index=0;
+ while(remaining>0){const block=Math.min(30,remaining);const start=new Date(1900,0,1+index*31);const end=new Date(start);end.setDate(end.getDate()+block-1);out.push({embark:start.toISOString().slice(0,10),discharge:end.toISOString().slice(0,10),rank:'Ανακτημένη υπηρεσία'});remaining-=block;index++}
+ return out;
+}
 function candidateRecord(){const r=val('registryNumber'),k=kep();if(!r||!k)return null;return readArchive().find(x=>String(x.registryNumber||'').trim()===r&&String(x.kep||'').trim()==='ΚΕΠ '+k)||null}
 function restoreArchivedService(){
  const r=val('registryNumber'),k=kep();if(!r||!k)return null;
  const rec=candidateRecord();if(!rec)return null;
- const oldTrips=Array.isArray(rec.trips)?rec.trips:[];
+ const oldTrips=legacyTripsFromRecord(rec);
  const current=getTrips();
  const merged=mergeTrips(oldTrips,current);
  if(oldTrips.length && merged.length!==current.length)setTrips(merged);
@@ -47,7 +57,7 @@ function refresh(){
  const n=$('automaticExamResult');if(n){const show=ok&&s&&s.value==='done';n.style.display=show?'block':'none';if(show){const x=Number(g?.value);n.textContent=!g?.value?'Συμπληρώστε τον βαθμό εξέτασης.':(!Number.isFinite(x)||x<0||x>10?'Ο βαθμός πρέπει να είναι από 0,00 έως 10,00.':x>=5?'✓ Η εξέταση κρίθηκε ΕΠΙΤΥΧΗΣ':'✕ Η εξέταση κρίθηκε ΑΝΕΠΙΤΥΧΗΣ')}}
 }
 function buildRecord(){
- const t=resultText(),bad=insufficient(t),docs=val('documentsStatus'),s=$('examinationStatus'),g=$('examGradeNumber'),r=val('registryNumber'),name=val('fullName'),k=kep(),ex=examiner(),old=candidateRecord(),mergedTrips=mergeTrips(old?.trips||[],getTrips());
+ const t=resultText(),bad=insufficient(t),docs=val('documentsStatus'),s=$('examinationStatus'),g=$('examGradeNumber'),r=val('registryNumber'),name=val('fullName'),k=kep(),ex=examiner(),old=candidateRecord(),mergedTrips=mergeTrips(legacyTripsFromRecord(old),getTrips());
  if(!r||!name||!t)return null;const z=now();
  const previous=old?[...(old.previousVisits||[]),{timestamp:old.timestamp,result:old.result,examinationStatus:old.examinationStatus,grade:old.grade,finalDecision:old.finalDecision}]:[];
  if(bad)return{id:old?.id||Date.now(),timestamp:z.iso,date:z.date,time:z.time,registryNumber:r,fullName:name,kep:k?'ΚΕΠ '+k:'',examiner:ex||old?.examiner||'Δεν απαιτείται',documents:'Δεν ελέγχθηκαν — ανεπαρκής υπηρεσία',documentsNote:'',examinationStatus:'Δεν εξετάστηκε — ανεπαρκής υπηρεσία',grade:'Δεν βαθμολογήθηκε',finalDecision:'Δεν εξετάστηκε λόγω ανεπαρκούς υπηρεσίας',result:t,success:false,trips:mergedTrips,previousVisits:previous};
