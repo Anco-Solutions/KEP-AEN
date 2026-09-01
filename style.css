@@ -14,104 +14,42 @@ body{
     box-shadow:0 4px 12px rgba(0,0,0,0.15);
 }
 
-h1{
-    text-align:center;
-    color:#003366;
-    margin-bottom:10px;
-}
-
-h2{
-    color:#0066cc;
-    margin-top:30px;
-}
-
-label{
-    display:block;
-    margin-top:15px;
-    font-weight:bold;
-}
-
-input,
-select{
-    width:100%;
-    padding:12px;
-    margin-top:6px;
-    border:1px solid #ccc;
-    border-radius:10px;
-    box-sizing:border-box;
-    font-size:16px;
-}
-
-button{
-    width:100%;
-    margin-top:20px;
-    padding:14px;
-    border:none;
-    border-radius:10px;
-    background:#007AFF;
-    color:white;
-    font-size:18px;
-    font-weight:bold;
-}
-
-button:active{
-    background:#005FCC;
-}
-
-#tripList,
-#result{
-    margin-top:20px;
-    padding:15px;
-    background:#f8f8f8;
-    border-radius:10px;
-}
-
-/* Examiner manager — compact controls, comfortable input */
+h1{text-align:center;color:#003366;margin-bottom:10px}
+h2{color:#0066cc;margin-top:30px}
+label{display:block;margin-top:15px;font-weight:bold}
+input,select{width:100%;padding:12px;margin-top:6px;border:1px solid #ccc;border-radius:10px;box-sizing:border-box;font-size:16px}
+button{width:100%;margin-top:20px;padding:14px;border:none;border-radius:10px;background:#007AFF;color:white;font-size:18px;font-weight:bold}
+button:active{background:#005FCC}
+#tripList,#result{margin-top:20px;padding:15px;background:#f8f8f8;border-radius:10px}
 .examiner-box{grid-column:1/-1;padding:13px;background:#f7f9fc;border:1px solid rgba(0,0,0,.08);border-radius:10px}
 .examiner-title{font-weight:700;margin-bottom:10px;color:#243044}
 .examiner-select-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .examiner-select-grid label{margin:0;font-size:13px}
 .manage-examiners{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:auto!important;max-width:max-content!important;margin:12px 0 0!important;padding:9px 14px!important;font-size:14px!important;line-height:1.2!important;background:#f1f4f8!important;color:#243044!important;border:1px solid #d6dbe1!important;box-shadow:none!important;white-space:nowrap!important}
-.examiner-manager{margin-top:10px}
-.examiner-manager-card{background:#fff;border:1px solid #dfe3e8;border-radius:10px;padding:12px}
-.examiner-manager-heading{font-weight:700;margin-bottom:8px;color:#243044}
-.examiner-list{border-top:1px solid #edf0f2}
-.examiner-row{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:46px;border-bottom:1px solid #edf0f2}
-.examiner-row span{min-width:0;flex:1;overflow-wrap:anywhere;color:#202735;font-size:16px}
-.remove-examiner{flex:0 0 42px!important;width:42px!important;height:38px!important;min-height:38px!important;margin:0!important;padding:0!important;border-radius:8px!important;background:#f7f8fa!important;color:#9b1c1c!important;border:1px solid #d6dbe1!important;font-size:17px!important;line-height:1!important;box-shadow:none!important}
-.examiner-empty{display:block;padding:10px 0;color:#777}
-.examiner-add-row{display:flex!important;align-items:center!important;gap:8px!important;margin-top:12px!important;width:100%!important}
-.new-examiner-input{flex:1 1 auto!important;width:auto!important;min-width:0!important;height:44px!important;margin:0!important;padding:10px 12px!important;background:#fff!important;color:#202735!important;font-size:16px!important;border:1px solid #cfd5dc!important;border-radius:9px!important;box-sizing:border-box!important}
-.new-examiner-input::placeholder{color:#8b929b}
-.add-examiner{flex:0 0 auto!important;width:auto!important;min-width:104px!important;height:44px!important;margin:0!important;padding:9px 13px!important;border-radius:9px!important;background:#007AFF!important;color:#fff!important;font-size:15px!important;line-height:1.1!important;white-space:nowrap!important}
-
-/* Archive record controls */
+.examiner-manager{margin-top:10px}.examiner-manager-card{background:#fff;border:1px solid #dfe3e8;border-radius:10px;padding:12px}.examiner-manager-heading{font-weight:700;margin-bottom:8px;color:#243044}.examiner-list{border-top:1px solid #edf0f2}.examiner-row{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:46px;border-bottom:1px solid #edf0f2}.examiner-row span{min-width:0;flex:1;overflow-wrap:anywhere;color:#202735;font-size:16px}.remove-examiner{flex:0 0 42px!important;width:42px!important;height:38px!important;min-height:38px!important;margin:0!important;padding:0!important;border-radius:8px!important;background:#f7f8fa!important;color:#9b1c1c!important;border:1px solid #d6dbe1!important;font-size:17px!important;line-height:1!important;box-shadow:none!important}.examiner-empty{display:block;padding:10px 0;color:#777}
+.examiner-add-row{display:flex!important;align-items:center!important;gap:8px!important;margin-top:12px!important;width:100%!important}.new-examiner-input{flex:1 1 auto!important;width:auto!important;min-width:0!important;height:44px!important;margin:0!important;padding:10px 12px!important;background:#fff!important;color:#202735!important;font-size:16px!important;border:1px solid #cfd5dc!important;border-radius:9px!important;box-sizing:border-box!important}.new-examiner-input::placeholder{color:#8b929b}.add-examiner{flex:0 0 auto!important;width:auto!important;min-width:104px!important;height:44px!important;margin:0!important;padding:9px 13px!important;border-radius:9px!important;background:#007AFF!important;color:#fff!important;font-size:15px!important;line-height:1.1!important;white-space:nowrap!important}
 .record-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid #e3e5e8}.record-actions button{width:auto;margin-top:0;padding:9px 13px;background:#f7f8fa;color:#243044;border:1px solid #d6dbe1;font-size:14px;border-radius:8px}.record-actions .delete-record{color:#9b1c1c}.record-actions button:active{background:#e9edf2}
 .edit-backdrop{position:fixed;inset:0;background:rgba(10,20,35,.42);z-index:9998}.edit-dialog{position:fixed;z-index:9999;left:50%;top:50%;transform:translate(-50%,-50%);width:min(760px,calc(100% - 24px));max-height:90vh;overflow:auto;background:#fff;border-radius:14px;box-shadow:0 18px 60px rgba(0,0,0,.25)}.edit-head{display:flex;justify-content:space-between;align-items:center;padding:15px 17px;border-bottom:1px solid #e5e7eb;font-size:17px}.edit-head button{width:auto;margin:0;padding:0;border:0;background:none;color:#667;font-size:28px;line-height:1}.edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px}.edit-grid label{font-weight:700;font-size:13px;margin:0}.edit-grid input,.edit-grid select,.edit-grid textarea{display:block;width:100%;box-sizing:border-box;margin-top:5px;padding:10px;border:1px solid #d7dce2;border-radius:8px;font:inherit;background:#fff}.edit-grid textarea{min-height:110px;resize:vertical}.edit-full{grid-column:1/-1}.edit-foot{display:flex;justify-content:flex-end;gap:8px;padding:14px 16px;border-top:1px solid #e5e7eb}.edit-foot button{width:auto;margin:0;padding:10px 14px;border-radius:8px;border:1px solid #d2d7de;background:#f7f8fa;color:#243044;font-size:14px}.edit-foot #saveEdit{background:#eaf1f8}
 @media(max-width:700px){.record-actions{justify-content:stretch}.record-actions button{flex:1}.edit-grid{grid-template-columns:1fr}.edit-full{grid-column:auto}.edit-foot{position:sticky;bottom:0;background:#fff}.examiner-select-grid{grid-template-columns:1fr}.examiner-add-row{display:flex!important;flex-direction:row!important;align-items:center!important}.new-examiner-input{flex:1 1 auto!important}.add-examiner{flex:0 0 auto!important;width:auto!important}.manage-examiners{width:auto!important;max-width:max-content!important}}
 @media print{.record-actions{display:none!important}}
-
-/* Inline examiner control */
-.inline-examiner{flex:1 1 260px!important;min-width:240px!important;width:auto!important;box-sizing:border-box!important;display:none;align-items:center;gap:8px;margin:0!important;padding:7px 9px;background:#f5f7fa;border:1px solid #dfe3e8;border-radius:9px}
-.inline-examiner.active{display:flex!important}
-.inline-examiner strong{display:inline-block!important;flex:0 0 auto!important;white-space:nowrap!important;color:#243044!important;font-size:15px!important}
-.inline-examiner select{display:block!important;flex:1 1 auto!important;width:100%!important;min-width:0!important;margin:0!important;padding:8px 10px!important;border:1px solid #c8ced6!important;border-radius:7px!important;background:#fff!important;color:#202735!important;font:inherit!important}
-#kep1Choice,#kep2Choice{width:100%!important;box-sizing:border-box!important}
+.inline-examiner{flex:1 1 260px!important;min-width:240px!important;width:auto!important;box-sizing:border-box!important;display:none;align-items:center;gap:8px;margin:0!important;padding:7px 9px;background:#f5f7fa;border:1px solid #dfe3e8;border-radius:9px}.inline-examiner.active{display:flex!important}.inline-examiner strong{display:inline-block!important;flex:0 0 auto!important;white-space:nowrap!important;color:#24344f!important;font-size:15px!important}.inline-examiner select{display:block!important;flex:1 1 auto!important;width:100%!important;min-width:0!important;margin:0!important;padding:8px 10px!important;border:1px solid #c8ced6!important;border-radius:7px!important;background:#fff!important;color:#202735!important;font:inherit!important}#kep1Choice,#kep2Choice{width:100%!important;box-sizing:border-box!important}
 @media(max-width:700px){.inline-examiner{flex:1 1 100%!important;min-width:0!important;margin-top:6px!important}.inline-examiner select{width:100%!important}}
+#kep1Choice:has(input[value="1"]:checked) ~ #tripForm,#kep2Choice:has(input[value="2"]:checked) ~ #tripForm{display:block!important}#kep2Choice:has(input[value="2"]:checked) ~ #kep2Section{display:block!important}
+@media(max-width:700px){#tripForm{width:100%;box-sizing:border-box}}
 
-/* FIX: selecting KEP must reveal the complete examination/service form.
-   The trip form is intentionally hidden in the HTML until a KEP is selected.
-   The examiner fix previously revealed only the examiner control, leaving the
-   actual service/date/examination fields hidden. */
-#kep1Choice:has(input[value="1"]:checked) ~ #tripForm,
-#kep2Choice:has(input[value="2"]:checked) ~ #tripForm{
-    display:block!important;
+/* Mobile-first finishing pass: comfortable controls on small phones without changing desktop layout. */
+@media(max-width:520px){
+ body{padding:10px}
+ .container{width:100%;max-width:none;padding:16px;border-radius:14px;box-sizing:border-box}
+ h1{font-size:30px;line-height:1.1}
+ h2{font-size:21px}
+ button{font-size:16px;padding:13px}
+ input,select{min-height:46px;font-size:16px}
+ #kep1Choice,#kep2Choice{gap:8px}
+ #kep1Choice>label,#kep2Choice>label{font-size:17px}
+ .inline-examiner{padding:9px 10px}
+ .inline-examiner strong{font-size:16px}
+ #result,#tripList{padding:12px}
 }
-
-#kep2Choice:has(input[value="2"]:checked) ~ #kep2Section{
-    display:block!important;
-}
-
-@media(max-width:700px){
-    #tripForm{width:100%;box-sizing:border-box}
-}
+@media(max-width:360px){body{padding:6px}.container{padding:12px}h1{font-size:27px}.inline-examiner{gap:6px}.inline-examiner strong{font-size:15px}.manage-examiners{max-width:100%!important;white-space:normal!important}}
+EOF
