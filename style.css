@@ -52,4 +52,18 @@ button:active{background:#005FCC}
  #result,#tripList{padding:12px}
 }
 @media(max-width:360px){body{padding:6px}.container{padding:12px}h1{font-size:27px}.inline-examiner{gap:6px}.inline-examiner strong{font-size:15px}.manage-examiners{max-width:100%!important;white-space:normal!important}}
-EOF
+
+/* Keep the KEP 1 / KEP 2 radio controls compact. The global input rule above must not enlarge them. */
+#kep1Choice input[type="radio"],#kep2Choice input[type="radio"]{
+    width:20px!important;
+    min-width:20px!important;
+    max-width:20px!important;
+    height:20px!important;
+    min-height:20px!important;
+    padding:0!important;
+    margin:0!important;
+    border-radius:50%!important;
+    box-sizing:border-box!important;
+    flex:0 0 20px!important;
+}
+#kep1Choice>label,#kep2Choice>label{display:flex!important;align-items:center!important;gap:8px!important}
