@@ -10,16 +10,14 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f2f2f7}
 </style>
 </head>
 <body>
-<iframe id="appFrame" src="archive-final.html?v=20260901-3" title="Αρχείο Εξέτασης ΚΕΠ"></iframe>
+<iframe id="appFrame" src="archive-final.html?v=20260901-4" title="Αρχείο Εξέτασης ΚΕΠ"></iframe>
 <script>
 const frame=document.getElementById('appFrame');
 let patched=false;
-
 function patchMaster(){
   if(patched)return true;
   const w=frame.contentWindow;
   if(!w||typeof w.reportHtml!=='function')return false;
-
   w.reportHtml=function(r){
     const ok=w.finalStatus(r)==='ΕΠΙΤΥΧΗΣ';
     const bg=ok?'#eaf4ec':'#fbecec';
@@ -55,19 +53,18 @@ ${r.kep==='ΚΕΠ 1'?`<tr><th>Συνολική υπηρεσία</th><td>${w.esc(
 <footer class="footer"><div class="footer-left"><div>© 2026 SeaService Calculator</div><div class="rights">All rights reserved.</div></div><div class="footer-right"><span class="credit-label">Σχεδιασμός &amp; Ανάπτυξη: </span><strong><em>Tassos Ballas</em></strong></div></footer>
 </section>`;
   };
-
   w.makePdf=async function(data){
     if(!w.html2canvas||!w.jspdf){alert('Δεν φορτώθηκαν οι βιβλιοθήκες PDF. Δοκίμασε ξανά μετά την πλήρη φόρτωση της σελίδας.');return}
     const holder=w.document.createElement('div');
     holder.style.cssText='position:fixed;left:-10000px;top:0;width:794px;background:#fff;color:#111';
     const css=w.document.createElement('style');
     css.textContent=`
-.pdf-report{width:794px;min-height:1123px;background:#fff;padding:34px 28px 22px;box-sizing:border-box;font-family:Arial,sans-serif;color:#222;page-break-after:always}
+.pdf-report{width:794px;min-height:1123px;background:#fff;padding:34px 28px 22px;box-sizing:border-box;font-family:Arial,sans-serif;color:#222;page-break-after:always;display:flex;flex-direction:column}
 .pdf-report .header{text-align:center;margin-bottom:24px}.pdf-report .brand{font-size:28px;font-weight:800;color:#214f83}.pdf-report .title{font-size:22px;font-weight:800;color:#214f83;margin-top:3px}.pdf-report .sub{font-size:13px;color:#777;margin-top:8px}
 .pdf-report h2{font-size:17px;color:#214f83;margin:16px 0 7px;letter-spacing:.2px}
 .pdf-report table{width:100%;border-collapse:collapse;font-size:13px}.pdf-report th,.pdf-report td{border:1px solid #cfd6df;padding:8px 10px;text-align:left;vertical-align:middle}.pdf-report th{width:34%;background:#f0f3f7;font-weight:800}.pdf-report td{background:#fff}
 .pdf-report .final-box{border:1px solid;padding:14px 18px;margin-top:4px;box-sizing:border-box;page-break-inside:avoid}.pdf-report .final-state{text-align:center;font-size:17px;font-weight:800;margin-bottom:12px}.pdf-report .final-details{text-align:left;font-size:13px;line-height:1.5}.pdf-report .service-line{margin:0 0 5px}.pdf-report .failure-line{margin-top:9px;display:flex;align-items:flex-start;gap:9px}.pdf-report .failure-x{font-size:22px;font-weight:900;line-height:1.1;flex:0 0 auto}.pdf-report .failure-text{font-weight:600}.pdf-report .cannot{text-align:center;font-size:14px;font-weight:800;margin-top:13px}
-.pdf-report .footer{border-top:1px solid #d5dbe2;margin-top:26px;padding-top:8px;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#777;line-height:1.35}.pdf-report .footer-left{text-align:left}.pdf-report .footer-left .rights{display:block}.pdf-report .footer-right{text-align:right;white-space:nowrap}.pdf-report .footer-right .credit-label{font-style:normal}.pdf-report .footer-right strong{font-weight:800}.pdf-report .footer-right em{font-style:italic}
+.pdf-report .footer{border-top:1px solid #d5dbe2;margin-top:auto;padding-top:8px;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#777;line-height:1.35}.pdf-report .footer-left{text-align:left}.pdf-report .footer-left .rights{display:block}.pdf-report .footer-right{text-align:right;white-space:nowrap}.pdf-report .footer-right .credit-label{font-style:normal}.pdf-report .footer-right strong{font-weight:800}.pdf-report .footer-right em{font-style:italic}
 `;
     holder.appendChild(css);
     data.forEach(r=>{const d=w.document.createElement('div');d.innerHTML=w.reportHtml(r);holder.appendChild(d.firstElementChild)});
@@ -96,17 +93,13 @@ ${r.kep==='ΚΕΠ 1'?`<tr><th>Συνολική υπηρεσία</th><td>${w.esc(
     const blob=pdf.output('blob');
     const url=w.URL.createObjectURL(blob);
     const opened=w.open(url,'_blank');
-    if(!opened){
-      const a=w.document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.click();
-    }
+    if(!opened){const a=w.document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.click();}
     setTimeout(()=>w.URL.revokeObjectURL(url),60000);
   };
-
   patched=true;
   w.__masterPdfPatched=true;
   return true;
 }
-
 frame.addEventListener('load',()=>{
   if(patchMaster())return;
   const timer=setInterval(()=>{if(patchMaster())clearInterval(timer)},50);
