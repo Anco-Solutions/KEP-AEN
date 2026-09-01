@@ -10,7 +10,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f2f2f7}
 </style>
 </head>
 <body>
-<iframe id="appFrame" src="archive-final.html?v=20260901-6" title="Αρχείο Εξέτασης ΚΕΠ"></iframe>
+<iframe id="appFrame" src="archive-final.html?v=20260901-7" title="Αρχείο Εξέτασης ΚΕΠ"></iframe>
 <script>
 const frame=document.getElementById('appFrame');
 let patched=false;
@@ -48,7 +48,7 @@ ${r.kep==='ΚΕΠ 1'?`<tr><th>Συνολική υπηρεσία</th><td>${w.esc(
 <div class="final-details">
 <div class="summary-line"><span class="summary-x">✖</span><strong>Συνολική Υπηρεσία ${w.esc(service)}</strong></div>
 <div class="specialty-line"><strong>Υπηρεσία ανά Ειδικότητα:</strong> ${w.esc(r.rank||'Δόκιμος Μηχανικός')} — ${w.esc(service)}</div>
-<div class="failure-line"><span class="failure-x">✖</span><span class="failure-text">${w.esc(reason)}</span></div>
+${ok?'':'<div class="failure-line"><span class="failure-x">✖</span><span class="failure-text">'+w.esc(reason)+'</span></div>'}
 <div class="cannot">${ok?'Η εξέταση ολοκληρώθηκε επιτυχώς.':'Το ΚΕΠ δεν μπορεί να εξεταστεί.'}</div>
 </div>
 </div>
