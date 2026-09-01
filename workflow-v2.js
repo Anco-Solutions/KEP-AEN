@@ -1,4 +1,4 @@
-/* KEP workflow v10 — recovered archive marker separate from specialty */
+/* KEP workflow v11 — archive marker separate from specialty + Greek grammar */
 (function(){
 'use strict';
 const $=id=>document.getElementById(id),val=id=>(($(id)?.value)||'').trim(),archiveKey='seaServiceArchive';
@@ -16,11 +16,57 @@ function tripKey(t){return [t?.embark||'',t?.discharge||'',t?.rank||''].join('|'
 function recoveredTrip(t){return {...t,_recoveredFromArchive:true}}
 function mergeTrips(a,b){const out=[],seen=new Set();[...(a||[]),...(b||[])].forEach(t=>{const k=tripKey(t);if(!k||seen.has(k))return;seen.add(k);out.push({...t})});return out}
 function parseServiceDays(text){const m=String(text||'').match(/(\d+)\s*μήνες(?:\s*και\s*(\d+)\s*ημέρες)?/i);if(!m)return 0;return Number(m[1]||0)*30+Number(m[2]||0)}
-function legacyTripsFromRecord(rec){const existing=Array.isArray(rec?.trips)?rec.trips:[];if(existing.length)return existing.map(recoveredTrip);const days=parseServiceDays(rec?.result||'');if(!days)return [];const out=[];let remaining=days,index=0;while(remaining>0){const block=Math.min(30,remaining);const start=new Date(1900,0,1+index*31);const end=new Date(start);end.setDate(end.getDate()+block-1);out.push({embark:start.toISOString().slice(0,10),discharge:end.toISOString().slice(0,10),rank:'Προηγούμενη υπηρεσία',_recoveredFromArchive:true});remaining-=block;index++}return out}
+function legacyTripsFromRecord(rec){
+ const existing=Array.isArray(rec?.trips)?rec.trips:[];
+ if(existing.length)return existing.map(recoveredTrip);
+ const days=parseServiceDays(rec?.result||'');
+ if(!days)return [];
+ const out=[];let remaining=days,index=0;
+ while(remaining>0){
+  const block=Math.min(30,remaining),start=new Date(1900,0,1+index*31),end=new Date(start);
+  end.setDate(end.getDate()+block-1);
+  out.push({embark:start.toISOString().slice(0,10),discharge:end.toISOString().slice(0,10),rank:'',_recoveredFromArchive:true});
+  remaining-=block;index++;
+ }
+ return out;
+}
 function candidateRecord(){const r=val('registryNumber'),k=kep();if(!r||!k)return null;return readArchive().find(x=>String(x.registryNumber||'').trim()===r&&String(x.kep||'').trim()==='ΚΕΠ '+k)||null}
 function ensureArchivedTripsBeforeNewTrip(){const rec=candidateRecord();if(!rec)return;const oldTrips=legacyTripsFromRecord(rec),current=getTrips(),merged=mergeTrips(oldTrips,current);if(oldTrips.length&&merged.length!==current.length)setTrips(merged)}
-function restoreArchivedService(){const r=val('registryNumber'),k=kep();if(!r||!k)return null;const rec=candidateRecord();if(!rec)return null;const oldTrips=legacyTripsFromRecord(rec),current=getTrips(),merged=mergeTrips(oldTrips,current);if(oldTrips.length&&merged.length!==current.length)setTrips(merged);markRecoveredTrips();const key=r+'|'+k,result=$('result');if(result&&rec.result&&lastKey!==key){lastKey=key;const note='<div id="archiveRestoreNotice" style="margin:10px 0;padding:12px;border-radius:8px;background:#f5f7fa;border:1px solid #dfe3e8"><strong>Βρέθηκε προηγούμενη καταχώριση στο Αρχείο.</strong><br>Η προηγούμενη υπηρεσία του υποψηφίου ανακτήθηκε και <strong>υπολογίζεται μαζί με τη νέα υπηρεσία</strong>.</div>';if(!result.innerText.trim())result.innerHTML=note+rec.result}return rec}
-function markRecoveredTrips(){const list=$('tripList');if(!list)return;list.querySelectorAll('.archive-recovery-marker').forEach(x=>x.remove());const trips=getTrips();const cards=Array.from(list.children);trips.forEach((t,i)=>{if(!t?._recoveredFromArchive)return;const card=cards[i];if(!card)return;const marker=document.createElement('div');marker.className='archive-recovery-marker';marker.textContent='↩ Προηγούμενη υπηρεσία από ανάκτηση Αρχείου';marker.style.cssText='margin:5px 0 8px;padding:5px 8px;border-radius:6px;background:#f5f7fa;border:1px solid #dfe3e8;font-size:12px;font-weight:700;color:#555';const strong=card.querySelector('strong');if(strong)strong.insertAdjacentElement('afterend',marker);else card.insertBefore(marker,card.firstChild)})}
+function restoreArchivedService(){
+ const r=val('registryNumber'),k=kep();if(!r||!k)return null;
+ const rec=candidateRecord();if(!rec)return null;
+ const oldTrips=legacyTripsFromRecord(rec),current=getTrips(),merged=mergeTrips(oldTrips,current);
+ if(oldTrips.length&&merged.length!==current.length)setTrips(merged);
+ markRecoveredTrips();
+ const key=r+'|'+k,result=$('result');
+ if(result&&rec.result&&lastKey!==key){
+  lastKey=key;
+  const note='<div id="archiveRestoreNotice" style="margin:10px 0;padding:12px;border-radius:8px;background:#f5f7fa;border:1px solid #dfe3e8"><strong>Βρέθηκε προηγούμενη καταχώριση στο Αρχείο.</strong><br>Η προηγούμενη υπηρεσία του υποψηφίου ανακτήθηκε και <strong>υπολογίζεται μαζί με τη νέα υπηρεσία</strong>.</div>';
+  if(!result.innerText.trim())result.innerHTML=note+rec.result;
+ }
+ return rec;
+}
+function markRecoveredTrips(){
+ const list=$('tripList');if(!list)return;
+ list.querySelectorAll('.archive-recovery-marker').forEach(x=>x.remove());
+ const trips=getTrips(),cards=Array.from(list.children);
+ trips.forEach((t,i)=>{
+  if(!t?._recoveredFromArchive)return;
+  const card=cards[i];if(!card)return;
+  const marker=document.createElement('div');
+  marker.className='archive-recovery-marker';
+  marker.textContent='↩ Προηγούμενη υπηρεσία από ανάκτηση Αρχείου';
+  marker.style.cssText='margin:5px 0 8px;padding:5px 8px;border-radius:6px;background:#f5f7fa;border:1px solid #dfe3e8;font-size:12px;font-weight:700;color:#555';
+  const strong=card.querySelector('strong');
+  if(strong)strong.insertAdjacentElement('afterend',marker);else card.insertBefore(marker,card.firstChild);
+ })
+}
+function normalizeServiceGrammar(){
+ const root=document.body;if(!root)return;
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+ const nodes=[];let n;while(n=walker.nextNode())nodes.push(n);
+ nodes.forEach(x=>{x.nodeValue=x.nodeValue.replace(/\b1\s+μήνες\b/g,'1 μήνα').replace(/\b1\s+ημέρες\b/g,'1 ημέρα')});
+}
 function normalizeExamLabels(){const p=$('examinationPanel');if(!p)return;const labels=p.querySelectorAll('.exam-grid label');labels.forEach(l=>{const first=l.firstChild;if(!first||first.nodeType!==3)return;const txt=first.textContent.trim();if(txt==='Κατάσταση εξέτασης')first.textContent='Εξέταση';if(txt==='Δικαιολογητικά')first.textContent='Δικαιολογητικά'})}
 function ensureFields(){const old=$('examGrade');if(!old)return null;const wrap=old.parentElement;old.style.display='none';let g=$('examGradeNumber');if(!g){g=document.createElement('input');g.id='examGradeNumber';g.type='number';g.min='0';g.max='10';g.step='0.01';g.placeholder='0,00 – 10,00';g.inputMode='decimal';g.style.cssText='width:100%;box-sizing:border-box;padding:10px;border:1px solid #ccc;border-radius:8px;font:inherit;display:none';wrap.appendChild(g)}let scale=$('examGradeScale');if(!scale){scale=document.createElement('div');scale.id='examGradeScale';scale.textContent='0,00–4,99 Ανεπιτυχώς  ·  5,00–6,49 Καλώς  ·  6,50–8,49 Λίαν Καλώς  ·  8,50–10,00 Άριστα';scale.style.cssText='margin-top:6px;font-size:12px;line-height:1.35;color:#666;display:none';wrap.appendChild(scale)}let n=$('automaticExamResult');if(!n){n=document.createElement('div');n.id='automaticExamResult';n.style.cssText='margin-top:8px;padding:9px 11px;border-radius:8px;font-weight:700;display:none';wrap.appendChild(n)}return g}
 function normalizeDocuments(){const s=$('documentsStatus');if(!s)return;Array.from(s.options).forEach(o=>{if(o.value==='Εντάξει'||o.textContent.trim()==='Εντάξει'){o.value='Πλήρη';o.textContent='Πλήρη'}})}
@@ -28,8 +74,34 @@ function statusOptions(){const s=$('examinationStatus');if(!s)return;const curre
 function hideFinal(){const d=$('finalDecision');if(!d)return;const l=d.closest('label');if(l)l.style.display='none';else d.style.display='none'}
 function noteField(){const s=$('documentsStatus');if(!s)return;const grid=s.closest('.exam-grid');if(!grid)return;if(!Array.from(s.options).some(o=>o.value==='Εκκρεμότητα')){const o=document.createElement('option');o.value='Εκκρεμότητα';o.textContent='Εκκρεμότητα';s.appendChild(o)}let w=$('documentsNoteWrap');if(!w){w=document.createElement('label');w.id='documentsNoteWrap';w.style.cssText='display:none;grid-column:1/-1';w.innerHTML='Παρατήρηση / εκκρεμότητα<textarea id="documentsNote" rows="3" placeholder="Περιγράψτε τι βρέθηκε ή τι εκκρεμεί."></textarea>';grid.appendChild(w);w.querySelector('textarea').style.cssText='width:100%;box-sizing:border-box;margin-top:5px;padding:9px;border:1px solid #ccc;border-radius:8px;font:inherit;resize:vertical;min-height:80px'}w.style.display=(s.value==='Εκκρεμότητα'||s.value==='Ελλιπή')?'block':'none'}
 function gradeClassification(x){if(!Number.isFinite(x)||x<0||x>10)return '';if(x<5)return '✕ Ανεπιτυχώς (0,00–4,99)';if(x<6.5)return '✓ Καλώς (5,00–6,49)';if(x<8.5)return '✓ Λίαν Καλώς (6,50–8,49)';return '✓ Άριστα (8,50–10,00)'}
-function refresh(){const rec=restoreArchivedService();const p=$('examinationPanel'),t=resultText();if(!p||!t)return;normalizeExamLabels();normalizeDocuments();const bad=insufficient(t),docs=$('documentsStatus'),s=$('examinationStatus'),w=$('examWarning');if(bad){p.style.display='none';if(docs)docs.value='Δεν έχει ελεγχθεί';return}p.style.display='block';noteField();statusOptions();hideFinal();const ok=val('documentsStatus')==='Πλήρη';if(s){s.disabled=!ok;if(!ok)s.value='pending'}const g=ensureFields();const scale=$('examGradeScale');if(g){const show=ok&&s&&s.value==='done';g.style.setProperty('display',show?'block':'none','important');g.parentElement.style.display='block';if(scale)scale.style.display=show?'block':'none'}if(w){if(docs&&docs.value==='Ελλιπή'){w.style.display='block';w.textContent='Τα δικαιολογητικά είναι ελλιπή. Η εξέταση δεν προχωρά.'}else if(docs&&docs.value==='Εκκρεμότητα'){w.style.display='block';w.textContent='Υπάρχει εκκρεμότητα στα δικαιολογητικά. Η εξέταση δεν προχωρά μέχρι να τακτοποιηθεί.'}else w.style.display='none'}const n=$('automaticExamResult');if(n){const show=ok&&s&&s.value==='done';n.style.display=show?'block':'none';if(show){const x=Number(String(g?.value||'').replace(',','.'));n.textContent=!g?.value?'Συμπληρώστε τον βαθμό εξέτασης.':(!Number.isFinite(x)||x<0||x>10?'Ο βαθμός πρέπει να είναι από 0,00 έως 10,00.':gradeClassification(x))}}}
-function buildRecord(){const t=resultText(),bad=insufficient(t),docs=val('documentsStatus'),s=$('examinationStatus'),g=$('examGradeNumber'),r=val('registryNumber'),name=val('fullName'),k=kep(),ex=examiner(),old=candidateRecord(),mergedTrips=mergeTrips(legacyTripsFromRecord(old),getTrips());if(!r||!name||!t)return null;const z=now();const previous=old?[...(old.previousVisits||[]),{timestamp:old.timestamp,result:old.result,examinationStatus:old.examinationStatus,grade:old.grade,finalDecision:old.finalDecision}]:[];if(bad)return{id:old?.id||Date.now(),timestamp:z.iso,date:z.date,time:z.time,registryNumber:r,fullName:name,kep:k?'ΚΕΠ '+k:'',examiner:ex||old?.examiner||'Δεν απαιτείται',documents:'Δεν ελέγχθηκαν — ανεπαρκής υπηρεσία',documentsNote:'',examinationStatus:'Δεν εξετάστηκε — ανεπαρκής υπηρεσία',grade:'Δεν βαθμολογήθηκε',finalDecision:'Δεν εξετάστηκε λόγω ανεπαρκούς υπηρεσίας',result:t,success:false,trips:mergedTrips,previousVisits:previous};if(!ex){alert('Πρέπει να επιλέξετε τον εξεταστή του συγκεκριμένου ΚΕΠ.');return null}if(!docs||docs==='Δεν έχει ελεγχθεί'){alert('Πρέπει πρώτα να δηλώσετε την κατάσταση των δικαιολογητικών.');return null}const note=val('documentsNote');if((docs==='Εκκρεμότητα'||docs==='Ελλιπή')&&!note){alert('Παρακαλώ καταγράψτε την παρατήρηση ή την εκκρεμότητα των δικαιολογητικών.');return null}if(docs!=='Πλήρη')return{id:old?.id||Date.now(),timestamp:z.iso,date:z.date,time:z.time,registryNumber:r,fullName:name,kep:k?'ΚΕΠ '+k:'',examiner:ex,documents:docs,documentsNote:note,examinationStatus:'Εκκρεμεί εξέταση',grade:'Δεν βαθμολογήθηκε',finalDecision:'Εκκρεμεί εξέταση',result:t+'\n\nΠαρατήρηση δικαιολογητικών: '+note,success:false,trips:mergedTrips,previousVisits:previous};const done=s&&s.value==='done';let grade='Δεν βαθμολογήθηκε',decision='Εκκρεμεί εξέταση',success=false;if(done){const n=Number(String(g?.value||'').replace(',','.'));if(!Number.isFinite(n)||n<0||n>10){alert('Συμπληρώστε έγκυρο βαθμό εξέτασης από 0,00 έως 10,00.');return null}grade=n.toFixed(2);success=n>=5;decision=success?'Επιτυχής':'Ανεπιτυχής'}return{id:old?.id||Date.now(),timestamp:z.iso,date:z.date,time:z.time,registryNumber:r,fullName:name,kep:k?'ΚΕΠ '+k:'',examiner:ex,documents:'Πλήρη',documentsNote:'',examinationStatus:done?'Εξετάστηκε':'Εκκρεμεί εξέταση',grade,finalDecision:decision,result:t,success,trips:mergedTrips,previousVisits:previous}}
+function refresh(){
+ const rec=restoreArchivedService(),p=$('examinationPanel'),t=resultText();
+ if(!p||!t){normalizeServiceGrammar();return}
+ normalizeExamLabels();normalizeDocuments();
+ const bad=insufficient(t),docs=$('documentsStatus'),s=$('examinationStatus'),w=$('examWarning');
+ if(bad){p.style.display='none';if(docs)docs.value='Δεν έχει ελεγχθεί';normalizeServiceGrammar();return}
+ p.style.display='block';noteField();statusOptions();hideFinal();
+ const ok=val('documentsStatus')==='Πλήρη';if(s){s.disabled=!ok;if(!ok)s.value='pending'}
+ const g=ensureFields(),scale=$('examGradeScale');
+ if(g){const show=ok&&s&&s.value==='done';g.style.setProperty('display',show?'block':'none','important');g.parentElement.style.display='block';if(scale)scale.style.display=show?'block':'none'}
+ if(w){if(docs&&docs.value==='Ελλιπή'){w.style.display='block';w.textContent='Τα δικαιολογητικά είναι ελλιπή. Η εξέταση δεν προχωρά.'}else if(docs&&docs.value==='Εκκρεμότητα'){w.style.display='block';w.textContent='Υπάρχει εκκρεμότητα στα δικαιολογητικά. Η εξέταση δεν προχωρά μέχρι να τακτοποιηθεί.'}else w.style.display='none'}
+ const n=$('automaticExamResult');
+ if(n){const show=ok&&s&&s.value==='done';n.style.display=show?'block':'none';if(show){const x=Number(String(g?.value||'').replace(',','.'));n.textContent=!g?.value?'Συμπληρώστε τον βαθμό εξέτασης.':(!Number.isFinite(x)||x<0||x>10?'Ο βαθμός πρέπει να είναι από 0,00 έως 10,00.':gradeClassification(x))}}
+ normalizeServiceGrammar();
+}
+function buildRecord(){
+ const t=resultText(),bad=insufficient(t),docs=val('documentsStatus'),s=$('examinationStatus'),g=$('examGradeNumber'),r=val('registryNumber'),name=val('fullName'),k=kep(),ex=examiner(),old=candidateRecord(),mergedTrips=mergeTrips(legacyTripsFromRecord(old),getTrips());
+ if(!r||!name||!t)return null;
+ const z=now(),previous=old?[...(old.previousVisits||[]),{timestamp:old.timestamp,result:old.result,examinationStatus:old.examinationStatus,grade:old.grade,finalDecision:old.finalDecision}]:[];
+ if(bad)return{id:old?.id||Date.now(),timestamp:z.iso,date:z.date,time:z.time,registryNumber:r,fullName:name,kep:k?'ΚΕΠ '+k:'',examiner:ex||old?.examiner||'Δεν απαιτείται',documents:'Δεν ελέγχθηκαν — ανεπαρκής υπηρεσία',documentsNote:'',examinationStatus:'Δεν εξετάστηκε — ανεπαρκής υπηρεσία',grade:'Δεν βαθμολογήθηκε',finalDecision:'Δεν εξετάστηκε λόγω ανεπαρκούς υπηρεσίας',result:t,success:false,trips:mergedTrips,previousVisits:previous};
+ if(!ex){alert('Πρέπει να επιλέξετε τον εξεταστή του συγκεκριμένου ΚΕΠ.');return null}
+ if(!docs||docs==='Δεν έχει ελεγχθεί'){alert('Πρέπει πρώτα να δηλώσετε την κατάσταση των δικαιολογητικών.');return null}
+ const note=val('documentsNote');if((docs==='Εκκρεμότητα'||docs==='Ελλιπή')&&!note){alert('Παρακαλώ καταγράψτε την παρατήρηση ή την εκκρεμότητα των δικαιολογητικών.');return null}
+ if(docs!=='Πλήρη')return{id:old?.id||Date.now(),timestamp:z.iso,date:z.date,time:z.time,registryNumber:r,fullName:name,kep:k?'ΚΕΠ '+k:'',examiner:ex,documents:docs,documentsNote:note,examinationStatus:'Εκκρεμεί εξέταση',grade:'Δεν βαθμολογήθηκε',finalDecision:'Εκκρεμεί εξέταση',result:t+'\n\nΠαρατήρηση δικαιολογητικών: '+note,success:false,trips:mergedTrips,previousVisits:previous};
+ const done=s&&s.value==='done';let grade='Δεν βαθμολογήθηκε',decision='Εκκρεμεί εξέταση',success=false;
+ if(done){const n=Number(String(g?.value||'').replace(',','.'));if(!Number.isFinite(n)||n<0||n>10){alert('Συμπληρώστε έγκυρο βαθμό εξέτασης από 0,00 έως 10,00.');return null}grade=n.toFixed(2);success=n>=5;decision=success?'Επιτυχής':'Ανεπιτυχής'}
+ return{id:old?.id||Date.now(),timestamp:z.iso,date:z.date,time:z.time,registryNumber:r,fullName:name,kep:k?'ΚΕΠ '+k:'',examiner:ex,documents:'Πλήρη',documentsNote:'',examinationStatus:done?'Εξετάστηκε':'Εκκρεμεί εξέταση',grade,finalDecision:decision,result:t,success,trips:mergedTrips,previousVisits:previous}
+}
 function intercept(e){const b=e.target?.closest?.('#saveArchive');if(!b)return;e.preventDefault();e.stopImmediatePropagation();const r=buildRecord();if(!r)return;const a=readArchive(),idx=a.findIndex(x=>String(x.registryNumber||'').trim()===String(r.registryNumber||'').trim()&&String(x.kep||'').trim()===String(r.kep||'').trim());if(idx>=0)a[idx]=r;else a.unshift(r);writeArchive(a);alert(idx>=0?'Η καταχώριση του υποψηφίου ενημερώθηκε στο Αρχείο Εξέτασης ΚΕΠ.':'Η εξέταση καταχωρήθηκε στο Αρχείο Εξέτασης ΚΕΠ.')}
 function init(){document.addEventListener('click',e=>{if(e.target?.closest?.('#addTrip'))ensureArchivedTripsBeforeNewTrip()},true);document.addEventListener('click',intercept,true);document.addEventListener('change',e=>{if(e.target?.id==='documentsStatus'||e.target?.id==='examinationStatus'||e.target?.name==='kep'||e.target?.id==='registryNumber'){lastKey='';refresh()}});document.addEventListener('input',e=>{if(e.target?.id==='examGradeNumber'||e.target?.id==='registryNumber')refresh()});const r=$('result');if(r)new MutationObserver(refresh).observe(r,{childList:true,subtree:true,characterData:true});setInterval(refresh,500);refresh()}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
