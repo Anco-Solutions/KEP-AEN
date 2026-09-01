@@ -1,4 +1,4 @@
-/* KEP examiner management + mandatory visible selection */
+/* Examiner selection: visible beside the selected KEP + management link */
 (function(){
 const ARCHIVE='seaServiceArchive',EXAMINERS='seaServiceExaminers';
 const $=id=>document.getElementById(id);
@@ -11,16 +11,16 @@ function styles(){
  if($('examinerRequiredStyles'))return;
  const s=document.createElement('style');s.id='examinerRequiredStyles';
  s.textContent=`
- .top-examiner-card{background:#f7f9fb;border:1px solid #dfe3e8;border-radius:9px;padding:10px 12px;margin:8px 0 14px;width:100%;box-sizing:border-box}
- .top-examiner-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px;color:#26344f}
- .top-examiner-title{font-size:15px;font-weight:800}
- .top-examiner-required{font-size:10px;font-weight:800;color:#9b1c1c;background:#fff0f0;padding:3px 7px;border-radius:999px}
- .top-examiner-card select{width:100%;min-height:42px;box-sizing:border-box;padding:7px 10px;border:1px solid #b9c1ca;border-radius:8px;background:#fff;font:inherit}
- .top-examiner-actions{margin-top:7px;text-align:left}
- .top-examiner-actions a{font-size:12px;font-weight:700;color:#315f9f;text-decoration:none}
- .top-examiner-warning{display:none;margin-top:7px;padding:7px 9px;border-radius:7px;background:#fff0f0;color:#9b1c1c;font-size:12px;font-weight:700}
+ .top-examiner-card{display:inline-flex;vertical-align:middle;align-items:center;gap:8px;background:#f7f9fb;border:1px solid #dfe3e8;border-radius:9px;padding:7px 9px;margin:4px 0 10px 8px;box-sizing:border-box;max-width:calc(100% - 8px)}
+ .top-examiner-head{display:flex;align-items:center;gap:6px;color:#26344f;white-space:nowrap}
+ .top-examiner-title{font-size:14px;font-weight:800}
+ .top-examiner-required{font-size:9px;font-weight:800;color:#9b1c1c;background:#fff0f0;padding:3px 6px;border-radius:999px}
+ .top-examiner-card select{min-width:190px;min-height:38px;box-sizing:border-box;padding:6px 9px;border:1px solid #b9c1ca;border-radius:8px;background:#fff;font:inherit}
+ .top-examiner-actions{display:inline-flex;align-items:center}
+ .top-examiner-actions a{font-size:11px;font-weight:700;color:#315f9f;text-decoration:none;white-space:nowrap}
+ .top-examiner-warning{display:none;position:absolute;margin-top:43px;padding:7px 9px;border-radius:7px;background:#fff0f0;color:#9b1c1c;font-size:12px;font-weight:700;z-index:5}
  .examiner-box{display:none!important}
- @media(max-width:700px){.top-examiner-card{margin-top:7px}.top-examiner-head{align-items:flex-start}}
+ @media(max-width:700px){.top-examiner-card{display:flex;width:100%;max-width:100%;margin:4px 0 12px;flex-wrap:wrap;gap:7px}.top-examiner-head{width:auto}.top-examiner-card select{flex:1;min-width:150px}.top-examiner-actions{width:100%}.top-examiner-actions a{font-size:12px}}
  `;
  document.head.appendChild(s)
 }
@@ -39,12 +39,11 @@ function ensure(){
 function position(c){
  const label=selectedKepLabel();
  if(!label||!c)return;
- if(c.previousElementSibling!==label)c.remove();
  label.insertAdjacentElement('afterend',c);
 }
 function render(){
  const c=$('topExaminerCard'),s=$('topExaminerSelect');if(!c||!s)return;
- const k=kep();c.style.display=k?'block':'none';
+ const k=kep();c.style.display=k?'inline-flex':'none';
  const a=read(EXAMINERS),f=field(),v=f?.value||'';
  s.innerHTML='<option value="">'+(a.length?'— Επιλέξτε εξεταστή —':'— Δεν υπάρχουν εξεταστές —')+'</option>'+a.map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join('');
  if(a.includes(v))s.value=v;
