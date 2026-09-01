@@ -1,4 +1,4 @@
-/* Examiner selection: directly beside the selected KEP + management link */
+/* Examiner selection: directly beside the selected KEP + one shared examiner-management action */
 (function(){
 const ARCHIVE='seaServiceArchive',EXAMINERS='seaServiceExaminers';
 const $=id=>document.getElementById(id);
@@ -39,7 +39,7 @@ function ensure(){
   const radios=document.querySelectorAll('input[name="kep"]');
   if(!radios.length)return;
   c=document.createElement('div');c.id='topExaminerCard';c.className='top-examiner-card';
-  c.innerHTML='<div class="top-examiner-head"><div id="topExaminerTitle" class="top-examiner-title">Εξεταστής</div><div class="top-examiner-required">ΥΠΟΧΡΕΩΤΙΚΟ</div></div><select id="topExaminerSelect"><option value="">— Επιλέξτε εξεταστή —</option></select><div id="topExaminerWarning" class="top-examiner-warning">Ο εξεταστής είναι υποχρεωτικός πριν από την καταχώριση.</div><div class="top-examiner-actions"><a href="examiner.html">⚙️ Διαχείριση / προσθήκη εξεταστών</a></div>';
+  c.innerHTML='<div class="top-examiner-head"><div id="topExaminerTitle" class="top-examiner-title">Εξεταστής</div><div class="top-examiner-required">ΥΠΟΧΡΕΩΤΙΚΟ</div></div><select id="topExaminerSelect"><option value="">— Επιλέξτε εξεταστή —</option></select><div id="topExaminerWarning" class="top-examiner-warning">Ο εξεταστής είναι υποχρεωτικός πριν από την καταχώριση.</div><div class="top-examiner-actions"><a href="examiner.html">＋ Προσθήκη εξεταστή</a></div>';
   $('topExaminerSelect').addEventListener('change',sync);
  }
  position(c);render();
