@@ -68,9 +68,9 @@ button:active{background:#005FCC}
 }
 #kep1Choice>label,#kep2Choice>label{display:flex!important;align-items:center!important;gap:8px!important}
 
-/* More vertical breathing room between KEP 1 and KEP 2 choices. */
+/* Slightly more natural vertical breathing room between KEP 1 and KEP 2 choices. */
 #kep1Choice{margin-top:0!important}
-#kep2Choice{margin-top:20px!important}
+#kep2Choice{margin-top:24px!important}
 
-/* Footer signature: italic + bold, but not overly dark. */
-.footer em{font-style:italic!important;font-weight:800!important;color:#222!important}
+/* Footer signature: italic + bold, dark blue-gray so it is clear but integrated with the palette. */
+.footer em{font-style:italic!important;font-weight:800!important;color:#24344f!important}
