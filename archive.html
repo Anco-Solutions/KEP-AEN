@@ -10,7 +10,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f2f2f7}
 </style>
 </head>
 <body>
-<iframe id="appFrame" src="archive-final.html?v=20260901-4" title="Αρχείο Εξέτασης ΚΕΠ"></iframe>
+<iframe id="appFrame" src="archive-final.html?v=20260901-5" title="Αρχείο Εξέτασης ΚΕΠ"></iframe>
 <script>
 const frame=document.getElementById('appFrame');
 let patched=false;
@@ -24,7 +24,8 @@ function patchMaster(){
     const border=ok?'#a8c8ae':'#e0a0a0';
     const accent=ok?'#1f6b35':'#8f3030';
     const service=w.serviceText(r);
-    const reason=ok?'Η εξέταση ολοκληρώθηκε επιτυχώς.':(r.result?w.normalizeGreek(r.result):'Η εξέταση δεν ολοκληρώθηκε επιτυχώς.');
+    let reason=ok?'Η εξέταση ολοκληρώθηκε επιτυχώς.':(r.result?w.normalizeGreek(r.result):'Η εξέταση δεν ολοκληρώθηκε επιτυχώς.');
+    reason=reason.replace(/\s*Το ΚΕΠ δεν μπορεί να εξεταστεί\.?\s*$/i,'').trim();
     return `<section class="pdf-report">
 <header class="header"><div class="brand">SeaService Calculator</div><div class="title">ΑΡΧΕΙΟ ΕΞΕΤΑΣΗΣ ΚΕΠ</div><div class="sub">Εκτύπωση εξέτασης</div></header>
 <h2>ΣΤΟΙΧΕΙΑ ΝΑΥΤΙΚΟΥ</h2>
@@ -42,10 +43,8 @@ ${r.kep==='ΚΕΠ 1'?`<tr><th>Συνολική υπηρεσία</th><td>${w.esc(
 <div class="final-box" style="background:${bg};border-color:${border};color:${accent}">
 <div class="final-state">${ok?'ΕΠΙΤΥΧΗΣ':'ΜΗ ΕΠΙΤΥΧΗΣ'}</div>
 <div class="final-details">
-<div class="service-line">Συνολική Υπηρεσία ${w.esc(service)}</div>
-<div class="service-line">Υπηρεσία ανά Ειδικότητα</div>
-<div class="service-line">${w.esc(r.rank||'Δόκιμος Μηχανικός')}</div>
-<div class="service-line">${w.esc(service)}</div>
+<div class="summary-line"><span class="summary-x">✖</span><strong>Συνολική Υπηρεσία ${w.esc(service)}</strong></div>
+<div class="specialty-line"><strong>Υπηρεσία ανά Ειδικότητα:</strong> ${w.esc(r.rank||'Δόκιμος Μηχανικός')} — ${w.esc(service)}</div>
 <div class="failure-line"><span class="failure-x">✖</span><span class="failure-text">${w.esc(reason)}</span></div>
 <div class="cannot">${ok?'Η εξέταση ολοκληρώθηκε επιτυχώς.':'Το ΚΕΠ δεν μπορεί να εξεταστεί.'}</div>
 </div>
@@ -63,7 +62,7 @@ ${r.kep==='ΚΕΠ 1'?`<tr><th>Συνολική υπηρεσία</th><td>${w.esc(
 .pdf-report .header{text-align:center;margin-bottom:24px}.pdf-report .brand{font-size:28px;font-weight:800;color:#214f83}.pdf-report .title{font-size:22px;font-weight:800;color:#214f83;margin-top:3px}.pdf-report .sub{font-size:13px;color:#777;margin-top:8px}
 .pdf-report h2{font-size:17px;color:#214f83;margin:16px 0 7px;letter-spacing:.2px}
 .pdf-report table{width:100%;border-collapse:collapse;font-size:13px}.pdf-report th,.pdf-report td{border:1px solid #cfd6df;padding:8px 10px;text-align:left;vertical-align:middle}.pdf-report th{width:34%;background:#f0f3f7;font-weight:800}.pdf-report td{background:#fff}
-.pdf-report .final-box{border:1px solid;padding:14px 18px;margin-top:4px;box-sizing:border-box;page-break-inside:avoid}.pdf-report .final-state{text-align:center;font-size:17px;font-weight:800;margin-bottom:12px}.pdf-report .final-details{text-align:left;font-size:13px;line-height:1.5}.pdf-report .service-line{margin:0 0 5px}.pdf-report .failure-line{margin-top:9px;display:flex;align-items:flex-start;gap:9px}.pdf-report .failure-x{font-size:22px;font-weight:900;line-height:1.1;flex:0 0 auto}.pdf-report .failure-text{font-weight:600}.pdf-report .cannot{text-align:center;font-size:14px;font-weight:800;margin-top:13px}
+.pdf-report .final-box{border:1px solid;padding:14px 18px;margin-top:4px;box-sizing:border-box;page-break-inside:avoid}.pdf-report .final-state{text-align:center;font-size:17px;font-weight:800;margin-bottom:12px}.pdf-report .final-details{text-align:left;font-size:13px;line-height:1.5}.pdf-report .summary-line{margin:0 0 7px;font-weight:800}.pdf-report .summary-x{font-size:19px;font-weight:900;display:inline-block;margin-right:9px;vertical-align:-1px}.pdf-report .specialty-line{margin:0 0 7px}.pdf-report .failure-line{margin-top:8px;display:flex;align-items:flex-start;gap:9px}.pdf-report .failure-x{font-size:22px;font-weight:900;line-height:1.1;flex:0 0 auto}.pdf-report .failure-text{font-weight:600}.pdf-report .cannot{text-align:center;font-size:14px;font-weight:800;margin-top:13px}
 .pdf-report .footer{border-top:1px solid #d5dbe2;margin-top:auto;padding-top:8px;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#777;line-height:1.35}.pdf-report .footer-left{text-align:left}.pdf-report .footer-left .rights{display:block}.pdf-report .footer-right{text-align:right;white-space:nowrap}.pdf-report .footer-right .credit-label{font-style:normal}.pdf-report .footer-right strong{font-weight:800}.pdf-report .footer-right em{font-style:italic}
 `;
     holder.appendChild(css);
