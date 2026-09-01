@@ -77,3 +77,15 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ready);
   else ready();
 })();
+
+/* Keep KEP 1 / KEP 2 controls compact on every phone. */
+(function(){
+  function compactKepControls(){
+    if(document.getElementById('compact-kep-controls'))return;
+    var s=document.createElement('style');
+    s.id='compact-kep-controls';
+    s.textContent='input[type="radio"][name="kep"]{width:auto!important;min-height:0!important;height:16px!important;padding:0!important;margin:0 5px 0 0!important;border:0!important;box-sizing:border-box!important;vertical-align:middle!important}#kep1Choice>label,#kep2Choice>label{display:inline-flex!important;align-items:center!important;width:auto!important;margin:0!important;padding:0!important;font-size:16px!important;font-weight:700!important;white-space:nowrap!important}#kep1Choice,#kep2Choice{width:auto!important;box-sizing:border-box!important}';
+    document.head.appendChild(s);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',compactKepControls);else compactKepControls();
+})();
