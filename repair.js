@@ -96,4 +96,5 @@ document.write('<script src="structured-result.js?v=1"><\/script>');
   function bind(){document.querySelectorAll('input[name="kep"]').forEach(function(r){if(r.__directNoHistory)return;r.__directNoHistory=true;r.addEventListener('change',function(){setTimeout(sync,0)})});sync()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();setInterval(bind,250)
 })();
-/* cache-bust this repair layer itself when GitHub Pages/browser cache is stale */
+/* Load the unified candidate controller after app/enhancements so legacy UI handlers cannot overwrite it. */
+setTimeout(function(){var s=document.createElement('script');s.src='candidate-flow.js?v=4';document.body.appendChild(s)},0);
