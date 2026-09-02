@@ -1,5 +1,5 @@
 document.write('<script src="structured-result.js?v=1"><\/script>');
-document.write('<script src="workflow-v2.js?v=11"><\/script>');
+/* workflow-v2 temporarily disabled: isolate KEP 1 / KEP 2 selection from archive workflow. */
 (function(){
   function ready(){
     var tripForm=document.getElementById('tripForm');
