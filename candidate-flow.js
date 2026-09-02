@@ -1,6 +1,8 @@
 /* KEP candidate flow — final controller for KEP2 previous-service UI */
 (function(){
 'use strict';
+if(window.__kepCandidateFlowLoaded)return;
+window.__kepCandidateFlowLoaded=true;
 const ARCHIVE_KEY='seaServiceArchive';
 const $=id=>document.getElementById(id);
 const value=id=>(($(id)?.value)||'').trim();
