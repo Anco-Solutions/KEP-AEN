@@ -45,7 +45,7 @@
 <div class="exam-grid">
 <label>Δικαιολογητικά<select id="documentsStatus"><option value="Δεν έχει ελεγχθεί">Δεν έχει ελεγχθεί</option><option value="Εντάξει">Εντάξει</option><option value="Ελλιπή">Ελλιπή</option></select></label>
 <label>Κατάσταση εξέτασης<select id="examinationStatus"><option value="Δεν εξετάστηκε">Δεν εξετάστηκε</option><option value="Εξετάστηκε - Επιτυχής">Εξετάστηκε - Επιτυχής</option><option value="Εξετάστηκε - Ανεπιτυχής">Εξετάστηκε - Ανεπιτυχής</option></select></label>
-<label>Βαθμός εξέτασης<select id="examGrade"><option value="Δεν βαθμολογήθηκε">Δεν βαθμολογήθηκε</option><option value="Καλώς (5,00–6,49)">Καλώς (5,00–6,49)</option><option value="Λίαν Καλώς (6,50–8,49)">Λίαν Καλώς (6,50–8,49)</option><option value="Άριστα (8,50–10,00)">Άριστα (8,50–10,00</option><option value="Ανεπιτυχώς (0–4,99)">Ανεπιτυχώς (0–4,99)</option></select></label>
+<label>Βαθμός εξέτασης<select id="examGrade"><option value="Δεν βαθμολογήθηκε">Δεν βαθμολογήθηκε</option><option value="Καλώς (5,00–6,49)">Καλώς (5,00–6,49)</option><option value="Λίαν Καλώς (6,50–8,49)">Λίαν Καλώς (6,50–8,49)</option><option value="Άριστα (8,50–10,00">Άριστα (8,50–10,00</option><option value="Ανεπιτυχώς (0–4,99)">Ανεπιτυχώς (0–4,99)</option></select></label>
 <label>Τελική απόφαση<select id="finalDecision"><option value="Σε αναμονή">Σε αναμονή</option><option value="Μπορεί να προχωρήσει">Μπορεί να προχωρήσει</option><option value="Δεν μπορεί να προχωρήσει">Δεν μπορεί να προχωρήσει</option><option value="Δεν εξετάστηκε λόγω ανεπαρκούς υπηρεσίας">Δεν εξετάστηκε λόγω ανεπαρκούς υπηρεσίας</option><option value="Δεν ολοκληρώθηκε λόγω ελλιπών δικαιολογητικών">Δεν ολοκληρώθηκε λόγω ελλιπών δικαιολογητικών</option></select></label>
 </div>
 <div class="exam-note">Κλίμακα αξιολόγησης: Καλώς 5,00–6,49 · Λίαν Καλώς 6,50–8,49 · Άριστα 8,50–10,00.</div>
@@ -63,26 +63,15 @@
   function showKep(){const selected=document.querySelector('input[name="kep"]:checked')?.value;box1.classList.toggle('active',selected==='1');box2.classList.toggle('active',selected==='2');}
   kepRadios.forEach(r=>r.addEventListener('change',showKep));
   showKep();
-  function loadExaminers(){
-    let list=[]; try{list=JSON.parse(localStorage.getItem('seaServiceExaminers')||'[]');}catch(e){list=[];}
-    if(!Array.isArray(list)) list=[];
-    [e1,e2].forEach(sel=>{const current=sel.value;sel.innerHTML='<option value="">— Επιλέξτε εξεταστή —</option>';list.forEach(x=>{const name=typeof x==='string'?x:(x.name||x.fullName||'');if(name){const o=document.createElement('option');o.value=name;o.textContent=name;sel.appendChild(o);}});if(list.some(x=>(typeof x==='string'?x:(x.name||x.fullName||''))===current))sel.value=current;});
-  }
-  loadExaminers();
-  window.addEventListener('storage',loadExaminers);
+  function loadExaminers(){let list=[];try{list=JSON.parse(localStorage.getItem('seaServiceExaminers')||'[]');}catch(e){list=[];}if(!Array.isArray(list))list=[];[e1,e2].forEach(sel=>{const current=sel.value;sel.innerHTML='<option value="">— Επιλέξτε εξεταστή —</option>';list.forEach(x=>{const name=typeof x==='string'?x:(x.name||x.fullName||'');if(name){const o=document.createElement('option');o.value=name;o.textContent=name;sel.appendChild(o);}});if(list.some(x=>(typeof x==='string'?x:(x.name||x.fullName||''))===current))sel.value=current;});}
+  loadExaminers(); window.addEventListener('storage',loadExaminers);
   const manage=document.getElementById('manageExaminers'), manager=document.getElementById('examinerManager');
   manage.addEventListener('click',function(){manager.classList.toggle('open');if(manager.classList.contains('open')) renderManager();});
-  function renderManager(){
-    let list=[];try{list=JSON.parse(localStorage.getItem('seaServiceExaminers')||'[]');}catch(e){list=[];}if(!Array.isArray(list))list=[];
-    manager.innerHTML='<div class="examiner-manager-card"><div class="examiner-manager-heading">Διαχείριση Εξεταστών</div><div id="examinerRows"></div><div class="examiner-add-row"><input class="new-examiner-input" id="newExaminerName" placeholder="Ονοματεπώνυμο εξεταστή"><button type="button" class="add-examiner" id="addExaminerBtn">＋ Προσθήκη</button></div></div>';
-    const rows=manager.querySelector('#examinerRows');if(!list.length)rows.innerHTML='<div class="examiner-empty">Δεν υπάρχουν εξεταστές.</div>';else list.forEach((x,i)=>{const name=typeof x==='string'?x:(x.name||x.fullName||'');const row=document.createElement('div');row.className='examiner-row';row.innerHTML='<span>'+name.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</span><button type="button" class="remove-examiner" data-index="'+i+'" title="Διαγραφή">🗑️</button>';rows.appendChild(row);});
-    manager.querySelector('#addExaminerBtn').addEventListener('click',function(){const input=manager.querySelector('#newExaminerName');const name=input.value.trim();if(!name)return;list.push(name);localStorage.setItem('seaServiceExaminers',JSON.stringify(list));loadExaminers();renderManager();});
-    manager.querySelectorAll('.remove-examiner').forEach(btn=>btn.addEventListener('click',function(){list.splice(Number(btn.dataset.index),1);localStorage.setItem('seaServiceExaminers',JSON.stringify(list));loadExaminers();renderManager();}));
-  }
+  function renderManager(){let list=[];try{list=JSON.parse(localStorage.getItem('seaServiceExaminers')||'[]');}catch(e){list=[];}if(!Array.isArray(list))list=[];manager.innerHTML='<div class="examiner-manager-card"><div class="examiner-manager-heading">Διαχείριση Εξεταστών</div><div id="examinerRows"></div><div class="examiner-add-row"><input class="new-examiner-input" id="newExaminerName" placeholder="Ονοματεπώνυμο εξεταστή"><button type="button" class="add-examiner" id="addExaminerBtn">＋ Προσθήκη</button></div></div>';const rows=manager.querySelector('#examinerRows');if(!list.length)rows.innerHTML='<div class="examiner-empty">Δεν υπάρχουν εξεταστές.</div>';else list.forEach((x,i)=>{const name=typeof x==='string'?x:(x.name||x.fullName||'');const row=document.createElement('div');row.className='examiner-row';row.innerHTML='<span>'+name.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</span><button type="button" class="remove-examiner" data-index="'+i+'" title="Διαγραφή">🗑️</button>';rows.appendChild(row);});manager.querySelector('#addExaminerBtn').addEventListener('click',function(){const input=manager.querySelector('#newExaminerName');const name=input.value.trim();if(!name)return;list.push(name);localStorage.setItem('seaServiceExaminers',JSON.stringify(list));loadExaminers();renderManager();});manager.querySelectorAll('.remove-examiner').forEach(btn=>btn.addEventListener('click',function(){list.splice(Number(btn.dataset.index),1);localStorage.setItem('seaServiceExaminers',JSON.stringify(list));loadExaminers();renderManager();}));}
 })();
 function updateDateTime(){const e=document.getElementById("calculationDateTime");if(!e)return;const n=new Date();e.textContent="Ημερ/νία & ώρα: "+n.toLocaleDateString("el-GR")+" "+n.toLocaleTimeString("el-GR",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});}updateDateTime();setInterval(updateDateTime,1000);window.addEventListener("beforeprint",updateDateTime);
 </script>
-<script src="repair.js?v=1"></script>
+<script src="repair.js?v=4"></script>
 <script src="app.js?v=6"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="enhancements.js?v=6"></script>
