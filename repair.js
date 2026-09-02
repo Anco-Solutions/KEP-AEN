@@ -1,4 +1,20 @@
 document.write('<script src="structured-result.js?v=1"><\/script>');
+/* The calculator reads these fields synchronously while app.js is loading.
+   Keep them hidden, but create them BEFORE app.js so its listeners never fail. */
+(function(){
+  var form=document.getElementById('tripForm');
+  if(form){
+    ['kep1Months','kep1Days'].forEach(function(id){
+      if(!document.getElementById(id)){
+        var x=document.createElement('input');
+        x.type='hidden';
+        x.id=id;
+        x.value='0';
+        form.appendChild(x);
+      }
+    });
+  }
+})();
 /* KEP2 visible Months/Days UI is owned by candidate-flow.js. */
 /* Keep KEP 1 / KEP 2 controls compact on every phone. */
 (function(){
@@ -27,4 +43,4 @@ document.write('<script src="structured-result.js?v=1"><\/script>');
   setInterval(bind,300);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
 })();
 /* Load the unified candidate controller after app/enhancements so it owns the KEP2 visible service UI. */
-setTimeout(function(){var s=document.createElement('script');s.src='candidate-flow.js?v=10';document.body.appendChild(s)},0);
+setTimeout(function(){var s=document.createElement('script');s.src='candidate-flow.js?v=11';document.body.appendChild(s)},0);
