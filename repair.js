@@ -59,4 +59,4 @@ document.write('<script src="structured-result.js?v=1"><\/script>');
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
 })();
 /* Load the unified candidate controller after app/enhancements so it owns the KEP2 visible service UI. */
-setTimeout(function(){var s=document.createElement('script');s.src='candidate-flow.js?v=7';document.body.appendChild(s)},0);
+setTimeout(function(){var s=document.createElement('script');s.src='candidate-flow.js?v=8';document.body.appendChild(s)},0);
