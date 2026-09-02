@@ -97,4 +97,4 @@ document.write('<script src="structured-result.js?v=1"><\/script>');
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();setInterval(bind,250)
 })();
 /* Load the unified candidate controller after app/enhancements so legacy UI handlers cannot overwrite it. */
-setTimeout(function(){var s=document.createElement('script');s.src='candidate-flow.js?v=5';document.body.appendChild(s)},0);
+setTimeout(function(){var s=document.createElement('script');s.src='candidate-flow.js?v=6';document.body.appendChild(s)},0);
