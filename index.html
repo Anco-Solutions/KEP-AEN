@@ -71,7 +71,7 @@
 })();
 function updateDateTime(){const e=document.getElementById("calculationDateTime");if(!e)return;const n=new Date();e.textContent="Ημερ/νία & ώρα: "+n.toLocaleDateString("el-GR")+" "+n.toLocaleTimeString("el-GR",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});}updateDateTime();setInterval(updateDateTime,1000);window.addEventListener("beforeprint",updateDateTime);
 </script>
-<script src="repair.js?v=5"></script>
+<script src="repair.js?v=6"></script>
 <script src="app.js?v=6"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="enhancements.js?v=6"></script>
