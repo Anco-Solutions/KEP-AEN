@@ -84,4 +84,4 @@ document.write('<script src="structured-result.js?v=1"><\/script>');
   setInterval(bind,300);
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
 })();
-document.write('<script src="candidate-flow.js?v=1"><\/script>');
+document.write('<script src="candidate-flow.js?v=2"><\/script>');
