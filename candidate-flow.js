@@ -11,7 +11,22 @@ const archive=()=>{try{const a=JSON.parse(localStorage.getItem(ARCHIVE_KEY)||'[]
 const norm=s=>String(s||'').trim().replace(/\s+/g,' ').toLocaleLowerCase('el-GR');
 function recordsForCandidate(){const a=archive(),r=value('registryNumber'),n=norm(value('fullName'));if(r){const x=a.filter(v=>String(v.registryNumber||'').trim()===r);if(x.length)return x}return n?a.filter(v=>norm(v.fullName)===n):[]}
 function latestKep1(){return recordsForCandidate().filter(v=>String(v.kep||'').trim()==='ΚΕΠ 1').sort((a,b)=>Number(b.id||0)-Number(a.id||0))[0]||null}
-function recoveredService(rec){if(!rec)return{months:0,days:0,totalDays:0};const stored=Number(rec.kep1ServiceTotalDays);if(Number.isFinite(stored)&&stored>0)return{months:Number(rec.kep1ServiceMonths)||Math.floor(stored/30),days:Number(rec.kep1ServiceDays)||stored%30,totalDays:stored};const calc=rec.calculation?.currentService;if(calc&&Number(calc.totalDays)>0)return{months:Number(calc.months)||Math.floor(Number(calc.totalDays)/30),days:Number(calc.days)||Number(calc.totalDays)%30,totalDays:Number(calc.totalDays)};if(rec.serviceMonths!==undefined&&String(rec.kep||'')==='ΚΕΠ 1'){const m=Number(rec.serviceMonths)||0,d=Number(rec.serviceDays)||0;if(m||d)return{months:m,days:d,totalDays:m*30+d}}return{months:0,days:0,totalDays:0}}
+function parseServiceText(text){const s=String(text||'').replace(/\s+/g,' ').trim();let m=s.match(/(\d+)\s*μήνες?\s*(?:και\s*)?(\d+)\s*ημέρες?/i);if(!m)m=s.match(/(\d+)\s*μήνες?/i);if(!m)return null;const months=Number(m[1])||0;const days=Number(m[2])||0;return{months,days,totalDays:months*30+days}}
+function recoveredService(rec){
+ if(!rec)return{months:0,days:0,totalDays:0};
+ const stored=Number(rec.kep1ServiceTotalDays);
+ if(Number.isFinite(stored)&&stored>0)return{months:Number(rec.kep1ServiceMonths)||Math.floor(stored/30),days:Number(rec.kep1ServiceDays)||stored%30,totalDays:stored};
+ const calc=rec.calculation;
+ const calcService=calc?.currentService;
+ if(calcService&&Number(calcService.totalDays)>0)return{months:Number(calcService.months)||Math.floor(Number(calcService.totalDays)/30),days:Number(calcService.days)||Number(calcService.totalDays)%30,totalDays:Number(calcService.totalDays)};
+ const total=calc?.totalService;
+ if(total&&Number(total.totalDays)>0)return{months:Number(total.months)||Math.floor(Number(total.totalDays)/30),days:Number(total.days)||Number(total.totalDays)%30,totalDays:Number(total.totalDays)};
+ const direct=Number(rec.serviceMonths)||0, directDays=Number(rec.serviceDays)||0;
+ if(direct||directDays)return{months:direct,days:directDays,totalDays:direct*30+directDays};
+ const current=Number(rec.currentServiceTotalDays)||0;
+ if(current>0)return{months:Number(rec.currentServiceMonths)||Math.floor(current/30),days:Number(rec.currentServiceDays)||current%30,totalDays:current};
+ return parseServiceText(rec.serviceText)||parseServiceText(rec.totalServiceText)||parseServiceText(rec.result)||{months:0,days:0,totalDays:0};
+}
 function hidden(m,d){const form=$('tripForm');if(!form)return;['kep1Months','kep1Days'].forEach(id=>{if(!$(id)){const x=document.createElement('input');x.type='hidden';x.id=id;form.appendChild(x)}});$('kep1Months').value=Math.max(0,Number(m)||0);$('kep1Days').value=Math.min(29,Math.max(0,Number(d)||0))}
 function ensureBox(){let box=$('manualKep1Service');if(box)return box;box=document.createElement('div');box.id='manualKep1Service';box.style.cssText='margin:10px 0 15px;padding:12px;border:1px solid #dfe3e8;border-radius:9px;background:#fff;position:relative;z-index:50';const form=$('tripForm');if(form?.parentNode)form.parentNode.insertBefore(box,form);else document.body.appendChild(box);return box}
 function syncManual(){if(selectedKep()!=='2')return;const m=Math.max(0,parseInt(value('manualKep1Months')||'0',10)||0),d=Math.min(29,Math.max(0,parseInt(value('manualKep1Days')||'0',10)||0));hidden(m,d);window.structuredCalculationResult=null}
@@ -21,7 +36,7 @@ function clearCandidate(){hidden(0,0);try{window.kep1SavedTrips=[]}catch(e){}if(
 function refresh(){renderBox()}
 function reset(){clearCandidate();['registryNumber','fullName','embark','discharge'].forEach(id=>{const e=$(id);if(e)e.value=''});document.querySelectorAll('input[name="kep"]').forEach(x=>x.checked=false);const box=ensureBox();box.style.display='none';box.innerHTML='';box.dataset.mode='';window.scrollTo({top:0,behavior:'smooth'})}
 function addReset(){if($('newCandidateButton'))return;const b=document.createElement('button');b.type='button';b.id='newCandidateButton';b.textContent='＋ Νέα εξέταση / Καθαρισμός';b.style.cssText='width:100%;margin:12px 0;padding:12px;border:1px solid #cfd5dc;border-radius:9px;background:#f5f7f9;color:#26344f;font:inherit;font-weight:800;cursor:pointer';const n=$('fullName');if(n?.parentElement)n.parentElement.insertBefore(b,n.nextSibling);b.addEventListener('click',reset)}
-function bind(){const reg=$('registryNumber'),name=$('fullName');if(reg&&!reg.__candidateUnified){reg.__candidateUnified=true;const change=()=>{clearCandidate();refresh()};reg.addEventListener('change',change);reg.addEventListener('blur',change);reg.addEventListener('input',change)}if(name&&!name.__candidateUnified){name.__candidateUnified=true;const change=()=>{clearCandidate();refresh()};name.addEventListener('change',change);name.addEventListener('blur',change);name.addEventListener('input',change)}document.querySelectorAll('input[name="kep"]').forEach(r=>{if(r.__candidateUnified)return;r.__candidateUnified=true;r.addEventListener('change',refresh)})}
+function bind(){const reg=$('registryNumber'),name=$('fullName');if(reg&&!reg.__candidateUnified){reg.__candidateUnified=true;const change=()=>{clearCandidate();refresh()};reg.addEventListener('change',change);reg.addEventListener('blur',change);reg.addEventListener('input',change)}if(name&&!name.__candidateUnified){name.__candidateUnified=true;const change=()=>{clearCandidate();refresh()};reg?.addEventListener('change',change);name.addEventListener('change',change);name.addEventListener('blur',change);name.addEventListener('input',change)}document.querySelectorAll('input[name="kep"]').forEach(r=>{if(r.__candidateUnified)return;r.__candidateUnified=true;r.addEventListener('change',refresh)})}
 function init(){addReset();bind();refresh()}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 setInterval(refresh,500);
