@@ -84,4 +84,16 @@ document.write('<script src="structured-result.js?v=1"><\/script>');
   setInterval(bind,300);
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
 })();
-document.write('<script src="candidate-flow.js?v=2"><\/script>');
+/* Direct no-history KEP 2 control. The legacy app.js status box must not treat
+   zero recovered service as an actual KEP 1 service. */
+(function(){
+  function $$(id){return document.getElementById(id)}
+  function registry(){return (($$('registryNumber')?.value)||'').trim()}
+  function archiveKep1(){try{var a=JSON.parse(localStorage.getItem('seaServiceArchive')||'[]');if(!Array.isArray(a))return null;return a.filter(function(r){return String(r.registryNumber||'').trim()===registry()&&String(r.kep||'').trim()==='ΚΕΠ 1'}).sort(function(a,b){return Number(b.id||0)-Number(a.id||0})[0]||null}catch(e){return null}}
+  function recoveredHasService(r){if(!r)return false;if(Number(r.kep1ServiceTotalDays||0)>0)return true;if(Number(r.kep1ServiceMonths||0)>0||Number(r.kep1ServiceDays||0)>0)return true;if(Array.isArray(r.trips)&&r.trips.length>0)return true;if(r.calculation&&Number(r.calculation.currentService?.totalDays||0)>0)return true;return false}
+  function ensureManual(){var box=$$('directManualKep1');if(box)return box;box=document.createElement('div');box.id='directManualKep1';box.style.cssText='display:none;margin:10px 0 15px;padding:14px;background:#fff;border:1px solid #cfd5dc;border-radius:9px';box.innerHTML='<strong>Δεν υπάρχουν στοιχεία για ανάκτηση υπηρεσίας ΚΕΠ 1</strong><p style="margin:7px 0 12px">Δεν υπάρχει προηγούμενη υπηρεσία ΚΕΠ 1 στο Αρχείο. Καταχωρήστε χειροκίνητα την υπηρεσία που πρέπει να συνυπολογιστεί στο ΚΕΠ 2.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><label style="font-weight:700">Μήνες<input id="directKep1Months" type="number" min="0" step="1" value="0" style="width:100%;box-sizing:border-box;margin-top:5px"></label><label style="font-weight:700">Ημέρες<input id="directKep1Days" type="number" min="0" max="29" step="1" value="0" style="width:100%;box-sizing:border-box;margin-top:5px"></label></div>';var ref=$$('kep2Section');if(ref&&ref.parentNode)ref.parentNode.insertBefore(box,ref);else document.body.appendChild(box);return box}
+  function sync(){var selected=document.querySelector('input[name="kep"]:checked');var box=ensureManual();if(!selected||selected.value!=='2'){box.style.display='none';return}var r=archiveKep1();var has=recoveredHasService(r);var prev=$$('kep1PreviousService');var status=$$('kep1InputStatus');if(!has){if(prev)prev.style.display='none';if(status)status.innerHTML='';box.style.display='block';var m=$$('directKep1Months'),d=$$('directKep1Days'),hm=$$('kep1Months'),hd=$$('kep1Days');if(hm&&hm.value!=='0')hm.value='0';if(hd&&hd.value!=='0')hd.value='0';return}box.style.display='none'}
+  function bind(){document.querySelectorAll('input[name="kep"]').forEach(function(r){if(r.__directNoHistory)return;r.__directNoHistory=true;r.addEventListener('change',function(){setTimeout(sync,0)})});sync()}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();setInterval(bind,250)
+})();
+/* cache-bust this repair layer itself when GitHub Pages/browser cache is stale */
