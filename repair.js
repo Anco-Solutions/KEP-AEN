@@ -1,4 +1,6 @@
 document.write('<script src="structured-result.js?v=2"><\/script>');
+/* Native browser print is the iOS-safe path for PDF/email actions. It loads before the legacy canvas controller so its capture handler wins. */
+document.write('<script src="main-print-native.js?v=1"><\/script>');
 /* Load the stable PDF/print controller synchronously. index.html still has the older v1 tag; the controller guard makes that legacy tag a no-op. */
 document.write('<script src="print-fix.js?v=2"><\/script>');
 /* The calculator reads these fields synchronously while app.js is loading.
