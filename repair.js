@@ -1,4 +1,6 @@
 document.write('<script src="structured-result.js?v=2"><\/script>');
+/* Load the stable PDF/print controller synchronously. index.html still has the older v1 tag; the controller guard makes that legacy tag a no-op. */
+document.write('<script src="print-fix.js?v=2"><\/script>');
 /* The calculator reads these fields synchronously while app.js is loading.
    Keep them hidden, but create them BEFORE app.js so its listeners never fail. */
 (function(){
@@ -46,5 +48,3 @@ document.write('<script src="structured-result.js?v=2"><\/script>');
 })();
 /* Load the unified candidate controller after app/enhancements so it owns the KEP2 visible service UI. */
 setTimeout(function(){var s=document.createElement('script');s.src='candidate-flow.js?v=13';document.body.appendChild(s)},0);
-/* Load the current PDF/print controller after the static legacy copy, so its capture listener owns the actions. */
-setTimeout(function(){var s=document.createElement('script');s.src='print-fix.js?v=2';document.body.appendChild(s)},0);
