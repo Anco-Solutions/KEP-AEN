@@ -2,15 +2,17 @@
 'use strict';
 function update(){
   var el=document.getElementById('calculationDateTime');
-  if(!el)return;
+  if(!el)return false;
   var d=new Date();
   el.textContent='Ημερομηνία & ώρα: '+d.toLocaleDateString('el-GR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',hour12:false});
+  return true;
 }
 function init(){
-  var el=document.getElementById('calculationDateTime');
-  if(!el)return;
-  update();
-  setInterval(update,60000);
+  if(update()){
+    setInterval(update,60000);
+  }else{
+    setTimeout(init,100);
+  }
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+init();
 })();
