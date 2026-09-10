@@ -61,8 +61,7 @@
   const e1=document.getElementById('examinerKep1'), e2=document.getElementById('examinerKep2');
   const box1=document.getElementById('kep1Examiner'), box2=document.getElementById('kep2Examiner');
   function showKep(){const selected=document.querySelector('input[name="kep"]:checked')?.value;box1.classList.toggle('active',selected==='1');box2.classList.toggle('active',selected==='2');}
-  kepRadios.forEach(r=>r.addEventListener('change',showKep));
-  showKep();
+  kepRadios.forEach(r=>r.addEventListener('change',showKep)); showKep();
   function loadExaminers(){let list=[];try{list=JSON.parse(localStorage.getItem('seaServiceExaminers')||'[]');}catch(e){list=[];}if(!Array.isArray(list))list=[];[e1,e2].forEach(sel=>{const current=sel.value;sel.innerHTML='<option value="">— Επιλέξτε εξεταστή —</option>';list.forEach(x=>{const name=typeof x==='string'?x:(x.name||x.fullName||'');if(name){const o=document.createElement('option');o.value=name;o.textContent=name;sel.appendChild(o)}});if(list.some(x=>(typeof x==='string'?x:(x.name||x.fullName||''))===current))sel.value=current;});}
   loadExaminers();
   const manage=document.getElementById('manageExaminers'), manager=document.getElementById('examinerManager');
@@ -70,6 +69,7 @@
   manage.addEventListener('click',()=>{const open=manager.classList.toggle('open');if(open)renderManager();});
 })();
 </script>
+<script src="final-refresh.js?v=1"></script>
 <script src="repair.js?v=7"></script>
 <script src="app.js?v=6"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
