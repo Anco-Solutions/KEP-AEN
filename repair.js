@@ -7,4 +7,4 @@ document.write('<script src="print-fix.js?v=2"><\/script>');
 setTimeout(function(){var s=document.createElement('script');s.src='candidate-flow.js?v=13';document.body.appendChild(s)},0);
 setTimeout(function(){var s=document.createElement('script');s.src='date-wheel.js?v=1';document.body.appendChild(s)},0);
 setTimeout(function(){var s=document.createElement('script');s.src='examination-ui.js?v=1';document.body.appendChild(s)},0);
-setTimeout(function(){var s=document.createElement('script');s.src='current-datetime.js?v=2';document.body.appendChild(s)},0);
+document.write('<script src="current-datetime.js?v=3"><\/script>');
