@@ -48,6 +48,13 @@
         window.scrollTo({top:0,behavior:'smooth'});
         var registry=document.getElementById('registryNumber');if(registry)registry.focus();
     }
+    function setupExaminerSelection(){
+        var manage=document.getElementById('manageExaminers');
+        if(manage){manage.textContent='Εξεταστής';manage.style.display='none';}
+        var manager=document.getElementById('examinerManager');if(manager){manager.classList.remove('open');manager.style.display='none';}
+        var e1=document.getElementById('kep1Examiner'),e2=document.getElementById('kep2Examiner');
+        [e1,e2].forEach(function(w){if(!w)return;var strong=w.querySelector('strong');if(strong)strong.textContent='Εξεταστής';var select=w.querySelector('select');if(select&&select.options.length)select.options[0].textContent='— Επιλέξτε εξεταστή —';});
+    }
     function setupBottomActions(){
         var container=document.querySelector('.container');if(!container)return;
         var button=document.getElementById('saveArchiveTop');if(!button)return;
@@ -108,6 +115,6 @@
         if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
     })();
 
-    function init(){setupBottomActions();}
+    function init(){setupExaminerSelection();setupBottomActions();}
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
