@@ -11,7 +11,7 @@
 <script>
 (function(){
 'use strict';
-var v='20260911-4';
+var v='20260911-5';
 var frame=document.getElementById('app');
 frame.src='index.html?app='+v;
 function inject(src){return new Promise(function(resolve){var s=frame.contentDocument.createElement('script');s.src=src+'?v='+v;s.onload=resolve;s.onerror=resolve;frame.contentDocument.body.appendChild(s);});}
