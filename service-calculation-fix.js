@@ -47,12 +47,29 @@
         window.scrollTo({top:0,behavior:'smooth'});
         var registry=document.getElementById('registryNumber');if(registry)registry.focus();
     }
-    function setupExaminerSelection(){
+    function examinerList(){try{var a=JSON.parse(localStorage.getItem('seaServiceExaminers')||'[]');return Array.isArray(a)?a.filter(function(x){return String(x||'').trim();}):[]}catch(e){return[]}}
+    function populateExaminerSelect(select){
+        if(!select)return;
+        var current=select.value, list=examinerList();
+        select.innerHTML='';
+        var first=document.createElement('option');first.value='';first.textContent=list.length?'— Επιλέξτε εξεταστή —':'— Δεν υπάρχουν εξεταστές —';select.appendChild(first);
+        list.forEach(function(name){var o=document.createElement('option');o.value=String(name);o.textContent=String(name);select.appendChild(o);});
+        if(list.indexOf(current)!==-1)select.value=current;
+    }
+    function refreshExaminerSelection(){
         var manage=document.getElementById('manageExaminers');
-        if(manage){manage.textContent='Εξεταστής';manage.style.display='none';}
-        var manager=document.getElementById('examinerManager');if(manager){manager.classList.remove('open');manager.style.display='none';}
+        if(manage){manage.style.display='none';manage.disabled=true;}
+        var manager=document.getElementById('examinerManager');if(manager){manager.style.display='none';manager.classList.remove('open');}
         var e1=document.getElementById('kep1Examiner'),e2=document.getElementById('kep2Examiner');
-        [e1,e2].forEach(function(w){if(!w)return;var strong=w.querySelector('strong');if(strong)strong.textContent='Εξεταστής';var select=w.querySelector('select');if(select&&select.options.length)select.options[0].textContent='— Επιλέξτε εξεταστή —';});
+        [e1,e2].forEach(function(w){if(!w)return;w.classList.remove('active');var strong=w.querySelector('strong');if(strong)strong.textContent='Εξεταστής';var s=w.querySelector('select');populateExaminerSelect(s);});
+        var selected=document.querySelector('input[name="kep"]:checked');
+        if(selected){var box=document.getElementById(selected.value==='1'?'kep1Examiner':'kep2Examiner');if(box)box.classList.add('active');}
+    }
+    function setupExaminerSelection(){
+        refreshExaminerSelection();
+        document.querySelectorAll('input[name="kep"]').forEach(function(r){if(!r.__examinerBound){r.__examinerBound=true;r.addEventListener('change',function(){setTimeout(refreshExaminerSelection,0);});}});
+        var e1=document.getElementById('examinerKep1'),e2=document.getElementById('examinerKep2');
+        [e1,e2].forEach(function(s){if(s&&!s.__examinerRefreshBound){s.__examinerRefreshBound=true;s.addEventListener('focus',function(){populateExaminerSelect(s);});}});
     }
     function setupBottomActions(){
         var container=document.querySelector('.container');if(!container)return;
