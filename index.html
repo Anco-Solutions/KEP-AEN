@@ -18,6 +18,18 @@
 <div class="container">
 <h1>SeaService Calculator</h1>
 <div id="calculationDateTime" style="margin-top:25px;margin-bottom:15px;font-weight:bold;">Ημερομηνία &amp; ώρα:</div>
+<script>
+(function(){
+  function updateDateTime(){
+    var el=document.getElementById('calculationDateTime');
+    if(!el)return;
+    var d=new Date();
+    el.textContent='Ημερομηνία & ώρα: '+d.toLocaleDateString('el-GR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',hour12:false});
+  }
+  updateDateTime();
+  setInterval(updateDateTime,60000);
+})();
+</script>
 <div style="text-align:center;margin:10px 0 22px;"><a href="archive.html" class="archive-link" aria-label="Άνοιγμα Αρχείου Εξέτασης ΚΕΠ">📁 <span>Αρχείο Εξέτασης ΚΕΠ</span> →</a></div>
 <label><strong>Μητρώο εξεταζόμενου</strong></label>
 <input type="text" id="registryNumber" inputmode="numeric" placeholder="Αριθμός Μητρώου">
@@ -70,7 +82,7 @@
 })();
 </script>
 <script src="final-refresh.js?v=1"></script>
-<script src="repair.js?v=8"></script>
+<script src="repair.js?v=9"></script>
 <script src="app.js?v=6"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="enhancements.js?v=6"></script>
