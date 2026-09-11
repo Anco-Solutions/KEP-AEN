@@ -12,7 +12,7 @@ setTimeout(function(){var s=document.createElement('script');s.src='examination-
         if(document.getElementById('service-calculation-fix')) return;
         var s=document.createElement('script');
         s.id='service-calculation-fix';
-        s.src='service-calculation-fix.js?v=3';
+        s.src='service-calculation-fix.js?v=4';
         document.body.appendChild(s);
     }
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',loadServiceRule);
