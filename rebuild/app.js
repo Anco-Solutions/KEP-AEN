@@ -73,12 +73,13 @@ function showKep(){
   $('examiner1Box').classList.toggle('active',k==='1');
   $('examiner2Box').classList.toggle('active',k==='2');
   $('workArea').classList.toggle('hidden',!k);
-  $('manualPrevious').classList.toggle('hidden',k!=='2');
   if(k==='2') loadPreviousService();
+  else $('manualPrevious').classList.add('hidden');
 }
 
 function loadPreviousService(){
   const reg=$('registry').value.trim();
+  $('manualPrevious').classList.add('hidden');
   if(!reg){ $('previousStatus').textContent=''; return; }
   try{
     const archive=JSON.parse(localStorage.getItem('seaServiceArchive')||'[]');
@@ -86,12 +87,26 @@ function loadPreviousService(){
     if(rec && Number.isFinite(Number(rec.serviceMonths))){
       $('previousStatus').textContent=`Βρέθηκε προηγούμενη υπηρεσία ΚΕΠ 1: ${rec.serviceMonths} μήνες και ${rec.serviceDays||0} ημέρες.`;
       $('previousMonths').value=rec.serviceMonths||0; $('previousDays').value=rec.serviceDays||0;
-      $('manualPrevious').classList.add('hidden');
     }else{
       $('previousStatus').textContent='Δεν βρέθηκε αρχείο ΚΕΠ 1. Μπορεί να καταχωριστεί χειροκίνητα η προηγούμενη υπηρεσία.';
       $('manualPrevious').classList.remove('hidden');
     }
-  }catch{ $('manualPrevious').classList.remove('hidden'); }
+  }catch{
+    $('previousStatus').textContent='Δεν βρέθηκε αρχείο ΚΕΠ 1. Μπορεί να καταχωριστεί χειροκίνητα η προηγούμενη υπηρεσία.';
+    $('manualPrevious').classList.remove('hidden');
+  }
+}
+
+function previousService(){
+  if(selectedKep()!=='2') return {months:0,days:0,totalDays:0};
+  const months=Math.max(0,parseInt($('previousMonths').value||'0',10)||0);
+  const days=Math.max(0,Math.min(29,parseInt($('previousDays').value||'0',10)||0));
+  return {months:months+Math.floor(days/30),days:days%30,totalDays:months*30+days};
+}
+
+function combine(a,b){
+  const total=a.totalDays+b.totalDays;
+  return {months:Math.floor(total/30),days:total%30,totalDays:total};
 }
 
 function renderTrips(){
@@ -124,6 +139,7 @@ function updateExam(){
   const grade=parseFloat($('grade').value);
   const docs=document.querySelector('input[name="docs"]:checked')?.value||'';
   const decision=$('decision');
+  $('classification').textContent='';
   if(!completed){ decision.textContent='ΤΕΛΙΚΗ ΑΠΟΦΑΣΗ: Σε εκκρεμότητα'; return; }
   if(!Number.isFinite(grade)||grade<0||grade>10){ decision.textContent='ΤΕΛΙΚΗ ΑΠΟΦΑΣΗ: Σε εκκρεμότητα — απαιτείται βαθμός 0–10'; return; }
   const classification=classify(grade);
@@ -135,8 +151,11 @@ function updateExam(){
 }
 
 function calculate(){
-  if(!TRIPS.length){$('result').className='result pending';$('result').innerHTML='⏳ Προσθέστε τουλάχιστον ένα ταξίδι.';$('examPanel').classList.remove('visible');return;}
-  const service=calculateTrips(TRIPS);
+  if(!TRIPS.length && selectedKep()!=='2'){
+    $('result').className='result pending';$('result').innerHTML='⏳ Προσθέστε τουλάχιστον ένα ταξίδι.';$('examPanel').classList.remove('visible');return;
+  }
+  const newService=calculateTrips(TRIPS);
+  const service=combine(previousService(),newService);
   const out=resultText(service); $('result').className=`result ${out.type}`; $('result').innerHTML=out.html;
   $('examPanel').classList.toggle('visible',service.totalDays>=180);
   $('serviceSummary').textContent=`Συγκεντρωμένη υπηρεσία: ${service.months} μήνες και ${service.days} ημέρες.`;
@@ -155,14 +174,14 @@ $('addTrip').addEventListener('click',()=>{
 });
 $('tripList').addEventListener('click',e=>{const b=e.target.closest('[data-remove]');if(!b)return;TRIPS.splice(Number(b.dataset.remove),1);renderTrips();});
 $('calculate').addEventListener('click',calculate);
-$('examGrade').addEventListener('change',updateExam);
 $('grade').addEventListener('input',updateExam);
 document.querySelectorAll('input[name="docs"],input[name="examState"]').forEach(x=>x.addEventListener('change',updateExam));
-
+$('previousMonths').addEventListener('input',()=>{if(selectedKep()==='2')calculate();});
+$('previousDays').addEventListener('input',()=>{if(selectedKep()==='2')calculate();});
 $('newEntry').addEventListener('click',()=>location.reload());
 showKep();renderTrips();
 
-// Development self-checks for the agreed NAT convention.
+// Agreed regression cases for the NAT convention.
 const tests=[
  ['31/12/2024→12/07/2025','2024-12-31','2025-07-12','6m13d'],
  ['02/12/2025→21/06/2026','2025-12-02','2026-06-21','6m20d'],
