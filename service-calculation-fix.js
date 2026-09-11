@@ -40,7 +40,6 @@
         document.querySelectorAll('input[name="kep"]').forEach(function(r){r.checked=false;});
         var result=document.getElementById('result');if(result)result.innerHTML='';
         if(typeof window.setSeaServiceTrips==='function'){try{window.setSeaServiceTrips([]);}catch(e){}}
-        else {var tl=document.getElementById('tripList');if(tl)tl.textContent='Δεν υπάρχουν ακόμη ταξίδια.';}
         var tripList=document.getElementById('tripList');if(tripList)tripList.textContent='Δεν υπάρχουν ακόμη ταξίδια.';
         ['kepStatus','kep1CurrentService','kep1PreviousService','kep2Section','tripForm','examinationPanel','examWarning'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
         var manager=document.getElementById('examinerManager');if(manager)manager.classList.remove('open');
@@ -73,7 +72,6 @@
         actions.appendChild(newBtn);
     }
 
-    /* Registration audit: every save is attributable to the selected examiner/teacher. */
     (function setupRegistrationAudit(){
         var KEY='seaServiceArchive', AUDIT='seaServiceAuditLog', bound=false;
         function $(id){return document.getElementById(id)}
@@ -88,7 +86,7 @@
         function save(){
             var r=val('registryNumber'),n=val('fullName'),who=examiner(),k=kep(),z=now();
             if(!r||!n){alert('Για να αποθηκευτεί η καταχώριση απαιτούνται Μητρώο και Ονοματεπώνυμο.');return false}
-            if(!who){alert('Για να αποθηκευτεί η καταχώριση πρέπει να επιλεγεί ο Καθηγητής / Εξεταστής που έκανε την καταχώριση.');return false}
+            if(!who){alert('Για να αποθηκευτεί η καταχώριση πρέπει να επιλεγεί ο Εξεταστής που έκανε την καταχώριση.');return false}
             var archive=read(KEY),idx=archive.findIndex(function(x){return String(x.registryNumber||'').trim()===r}),old=idx>=0?(archive[idx]||{}):null;
             var t=trips(),res=resultText(),status=val('examinationStatus')||'Σε εκκρεμότητα',grade=val('examGrade')||'Δεν βαθμολογήθηκε',decision=val('finalDecision')||'Σε αναμονή',docs=val('documentsStatus')||'Εκκρεμότητα',note=val('documentsNote');
             var rec=old?Object.assign({},old):{};
@@ -107,7 +105,7 @@
             rec.history=Array.isArray(old&&old.history)?old.history.slice():[];rec.history.push(event);
             var audit=read(AUDIT);audit.push(event);write(AUDIT,audit);
             if(idx>=0)archive.splice(idx,1);archive.unshift(rec);write(KEY,archive);
-            alert(old?'Η καταχώριση ενημερώθηκε και καταγράφηκε στο ιστορικό.':'Η καταχώριση αποθηκεύτηκε και καταγράφηκε με Καθηγητή/Εξεταστή, ημερομηνία και ώρα.');
+            alert(old?'Η καταχώριση ενημερώθηκε και καταγράφηκε στο ιστορικό.':'Η καταχώριση αποθηκεύτηκε και καταγράφηκε με Εξεταστή, ημερομηνία και ώρα.');
             return true;
         }
         function intercept(e){var b=e.target&&e.target.closest?e.target.closest('#saveArchiveTop'):null;if(!b)return;e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();save()}
