@@ -4,13 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SeaService Calculator</title>
-<link rel="stylesheet" href="style.css?v=9">
+<link rel="stylesheet" href="style.css?v=10">
 <link rel="apple-touch-icon" href="sea-service-icon.PNG">
 <style>
 @media print { body{background:#fff!important}.container{max-width:none!important;box-shadow:none!important}input,select,button,label input,#archiveActions,.archive-link,hr{display:none!important}#examinationPanel{display:block!important;box-shadow:none!important;border:1px solid #ccc!important}#examinationPanel input,#examinationPanel select{display:block!important;border:0!important;background:transparent!important;padding:0!important;margin-top:2px!important;font-weight:600!important}footer{display:block!important} }
 .archive-link{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin:10px 0;padding:12px 20px;border-radius:9px;text-decoration:none;font-weight:700;border:1px solid rgba(0,0,0,.12);background:#f5f7f9;color:inherit;box-shadow:0 2px 5px rgba(0,0,0,.08);transition:transform .15s ease,box-shadow .15s ease}.archive-link:active{transform:scale(.98);box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .examination-panel{display:none;background:rgba(255,255,255,.9);padding:16px;margin:18px 0;border-radius:10px;border:1px solid rgba(0,0,0,.08);box-shadow:0 2px 8px rgba(0,0,0,.04)}.examination-panel h3{margin:0 0 12px}.exam-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.exam-grid label{display:block;font-weight:600}.exam-grid input,.exam-grid select{width:100%;box-sizing:border-box;margin-top:5px}.exam-note{font-size:12px;color:#666;margin-top:8px}.exam-warning{margin-top:12px;padding:10px;border-radius:8px;background:#fff5f5;color:#9b1c1c;font-weight:700;display:none}
 .inline-examiner{display:none;align-items:center;gap:8px;margin:8px 0 14px;padding:9px 11px;background:#f5f7fa;border:1px solid #dfe3e8;border-radius:9px}.inline-examiner.active{display:flex}.inline-examiner strong{white-space:nowrap}.inline-examiner select{flex:1;min-width:0;box-sizing:border-box;padding:8px 10px;border:1px solid #c8ced6;border-radius:7px;background:#fff;font:inherit}.examiner-management{display:none;margin:0 0 16px;padding:12px;background:#fff;border:1px solid #dfe3e8;border-radius:10px}.examiner-management.open{display:block}.manage-examiners{padding:7px 12px;border:1px solid #cfd5dc;border-radius:8px;background:#fff;color:#26344f;font:inherit;font-weight:700;cursor:pointer}.examiner-manager-card{background:#fff;border:1px solid #dfe3e8;border-radius:10px;padding:12px}.examiner-manager-heading{font-weight:800;margin-bottom:8px}.examiner-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid #eee}.remove-examiner{width:42px;height:36px;border:1px solid #ddd;border-radius:7px;background:#fff;cursor:pointer}.examiner-add-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}.new-examiner-input{width:100%;min-height:44px;padding:10px 12px;border:1px solid #bbb;border-radius:8px;font:inherit}.add-examiner{padding:9px 14px;border:0;border-radius:8px;background:#2673e8;color:#fff;font:inherit;font-weight:700;white-space:nowrap}.examiner-empty{color:#777}
+.pending-save{width:100%;margin:10px 0 18px;padding:13px 16px;border:0;border-radius:9px;background:#214f83;color:#fff;font:inherit;font-weight:800;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.12)}
 @media(max-width:700px){.inline-examiner{align-items:stretch;flex-direction:column}.inline-examiner select{width:100%}.examiner-add-row{grid-template-columns:1fr}.add-examiner{min-height:42px}}
 </style>
 </head>
@@ -26,6 +27,7 @@
 <input type="text" id="registryNumber" inputmode="numeric" placeholder="Αριθμός Μητρώου">
 <label><strong>Ονοματεπώνυμο εξεταζόμενου</strong></label>
 <input type="text" id="fullName" autocomplete="name" placeholder="Ονοματεπώνυμο">
+<button type="button" id="saveArchiveTop" class="pending-save">📁 Αποθήκευση φακέλου / Εκκρεμότητα</button>
 <p><strong>Επιλέξτε ΚΕΠ</strong></p>
 <div id="kep1Choice" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="margin:0;"><input type="radio" name="kep" value="1"> ΚΕΠ 1</label><div id="kep1Examiner" class="inline-examiner"><strong>Εξεταστής</strong><select id="examinerKep1"><option value="">— Επιλέξτε εξεταστή —</option></select></div></div>
 <div id="kep2Choice" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px;"><label style="margin:0;"><input type="radio" name="kep" value="2"> ΚΕΠ 2</label><div id="kep2Examiner" class="inline-examiner"><strong>Εξεταστής</strong><select id="examinerKep2"><option value="">— Επιλέξτε εξεταστή —</option></select></div></div>
@@ -66,6 +68,39 @@ function loadExaminers(){let list=[];try{list=JSON.parse(localStorage.getItem('s
 loadExaminers();const manage=document.getElementById('manageExaminers'),manager=document.getElementById('examinerManager');
 function renderManager(){let list=[];try{list=JSON.parse(localStorage.getItem('seaServiceExaminers')||'[]')}catch(e){list=[]}if(!Array.isArray(list))list=[];manager.innerHTML='<div class="examiner-manager-card"><div class="examiner-manager-heading">Εξεταστές</div>'+(list.length?list.map((x,i)=>{const name=typeof x==='string'?x:(x.name||x.fullName||'');return '<div class="examiner-row"><span>'+name+'</span><button type="button" class="remove-examiner" data-i="'+i+'">×</button></div>'}).join(''):'<div class="examiner-empty">Δεν υπάρχουν καταχωρημένοι εξεταστές.</div>')+'<div class="examiner-add-row"><input class="new-examiner-input" id="newExaminerName" placeholder="Νέος εξεταστής"><button type="button" class="add-examiner" id="addExaminer">Προσθήκη</button></div></div>';manager.querySelectorAll('.remove-examiner').forEach(b=>b.addEventListener('click',()=>{list.splice(Number(b.dataset.i),1);localStorage.setItem('seaServiceExaminers',JSON.stringify(list));loadExaminers();renderManager()}));manager.querySelector('#addExaminer').addEventListener('click',()=>{const input=document.getElementById('newExaminerName');const name=(input.value||'').trim();if(!name)return;list.push(name);localStorage.setItem('seaServiceExaminers',JSON.stringify(list));loadExaminers();renderManager()})}
 manage.addEventListener('click',()=>{const open=manager.classList.toggle('open');if(open)renderManager()});
+})();
+</script>
+<script>
+(function(){
+var button=document.getElementById('saveArchiveTop');
+if(!button)return;
+button.addEventListener('click',function(){
+var r=(document.getElementById('registryNumber').value||'').trim();
+var n=(document.getElementById('fullName').value||'').trim();
+if(!r||!n){alert('Για να αποθηκευτεί ο φάκελος απαιτούνται μόνο Μητρώο και Ονοματεπώνυμο.');return;}
+var kepEl=document.querySelector('input[name="kep"]:checked');
+var k=kepEl?kepEl.value:'';
+var examinerEl=document.getElementById(k==='2'?'examinerKep2':'examinerKep1');
+var resultEl=document.getElementById('result');
+var statusEl=document.getElementById('examinationStatus');
+var gradeEl=document.getElementById('examGrade');
+var decisionEl=document.getElementById('finalDecision');
+var docsEl=document.getElementById('documentsStatus');
+var trips=[];
+try{trips=typeof window.getSeaServiceTrips==='function'?window.getSeaServiceTrips():[]}catch(e){trips=[]}
+if(!Array.isArray(trips))trips=[];
+var now=new Date();
+var rec={id:Date.now(),timestamp:now.toISOString(),date:now.toLocaleDateString('el-GR'),time:now.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}),registryNumber:r,fullName:n,kep:k?'ΚΕΠ '+k:'',examiner:examinerEl?(examinerEl.value||'').trim():'',documents:docsEl?(docsEl.value||'Εκκρεμότητα'):'Εκκρεμότητα',documentsNote:'',examinationStatus:statusEl?(statusEl.value||'Σε εκκρεμότητα'):'Σε εκκρεμότητα',grade:gradeEl?(gradeEl.value||'Δεν βαθμολογήθηκε'):'Δεν βαθμολογήθηκε',finalDecision:decisionEl?(decisionEl.value||'Σε εκκρεμότητα'):'Σε εκκρεμότητα',result:resultEl?(resultEl.innerText||'').trim():'',trips:trips};
+if(!rec.result)rec.result='Δεν έχει ακόμη ολοκληρωθεί ο υπολογισμός υπηρεσίας.';
+if(!rec.documents||rec.documents==='Δεν έχει ελεγχθεί')rec.documents='Εκκρεμότητα';
+if(!rec.examinationStatus||rec.examinationStatus==='Δεν εξετάστηκε')rec.examinationStatus='Σε εκκρεμότητα';
+if(!rec.finalDecision||rec.finalDecision==='Σε αναμονή')rec.finalDecision='Σε εκκρεμότητα';
+var archive=[];try{archive=JSON.parse(localStorage.getItem('seaServiceArchive')||'[]')}catch(e){archive=[]}if(!Array.isArray(archive))archive=[];
+var idx=archive.findIndex(function(x){return String(x.registryNumber||'').trim()===r;});
+if(idx>=0){var old=archive[idx]||{};rec.id=old.id||rec.id;rec.trips=trips.length?trips:(old.trips||[]);rec.result=(resultEl&&(resultEl.innerText||'').trim())?rec.result:(old.result||rec.result);rec.kep=rec.kep||old.kep||'';rec.examiner=rec.examiner||old.examiner||'';rec.documents=(docsEl&&docsEl.value&&docsEl.value!=='Δεν έχει ελεγχθεί')?rec.documents:(old.documents||rec.documents);rec.documentsNote=old.documentsNote||'';rec.examinationStatus=(statusEl&&statusEl.value&&statusEl.value!=='Δεν εξετάστηκε')?rec.examinationStatus:(old.examinationStatus||rec.examinationStatus);rec.grade=(gradeEl&&gradeEl.value&&gradeEl.value!=='Δεν βαθμολογήθηκε')?rec.grade:(old.grade||rec.grade);rec.finalDecision=(decisionEl&&decisionEl.value&&decisionEl.value!=='Σε αναμονή')?rec.finalDecision:(old.finalDecision||rec.finalDecision);archive.splice(idx,1);}
+archive.unshift(rec);localStorage.setItem('seaServiceArchive',JSON.stringify(archive));
+alert('Η καταχώριση αποθηκεύτηκε στο Αρχείο. Τα υπόλοιπα στοιχεία παραμένουν ως εκκρεμότητες και μπορούν να συμπληρωθούν αργότερα.');
+});
 })();
 </script>
 <script src="final-refresh.js?v=1"></script>
