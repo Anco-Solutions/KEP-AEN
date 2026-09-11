@@ -50,6 +50,17 @@ function build(){
   var observer=new MutationObserver(function(){if(eligible())sync()});observer.observe(p,{attributes:true,attributeFilter:['style']});p.__cleanExamSync=sync;p.__cleanExamGrade=gi;
   sync();
 }
-function boot(){build();setTimeout(build,100);setTimeout(build,500)}
+function forceKep1Panel(){
+  var k=document.querySelector('input[name="kep"]:checked')?.value||'';
+  var r=$('result'),p=$('examinationPanel');
+  if(k!=='1'||!r||!p)return;
+  var t=String(r.innerText||r.textContent||'').replace(/\s+/g,' ').trim();
+  if(!t)return;
+  if(/μπορεί να εξεταστεί|υπηρεσία .* επαρκής/i.test(t)){
+    p.style.display='block';
+    if(typeof p.__cleanExamSync==='function')p.__cleanExamSync();
+  }
+}
+function boot(){build();setTimeout(build,100);setTimeout(build,500);setTimeout(forceKep1Panel,150);setTimeout(forceKep1Panel,600);setTimeout(forceKep1Panel,1200);var r=$('result');if(r&&!r.__kep1ExamObserver){var mo=new MutationObserver(function(){setTimeout(forceKep1Panel,0)});mo.observe(r,{childList:true,subtree:true,characterData:true});r.__kep1ExamObserver=true}document.querySelectorAll('input[name="kep"]').forEach(function(x){if(!x.__kep1PanelBound){x.__kep1PanelBound=true;x.addEventListener('change',function(){setTimeout(forceKep1Panel,50);setTimeout(forceKep1Panel,300)})}})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
