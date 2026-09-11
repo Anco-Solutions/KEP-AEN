@@ -20,7 +20,7 @@
 <h1>SeaService Calculator</h1>
 <div id="calculationDateTime" style="margin-top:25px;margin-bottom:15px;font-weight:bold;">Ημερομηνία &amp; ώρα:</div>
 <script>
-(function(){function updateDateTime(){var el=document.getElementById('calculationDateTime');if(!el)return;var d=new Date();el.textContent='Ημερομηνία & ώρα: '+d.toLocaleDateString('el-GR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',hour12:false});}updateDateTime();setInterval(updateDateTime,60000);})();
+(function(){function updateDateTime(){var el=document.getElementById('calculationDateTime');if(!el)return;var d=new Date();el.textContent='Ημερομηνία & ώρα: '+d.toLocaleDateString('el-GR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});}updateDateTime();setInterval(updateDateTime,1000);})();
 </script>
 <div style="text-align:center;margin:10px 0 22px;"><a href="archive.html" class="archive-link" aria-label="Άνοιγμα Αρχείου Εξέτασης ΚΕΠ">📁 <span>Αρχείο Εξέτασης ΚΕΠ</span> →</a></div>
 <label><strong>Μητρώο εξεταζόμενου</strong></label>
@@ -104,11 +104,46 @@ alert('Η καταχώριση αποθηκεύτηκε στο Αρχείο. Τ�
 })();
 </script>
 <script src="final-refresh.js?v=1"></script>
-<script src="repair.js?v=10"></script>
+<script src="repair.js?v=11"></script>
 <script src="app.js?v=6"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="enhancements.js?v=6"></script>
 <script src="print-fix.js?v=1"></script>
 <script src="examiner-history.js?v=6"></script>
+<script>
+(function(){
+function forceBottomUI(){
+  var container=document.querySelector('.container');
+  var button=document.getElementById('saveArchiveTop');
+  if(!container||!button)return;
+  var actions=document.getElementById('archiveActionsBottom');
+  if(!actions){actions=document.createElement('div');actions.id='archiveActionsBottom';actions.style.cssText='margin:28px 0 8px;padding-top:16px;border-top:1px solid rgba(0,0,0,.10);display:flex;flex-direction:column;gap:10px;';container.appendChild(actions);}
+  button.textContent='📁 Αποθήκευση Αρχείου';
+  button.style.cssText='width:100%;margin:0;padding:13px 16px;border:0;border-radius:9px;background:#214f83;color:#fff;font:inherit;font-weight:800;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.12);';
+  actions.appendChild(button);
+  var newBtn=document.getElementById('newEntryButton');
+  if(!newBtn){
+    newBtn=document.createElement('button');newBtn.type='button';newBtn.id='newEntryButton';newBtn.textContent='＋ Νέα καταχώριση';
+    newBtn.style.cssText='width:100%;padding:12px 16px;border:1px solid #cfd5dc;border-radius:9px;background:#fff;color:#26344f;font:inherit;font-weight:800;cursor:pointer;';
+    newBtn.onclick=function(){if(confirm('Να ξεκινήσει νέα καταχώριση; Η υπάρχουσα καταχώριση στο Αρχείο δεν θα διαγραφεί.')){
+      ['registryNumber','fullName','embark','discharge','examinerKep1','examinerKep2','documentsStatus','examinationStatus','examGrade','finalDecision'].forEach(function(id){var el=document.getElementById(id);if(!el)return;if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';});
+      document.querySelectorAll('input[name="kep"]').forEach(function(r){r.checked=false;});
+      var result=document.getElementById('result');if(result)result.innerHTML='';
+      var tl=document.getElementById('tripList');if(tl)tl.textContent='Δεν υπάρχουν ακόμη ταξίδια.';
+      ['kepStatus','kep1CurrentService','kep1PreviousService','kep2Section','tripForm','examinationPanel','examWarning'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+      window.scrollTo({top:0,behavior:'smooth'});
+      var reg=document.getElementById('registryNumber');if(reg)reg.focus();
+    }};
+  }
+  actions.appendChild(newBtn);
+  var manage=document.getElementById('manageExaminers');
+  if(manage)manage.style.display='none';
+  var manager=document.getElementById('examinerManager');
+  if(manager){manager.style.display='none';manager.classList.remove('open');}
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(forceBottomUI,0);});else setTimeout(forceBottomUI,0);
+setTimeout(forceBottomUI,500);
+})();
+</script>
 </body>
 </html>
