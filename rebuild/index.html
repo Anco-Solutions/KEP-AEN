@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SeaService Calculator — Clean Rebuild</title>
+<link rel="stylesheet" href="styles.css?v=1">
+</head>
+<body>
+<main class="app">
+  <header class="card">
+    <h1>SeaService Calculator</h1>
+    <div class="muted">Νέα καθαρή έκδοση — χωρίς iframe και χωρίς patch scripts.</div>
+  </header>
+
+  <section class="card">
+    <div class="field"><label for="registry">Μητρώο εξεταζόμενου</label><input id="registry" inputmode="numeric" autocomplete="off"></div>
+    <div class="field"><label for="fullName">Ονοματεπώνυμο εξεταζόμενου</label><input id="fullName" autocomplete="name"></div>
+
+    <div class="field">
+      <label>Επιλέξτε ΚΕΠ</label>
+      <div class="kep-options">
+        <label class="kep-option"><input type="radio" name="kep" value="1"> ΚΕΠ 1</label>
+        <label class="kep-option"><input type="radio" name="kep" value="2"> ΚΕΠ 2</label>
+      </div>
+      <div id="examiner1Box" class="examiner"><label for="examiner1">Εξεταστής</label><select id="examiner1"></select></div>
+      <div id="examiner2Box" class="examiner"><label for="examiner2">Εξεταστής</label><select id="examiner2"></select></div>
+    </div>
+
+    <div id="manualPrevious" class="card hidden" style="margin-left:0;margin-right:0">
+      <strong>Προηγούμενη υπηρεσία ΚΕΠ 1</strong>
+      <div id="previousStatus" class="muted" style="margin:6px 0 10px"></div>
+      <div class="trip-grid">
+        <div><label for="previousMonths">Μήνες</label><input id="previousMonths" type="number" min="0" step="1" value="0"></div>
+        <div><label for="previousDays">Ημέρες</label><input id="previousDays" type="number" min="0" max="29" step="1" value="0"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="workArea" class="card hidden">
+    <h2>Υπηρεσία</h2>
+    <div class="trip-grid">
+      <div><label for="embark">Ημερομηνία Ναυτολόγησης</label><input id="embark" type="date"></div>
+      <div><label for="discharge">Ημερομηνία Απόλυσης</label><input id="discharge" type="date"></div>
+    </div>
+    <div class="field"><label for="rank">Βαθμός</label><select id="rank"><option>Δόκιμος Μηχανικός</option><option>Καθαριστής</option><option>Μηχανοδηγός / Λιπαντής</option><option>Βοηθός Ηλεκτρολόγου</option><option>Δόκιμος Ηλεκτρολόγος</option></select></div>
+    <div class="actions"><button id="addTrip" class="btn btn-secondary" type="button">＋ Προσθήκη Ταξιδιού</button><button id="calculate" class="btn btn-primary" type="button">Υπολογισμός Υπηρεσίας</button></div>
+    <div id="tripList" style="margin-top:12px"></div>
+    <div id="serviceSummary" class="muted" style="margin-top:12px"></div>
+    <div id="result" class="result pending" style="margin-top:12px">Δεν έχει γίνει ακόμη υπολογισμός.</div>
+  </section>
+
+  <section id="examPanel" class="card exam-panel">
+    <h2>Στοιχεία Εξέτασης ΚΕΠ</h2>
+    <div class="field"><label>Δικαιολογητικά</label><div class="radio-row">
+      <label><input type="radio" name="docs" value="unchecked"> Δεν έχουν ελεγχθεί</label>
+      <label><input type="radio" name="docs" value="full"> Πλήρη</label>
+      <label><input type="radio" name="docs" value="incomplete"> Ελλιπή</label>
+    </div></div>
+    <div class="field"><label>Εξέταση</label><div class="radio-row">
+      <label><input type="radio" name="examState" value="pending" checked> Εκκρεμεί</label>
+      <label><input id="examCompleted" type="radio" name="examState" value="completed"> Ολοκληρώθηκε</label>
+    </div></div>
+    <div id="gradeWrap" class="field grade-wrap"><label for="grade">Βαθμός εξέτασης (0–10)</label><input id="grade" type="number" min="0" max="10" step="0.01" inputmode="decimal"><div id="classification" class="muted" style="margin-top:6px"></div></div>
+    <div id="decision" class="decision">ΤΕΛΙΚΗ ΑΠΟΦΑΣΗ: Σε εκκρεμότητα</div>
+  </section>
+
+  <footer class="actions" style="margin-top:18px">
+    <button id="newEntry" class="btn btn-secondary" type="button">＋ Νέα καταχώριση</button>
+  </footer>
+</main>
+<script type="module" src="app.js?v=1"></script>
+</body>
+</html>
