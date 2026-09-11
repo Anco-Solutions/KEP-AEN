@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SeaService Calculator — Latest</title>
+<style>html,body{margin:0;padding:0;width:100%;height:100%;background:#fff}iframe{display:block;width:100%;height:100%;border:0}</style>
+</head>
+<body>
+<iframe id="app" title="SeaService Calculator"></iframe>
+<script>
+(function(){
+'use strict';
+var v='20260911-4';
+var frame=document.getElementById('app');
+frame.src='index.html?app='+v;
+function inject(src){return new Promise(function(resolve){var s=frame.contentDocument.createElement('script');s.src=src+'?v='+v;s.onload=resolve;s.onerror=resolve;frame.contentDocument.body.appendChild(s);});}
+function fix(){
+  inject('service-calculation-fix.js')
+  .then(function(){return inject('examination-final.js')})
+  .then(function(){return inject('actions-final.js')})
+  .then(function(){return inject('examiner-history.js')})
+  .then(function(){return inject('exam-order-fix.js')});
+}
+frame.addEventListener('load',function(){setTimeout(fix,50);});
+})();
+</script>
+</body>
+</html>
