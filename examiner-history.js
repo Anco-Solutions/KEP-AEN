@@ -1,4 +1,4 @@
-/* Examiner selection: directly beside the selected KEP + one shared examiner-management action */
+/* Examiner selection: candidate flow uses the existing examiner list; management stays outside this screen. */
 (function(){
 const ARCHIVE='seaServiceArchive',EXAMINERS='seaServiceExaminers';
 const $=id=>document.getElementById(id);
@@ -6,62 +6,55 @@ const read=k=>{try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){ret
 const esc=v=>String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#039;'}[c]));
 const kep=()=>document.querySelector('input[name="kep"]:checked')?.value||'';
 function field(){return $(kep()==='2'?'examinerKep2':'examinerKep1')}
-function selectedKepLabel(){const r=document.querySelector('input[name="kep"]:checked');return r?.closest('label')||r?.parentElement||null}
 function styles(){
  if($('examinerRequiredStyles'))return;
  const s=document.createElement('style');s.id='examinerRequiredStyles';
  s.textContent=`
- .kep-choice-with-examiner{display:flex!important;align-items:center;gap:8px;flex-wrap:wrap;margin:7px 0!important}
- .top-examiner-card{display:inline-flex;align-items:center;gap:8px;background:#f7f9fb;border:1px solid #dfe3e8;border-radius:9px;padding:6px 8px;box-sizing:border-box;vertical-align:middle}
- .top-examiner-head{display:inline-flex;align-items:center;gap:5px;color:#26344f;white-space:nowrap}
- .top-examiner-title{font-size:14px;font-weight:800}
- .top-examiner-required{font-size:9px;font-weight:800;color:#9b1c1c;background:#fff0f0;padding:3px 6px;border-radius:999px}
- .top-examiner-card select{min-width:190px;min-height:36px;box-sizing:border-box;padding:5px 9px;border:1px solid #b9c1ca;border-radius:8px;background:#fff;font:inherit}
- .top-examiner-actions{display:inline-flex;align-items:center}
- .top-examiner-actions a{font-size:11px;font-weight:700;color:#315f9f;text-decoration:none;white-space:nowrap}
- .top-examiner-warning{display:none;padding:6px 8px;border-radius:7px;background:#fff0f0;color:#9b1c1c;font-size:12px;font-weight:700}
+ .candidate-examiner-control{display:inline-flex;align-items:center;gap:7px;margin:6px 0;padding:7px 9px;background:#f7f9fb;border:1px solid #dfe3e8;border-radius:9px;vertical-align:middle}
+ .candidate-examiner-control strong{font-size:13px;color:#26344f;white-space:nowrap}
+ .candidate-examiner-control select{min-width:190px;min-height:36px;box-sizing:border-box;padding:5px 9px;border:1px solid #b9c1ca;border-radius:8px;background:#fff;font:inherit}
+ .candidate-examiner-warning{display:none;color:#9b1c1c;font-size:12px;font-weight:700}
  .examiner-box{display:none!important}
- @media(max-width:700px){
-   .kep-choice-with-examiner{align-items:flex-start}
-   .top-examiner-card{display:flex;width:100%;max-width:100%;margin:2px 0 4px;padding:8px;flex-wrap:wrap;gap:7px}
-   .top-examiner-head{width:auto}
-   .top-examiner-card select{flex:1;min-width:150px}
-   .top-examiner-actions{width:100%}
-   .top-examiner-actions a{font-size:12px}
- }
+ #manageExaminers{display:none!important}
+ @media(max-width:700px){.candidate-examiner-control{display:flex;width:100%;box-sizing:border-box;flex-wrap:wrap}.candidate-examiner-control select{flex:1;min-width:150px}}
  `;
  document.head.appendChild(s)
 }
 function ensure(){
  styles();
- let c=$('topExaminerCard');
- if(!c){
-  const radios=document.querySelectorAll('input[name="kep"]');
-  if(!radios.length)return;
-  c=document.createElement('div');c.id='topExaminerCard';c.className='top-examiner-card';
-  c.innerHTML='<div class="top-examiner-head"><div id="topExaminerTitle" class="top-examiner-title">Εξεταστής</div><div class="top-examiner-required">ΥΠΟΧΡΕΩΤΙΚΟ</div></div><select id="topExaminerSelect"><option value="">— Επιλέξτε εξεταστή —</option></select><div id="topExaminerWarning" class="top-examiner-warning">Ο εξεταστής είναι υποχρεωτικός πριν από την καταχώριση.</div><div class="top-examiner-actions"><a href="examiner.html">＋ Προσθήκη εξεταστή</a></div>';
-  $('topExaminerSelect').addEventListener('change',sync);
+ const old=$('manageExaminers');
+ let c=$('candidateExaminerControl');
+ if(old){
+   if(!c){
+     c=document.createElement('div');c.id='candidateExaminerControl';c.className='candidate-examiner-control';
+     c.innerHTML='<strong>Εξεταστής:</strong><select id="candidateExaminerSelect"><option value="">— Επιλέξτε εξεταστή —</option></select><span id="candidateExaminerWarning" class="candidate-examiner-warning">Υποχρεωτικό</span>';
+     old.replaceWith(c);
+     $('candidateExaminerSelect').addEventListener('change',sync);
+   } else old.remove();
  }
- position(c);render();
-}
-function position(c){
- const label=selectedKepLabel();
- if(!label||!c)return;
- label.classList.add('kep-choice-with-examiner');
- label.appendChild(c);
+ if(!c){
+   const anchor=$('topExaminerCard')||document.querySelector('.examiner-box');
+   if(anchor){
+     c=document.createElement('div');c.id='candidateExaminerControl';c.className='candidate-examiner-control';
+     c.innerHTML='<strong>Εξεταστής:</strong><select id="candidateExaminerSelect"><option value="">— Επιλέξτε εξεταστή —</option></select><span id="candidateExaminerWarning" class="candidate-examiner-warning">Υποχρεωτικό</span>';
+     anchor.replaceWith(c);
+     $('candidateExaminerSelect').addEventListener('change',sync);
+   }
+ }
+ if($('topExaminerCard'))$('topExaminerCard').remove();
+ document.querySelectorAll('.top-examiner-card,.top-examiner-actions').forEach(x=>x.remove());
+ render();
 }
 function render(){
- const c=$('topExaminerCard'),s=$('topExaminerSelect');if(!c||!s)return;
- const k=kep();c.style.display=k?'inline-flex':'none';
+ const s=$('candidateExaminerSelect');if(!s)return;
  const a=read(EXAMINERS),f=field(),v=f?.value||'';
  s.innerHTML='<option value="">'+(a.length?'— Επιλέξτε εξεταστή —':'— Δεν υπάρχουν εξεταστές —')+'</option>'+a.map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join('');
  if(a.includes(v))s.value=v;
  sync();
 }
 function sync(){
- const s=$('topExaminerSelect'),f=field();
+ const s=$('candidateExaminerSelect'),f=field();
  if(s&&f)f.value=s.value;
- const w=$('topExaminerWarning');if(w&&s?.value)w.style.display='none';
 }
 function latest(registry,k){return read(ARCHIVE).filter(r=>String(r.registryNumber||'')===String(registry)&&String(r.kep||'')==='ΚΕΠ '+k).sort((a,b)=>String(b.timestamp||'').localeCompare(String(a.timestamp||'')))[0]||null}
 function serviceDays(r){
@@ -75,9 +68,11 @@ function history(){
 }
 function validate(e){
  sync();
- if(!field()?.value.trim()){
+ const f=field();
+ if(!f?.value.trim()){
   e.preventDefault();e.stopImmediatePropagation();
-  $('topExaminerWarning').style.display='block';$('topExaminerSelect').focus();
+  const w=$('candidateExaminerWarning');if(w)w.style.display='inline';
+  $('candidateExaminerSelect')?.focus();
   alert('Πρέπει να επιλέξεις τον εξεταστή του ΚΕΠ '+kep()+' πριν από την καταχώριση.');return false
  }
  return true
@@ -86,7 +81,7 @@ function init(){
  ensure();
  const save=$('saveArchive');
  if(save&&!save.dataset.examinerRequired){save.dataset.examinerRequired='1';save.addEventListener('click',validate,true)}
- document.querySelectorAll('input[name="kep"]').forEach(r=>r.addEventListener('change',()=>setTimeout(()=>{ensure();position($('topExaminerCard'));render();history()},30)));
+ document.querySelectorAll('input[name="kep"]').forEach(r=>r.addEventListener('change',()=>setTimeout(()=>{ensure();render();history()},30)));
  $('registryNumber')?.addEventListener('blur',history);$('registryNumber')?.addEventListener('change',history);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
