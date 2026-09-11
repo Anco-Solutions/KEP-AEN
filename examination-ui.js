@@ -86,3 +86,22 @@ function syncVisibility(){var p=$('examinationPanel');if(!p)return;placeAfterRes
 function boot(){build();placeAfterResult();setTimeout(function(){build();placeAfterResult()},100);setTimeout(placeAfterResult,500);setTimeout(syncVisibility,150);setTimeout(syncVisibility,600);setTimeout(syncVisibility,1200);var r=$('result');if(r&&!r.__cleanExamObserver){var mo=new MutationObserver(function(){setTimeout(syncVisibility,0)});mo.observe(r,{childList:true,subtree:true,characterData:true});r.__cleanExamObserver=true}document.querySelectorAll('input[name="kep"]').forEach(function(x){if(!x.__cleanKepBound){x.__cleanKepBound=true;x.addEventListener('change',function(){setTimeout(syncVisibility,50);setTimeout(syncVisibility,300)})}})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
+
+/* Final UI guard: the examination block must physically sit immediately below the green service result. */
+(function(){
+'use strict';
+function guard(){
+  var p=document.getElementById('examinationPanel');
+  var r=document.getElementById('result');
+  if(!p||!r||!r.parentNode)return;
+  var t=String(r.innerText||r.textContent||'').replace(/\s+/g,' ').trim();
+  var kep=document.querySelector('input[name="kep"]:checked');
+  var eligible=!!kep&&/μπορεί να εξεταστεί|υπηρεσία .* επαρκής/i.test(t)&&!/δεν μπορεί να εξεταστεί|ανεπαρκή υπηρεσία/i.test(t);
+  if(p.parentNode!==r.parentNode||p.previousElementSibling!==r)r.parentNode.insertBefore(p,r.nextSibling);
+  if(eligible)p.style.display='block';
+  else if(!kep||/δεν μπορεί να εξεταστεί|ανεπαρκή υπηρεσία/i.test(t))p.style.display='none';
+  if(typeof p.__cleanExamSync==='function'&&eligible)p.__cleanExamSync();
+}
+function boot(){guard();var r=document.getElementById('result');if(r&&!r.__examGuardObserver){new MutationObserver(function(){setTimeout(guard,0)}).observe(r,{childList:true,subtree:true,characterData:true});r.__examGuardObserver=true}document.querySelectorAll('input[name="kep"]').forEach(function(x){x.addEventListener('change',function(){setTimeout(guard,0);setTimeout(guard,250)})});setTimeout(guard,500);setTimeout(guard,1200)}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+})();
