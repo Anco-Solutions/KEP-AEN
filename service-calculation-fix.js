@@ -23,7 +23,7 @@
     function mergeTrips(list){
         var ranges=list.map(function(t){return {start:toDateSafe(t.embark),end:toDateSafe(t.discharge)};}).filter(function(r){return dateOnlyMs(r.end)>=dateOnlyMs(r.start);}).sort(function(a,b){return dateOnlyMs(a.start)-dateOnlyMs(b.start);});
         var merged=[];
-        ranges.forEach(function(r){if(!merged.length){merged.push({start:r.start,end:r.end});return;}var last=merged[merged.length-1];if(dateOnlyMs(r.start)<=dateOnlyMs(addOneDay(last.end))){if(dateOnlyMs(r.end)>dateOnlyMs(last.end))last.end=r.end;}else merged.push({start:r.start,end:r.end});});
+        ranges.forEach(function(r){if(!merged.length){merged.push({start:r.start,end:r.end});return;}var last=merged[merged.length-1];if(dateOnlyMs(r.start)<=dateOnlyMs(addOneDay(last.end))){if(dateOnlyMs(r.end)>dateOnlyMs(last.end))last.end=r.end;}else merged.push(r);});
         return merged;
     }
     window.calculateTripsService=function(list){
@@ -65,6 +65,49 @@
         }
         actions.appendChild(newBtn);
     }
+
+    /* Registration audit: every save is attributable to the selected examiner/teacher. */
+    (function setupRegistrationAudit(){
+        var KEY='seaServiceArchive', AUDIT='seaServiceAuditLog', bound=false;
+        function $(id){return document.getElementById(id)}
+        function val(id){var e=$(id);return e?(e.value||'').trim():''}
+        function now(){var d=new Date();return{iso:d.toISOString(),date:d.toLocaleDateString('el-GR',{day:'2-digit',month:'2-digit',year:'numeric'}),time:d.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false})}}
+        function read(key){try{var x=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(x)?x:[]}catch(e){return[]}}
+        function write(key,value){localStorage.setItem(key,JSON.stringify(value))}
+        function kep(){var e=document.querySelector('input[name="kep"]:checked');return e?e.value:''}
+        function examiner(){return val(kep()==='1'?'examinerKep1':kep()==='2'?'examinerKep2':'')}
+        function resultText(){return (($('result')&&$('result').innerText)||'').trim()}
+        function trips(){try{return typeof window.getSeaServiceTrips==='function'?window.getSeaServiceTrips():[]}catch(e){return[]}}
+        function save(){
+            var r=val('registryNumber'),n=val('fullName'),who=examiner(),k=kep(),z=now();
+            if(!r||!n){alert('Για να αποθηκευτεί η καταχώριση απαιτούνται Μητρώο και Ονοματεπώνυμο.');return false}
+            if(!who){alert('Για να αποθηκευτεί η καταχώριση πρέπει να επιλεγεί ο Καθηγητής / Εξεταστής που έκανε την καταχώριση.');return false}
+            var archive=read(KEY),idx=archive.findIndex(function(x){return String(x.registryNumber||'').trim()===r}),old=idx>=0?(archive[idx]||{}):null;
+            var t=trips(),res=resultText(),status=val('examinationStatus')||'Σε εκκρεμότητα',grade=val('examGrade')||'Δεν βαθμολογήθηκε',decision=val('finalDecision')||'Σε αναμονή',docs=val('documentsStatus')||'Εκκρεμότητα',note=val('documentsNote');
+            var rec=old?Object.assign({},old):{};
+            rec.id=old&&old.id?old.id:Date.now();
+            rec.timestamp=old&&old.timestamp?old.timestamp:z.iso;rec.date=old&&old.date?old.date:z.date;rec.time=old&&old.time?old.time:z.time;
+            rec.registryNumber=r;rec.fullName=n;rec.kep=k?'ΚΕΠ '+k:(old&&old.kep)||'';rec.examiner=who;
+            rec.createdBy=old&&old.createdBy?old.createdBy:who;rec.createdAt=old&&old.createdAt?old.createdAt:{iso:z.iso,date:z.date,time:z.time};
+            rec.lastUpdatedBy=who;rec.lastUpdatedAt={iso:z.iso,date:z.date,time:z.time};
+            if(t.length)rec.trips=t;
+            if(res)rec.result=res;
+            if(!rec.result)rec.result='Δεν έχει ακόμη ολοκληρωθεί ο υπολογισμός υπηρεσίας.';
+            rec.documents=docs==='Δεν έχει ελεγχθεί'?'Εκκρεμότητα':docs;rec.documentsNote=note||rec.documentsNote||'';
+            rec.examinationStatus=status==='Δεν εξετάστηκε'?'Σε εκκρεμότητα':status;rec.grade=grade;
+            rec.finalDecision=decision==='Σε αναμονή'?'Σε εκκρεμότητα':decision;
+            var event={id:Date.now()+Math.floor(Math.random()*1000),action:old?'Ενημέρωση καταχώρισης':'Νέα καταχώριση',timestamp:z.iso,date:z.date,time:z.time,by:who,registryNumber:r,fullName:n,kep:rec.kep,result:rec.result};
+            rec.history=Array.isArray(old&&old.history)?old.history.slice():[];rec.history.push(event);
+            var audit=read(AUDIT);audit.push(event);write(AUDIT,audit);
+            if(idx>=0)archive.splice(idx,1);archive.unshift(rec);write(KEY,archive);
+            alert(old?'Η καταχώριση ενημερώθηκε και καταγράφηκε στο ιστορικό.':'Η καταχώριση αποθηκεύτηκε και καταγράφηκε με Καθηγητή/Εξεταστή, ημερομηνία και ώρα.');
+            return true;
+        }
+        function intercept(e){var b=e.target&&e.target.closest?e.target.closest('#saveArchiveTop'):null;if(!b)return;e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();save()}
+        function bind(){if(bound)return;document.addEventListener('click',intercept,true);bound=true}
+        if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
+    })();
+
     function init(){setupBottomActions();}
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
