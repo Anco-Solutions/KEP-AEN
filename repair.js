@@ -62,5 +62,6 @@ setTimeout(function(){load('date-wheel.js?v=2')},0);
 setTimeout(function(){load('examination-ui.js?v=5')},0);
 setTimeout(function(){load('exam-order-fix.js?v=2')},1800);
 setTimeout(function(){load('examination-final.js?v=2')},2200);
+setTimeout(function(){load('actions-final.js?v=1')},2400);
 (function(){function loadServiceRule(){if(document.getElementById('service-calculation-fix'))return;var s=document.createElement('script');s.id='service-calculation-fix';s.src='service-calculation-fix.js?v=7';document.body.appendChild(s)}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',loadServiceRule);else loadServiceRule()})();
 })();
