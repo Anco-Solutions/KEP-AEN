@@ -53,8 +53,6 @@
             return { months: 0, days: 0, totalDays: 0 };
         }
 
-        // Same calendar month: count the actual covered days, using the
-        // service-day convention only for the month length.
         if (sy === ey && sm === em) {
             var sameMonthDays = Math.max(0, ed - sd + 1);
             return {
@@ -66,8 +64,6 @@
 
         var months = 0;
         var days = 0;
-
-        // Embarkation month.
         var startMonthLength = serviceMonthLength(sy, sm);
         if (sd === 1) {
             months += 1;
@@ -75,7 +71,6 @@
             days += startMonthLength - sd + 1;
         }
 
-        // Complete calendar months between embarkation and discharge.
         var y = sy;
         var m = sm;
         while (true) {
@@ -90,7 +85,6 @@
             months += 1;
         }
 
-        // Discharge month.
         var endMonthLength = serviceMonthLength(ey, em);
         if (ed >= endMonthLength) {
             months += 1;
@@ -142,7 +136,6 @@
         return merged;
     }
 
-    // Replace the calculator's service function after app.js has loaded.
     window.calculateTripsService = function (tripList) {
         if (!Array.isArray(tripList) || tripList.length === 0) {
             return { months: 0, days: 0, totalDays: 0 };
@@ -167,4 +160,82 @@
             totalDays: months * 30 + days
         };
     };
+
+    // Always-visible archive action: Registry + Name are enough to create
+    // a pending candidate record. Nothing else should block the save.
+    function addAlwaysAvailableSave() {
+        if (document.getElementById('saveArchiveTop')) return;
+        var registry = document.getElementById('registryNumber');
+        var name = document.getElementById('fullName');
+        if (!registry || !name) return;
+
+        var wrap = document.createElement('div');
+        wrap.id = 'saveArchiveTopWrap';
+        wrap.style.cssText = 'margin:12px 0 18px;text-align:center;';
+
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.id = 'saveArchiveTop';
+        button.textContent = '📁 Αποθήκευση στο Αρχείο';
+        button.style.cssText = 'width:100%;padding:13px 16px;border:0;border-radius:9px;background:#214f83;color:#fff;font:inherit;font-weight:800;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.12);';
+
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            var r = String(registry.value || '').trim();
+            var n = String(name.value || '').trim();
+            if (!r || !n) {
+                alert('Για να αποθηκευτεί ο φάκελος απαιτούνται μόνο Μητρώο και Ονοματεπώνυμο.');
+                return;
+            }
+
+            var kepEl = document.querySelector('input[name="kep"]:checked');
+            var k = kepEl ? kepEl.value : '';
+            var examinerEl = document.getElementById(k === '2' ? 'examinerKep2' : 'examinerKep1');
+            var resultEl = document.getElementById('result');
+            var trips = [];
+            try {
+                trips = typeof window.getSeaServiceTrips === 'function' ? window.getSeaServiceTrips() : [];
+            } catch (e) { trips = []; }
+
+            var now = new Date();
+            var record = {
+                id: Date.now(),
+                timestamp: now.toISOString(),
+                date: now.toLocaleDateString('el-GR'),
+                time: now.toLocaleTimeString('el-GR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }),
+                registryNumber: r,
+                fullName: n,
+                kep: k ? 'ΚΕΠ ' + k : '',
+                examiner: examinerEl ? String(examinerEl.value || '').trim() : '',
+                documents: 'Εκκρεμότητα',
+                documentsNote: 'Δεν έχουν ολοκληρωθεί όλα τα στοιχεία.',
+                examinationStatus: 'Σε εκκρεμότητα',
+                grade: 'Δεν βαθμολογήθηκε',
+                finalDecision: 'Σε εκκρεμότητα',
+                result: resultEl ? String(resultEl.innerText || '').trim() : 'Δεν έχει ολοκληρωθεί ο υπολογισμός υπηρεσίας.',
+                trips: Array.isArray(trips) ? trips.map(function (t) { return { ...t }; }) : []
+            };
+
+            try {
+                var archive = JSON.parse(localStorage.getItem('seaServiceArchive') || '[]');
+                if (!Array.isArray(archive)) archive = [];
+                archive.unshift(record);
+                localStorage.setItem('seaServiceArchive', JSON.stringify(archive));
+                alert('Η καταχώριση αποθηκεύτηκε στο Αρχείο. Τα υπόλοιπα στοιχεία μπορούν να συμπληρωθούν αργότερα.');
+            } catch (e) {
+                alert('Δεν ήταν δυνατή η αποθήκευση στο Αρχείο.');
+            }
+        }, true);
+
+        wrap.appendChild(button);
+        name.parentNode.insertBefore(wrap, name.nextSibling);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', addAlwaysAvailableSave);
+    } else {
+        addAlwaysAvailableSave();
+    }
 })();
