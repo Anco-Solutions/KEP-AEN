@@ -36,10 +36,52 @@ function start(){
       card.appendChild(buttons);
       const data=records();const id=card.querySelector('.edit-record')?.dataset.id;const r=data.find(x=>String(x.id)===String(id));
       buttons.onclick=()=>{if(!r)return;const panel=card.querySelector('.service-history-panel');if(panel){panel.remove();buttons.textContent='📋 Προβολή πλήρους υπηρεσίας'}else{renderDetail(card,r);buttons.textContent='▴ Απόκρυψη πλήρους υπηρεσίας'}};
+      if(r){
+        const grid=card.querySelector('.record-grid');
+        if(grid&&!grid.querySelector('.registration-author')){
+          const item=doc.createElement('div');item.className='record-item registration-author';
+          item.innerHTML='<strong>Καθηγητής / Εξεταστής καταχώρισης</strong><div class="record-value">'+esc(r.createdBy||r.examiner||'Παλαιά καταχώριση — δεν είχε καταγραφεί')+'</div>';
+          grid.appendChild(item);
+          const last=doc.createElement('div');last.className='record-item registration-last';
+          const la=r.lastUpdatedAt||r.createdAt;last.innerHTML='<strong>Τελευταία ενημέρωση</strong><div class="record-value">'+esc((r.lastUpdatedBy||r.createdBy||r.examiner||'—')+' · '+((la&&la.date)||r.date||'—')+' '+((la&&la.time)||r.time||''))+'</div>';
+          grid.appendChild(last);
+          if(Array.isArray(r.history)&&r.history.length){
+            const audit=doc.createElement('div');audit.className='registration-history';audit.style.cssText='margin-top:10px;padding:10px;border-radius:8px;background:#f7f8fa;border:1px solid #e3e5e8;font-size:13px;line-height:1.45';
+            audit.innerHTML='<strong>Ιστορικό καταχωρίσεων</strong><div>'+r.history.map((h,i)=>'<div style="margin-top:5px">'+(i+1)+'. '+esc(h.action||'Καταχώριση')+' — <b>'+esc(h.by||'—')+'</b> — '+esc(h.date||'')+' '+esc(h.time||'')+'</div>').join('')+'</div>';
+            card.appendChild(audit);
+          }
+        }
+      }
     });
   }
   enhance();
   new MutationObserver(enhance).observe(doc.getElementById('archiveResults')||doc.body,{childList:true,subtree:true});
 }
 const frame=document.getElementById('appFrame');if(frame)frame.addEventListener('load',start);if(frame&&frame.contentDocument&&frame.contentDocument.readyState!=='loading')start();
+})();
+
+/* Registration audit presentation. */
+(function(){
+'use strict';
+function start(){
+  const frame=document.getElementById('appFrame');if(!frame||!frame.contentDocument)return;
+  const doc=frame.contentDocument,win=frame.contentWindow,KEY='seaServiceArchive';
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+  function enhance(){
+    let style=doc.getElementById('registration-audit-style');
+    if(!style){style=doc.createElement('style');style.id='registration-audit-style';style.textContent='.registration-history{margin-top:10px;padding:10px;border-radius:8px;background:#f7f8fa;border:1px solid #e3e5e8;font-size:13px;line-height:1.45}.audit-badge{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:999px;background:#eef5ff;color:#214f83;font-size:11px;font-weight:700}';doc.head.appendChild(style)}
+    doc.querySelectorAll('.record-card').forEach(card=>{
+      if(card.querySelector('.registration-audit-extra'))return;
+      const id=card.querySelector('.edit-record')?.dataset.id;if(!id)return;
+      let data=[];try{data=JSON.parse(win.localStorage.getItem(KEY)||'[]')}catch(e){data=[]}
+      const r=Array.isArray(data)?data.find(x=>String(x.id)===String(id)):null;if(!r)return;
+      const grid=card.querySelector('.record-grid');if(!grid)return;
+      const wrap=doc.createElement('div');wrap.className='record-item registration-audit-extra';wrap.innerHTML='<strong>Αρχική καταχώριση</strong><div class="record-value">'+esc(r.createdBy||r.examiner||'Παλαιά καταχώριση — δεν είχε καταγραφεί')+' · '+esc((r.createdAt&&r.createdAt.date)||r.date||'—')+' '+esc((r.createdAt&&r.createdAt.time)||r.time||'')+'</div>';
+      grid.appendChild(wrap);
+      if(Array.isArray(r.history)&&r.history.length){const box=doc.createElement('div');box.className='registration-history';box.innerHTML='<strong>Ποιος έκανε κάθε καταχώριση / ενημέρωση</strong>'+r.history.map((h,i)=>'<div style="margin-top:5px">'+(i+1)+'. <b>'+esc(h.by||'—')+'</b> — '+esc(h.action||'Καταχώριση')+' — '+esc(h.date||'')+' '+esc(h.time||'')+'</div>').join('');card.appendChild(box)}
+    });
+  }
+  enhance();new MutationObserver(enhance).observe(doc.getElementById('archiveResults')||doc.body,{childList:true,subtree:true});
+}
+const f=document.getElementById('appFrame');if(f)f.addEventListener('load',start);if(f&&f.contentDocument&&f.contentDocument.readyState!=='loading')start();
 })();
