@@ -2,9 +2,41 @@
 <html lang="el">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SeaService Calculator — Test</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Anco-Solutions/KEP-AEN@rebuild/supabase-clean-frontend/rebuild/styles.css?v=20260912-4">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>SeaService Calculator</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Anco-Solutions/KEP-AEN@rebuild/supabase-clean-frontend/rebuild/styles.css?v=20260912-5">
+<style>
+/* Test-page visual restoration: intentionally inline so browser/CDN cache cannot hide it. */
+body{background:#f1f3f8!important}
+.app{max-width:820px!important;padding:22px 16px 42px!important}
+.app-header{padding:30px 22px 24px!important;border-radius:22px!important;text-align:center!important;box-shadow:0 8px 24px rgba(20,40,70,.10)!important}
+.app-header h1{color:#0b477f!important;font-size:clamp(32px,7vw,52px)!important;font-weight:800!important;letter-spacing:-1.2px!important;margin:0 0 24px!important;line-height:1.08!important}
+.app-header .datetime{font-size:clamp(17px,4.5vw,24px)!important;font-weight:800!important;color:#111!important;margin:0 0 24px!important}
+.app-header .signed-in{font-size:15px!important;margin:0 auto!important;max-width:650px!important;background:#f4f6f9!important;color:#475467!important;text-align:center!important}
+.header-actions{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:center!important;gap:12px!important;margin:18px auto 0!important;width:min(100%,620px)!important}
+.header-actions .btn{width:100%!important;min-height:52px!important;position:static!important;float:none!important;margin:0!important;transform:none!important}
+.archive-link{text-align:center!important;text-decoration:none!important;font-size:17px!important;font-weight:800!important;background:#f7f8fa!important;border:2px solid #d5dbe2!important;border-radius:14px!important}
+#logoutButton{font-size:17px!important}
+#appShell>.card:not(.app-header){border-radius:22px!important;padding:22px 20px!important;box-shadow:0 6px 20px rgba(20,40,70,.07)!important}
+.card{border-radius:18px!important}
+.field label{font-size:18px!important}
+input,select{min-height:50px!important;border-radius:13px!important;font-size:17px!important}
+.kep-option{min-height:54px!important;border-radius:13px!important;font-size:18px!important}
+.examiner{border-radius:13px!important}
+.btn{border-radius:13px!important}
+@media(max-width:600px){
+  .app{padding:12px 10px 32px!important}
+  .app-header{padding:28px 16px 22px!important}
+  .app-header h1{font-size:34px!important}
+  .app-header .datetime{font-size:17px!important;line-height:1.35!important}
+  .app-header .signed-in{font-size:14px!important;line-height:1.35!important}
+  .header-actions{gap:10px!important;margin-top:16px!important}
+  .header-actions .btn{width:100%!important;display:flex!important;min-height:50px!important;align-items:center!important;justify-content:center!important}
+}
+</style>
 </head>
 <body>
 <main class="app">
@@ -22,7 +54,10 @@
       <h1>SeaService Calculator</h1>
       <div id="calculationDateTime" class="datetime"></div>
       <div id="signedInAs" class="signed-in"></div>
-      <div class="header-actions"><a href="archive.html" class="btn btn-secondary archive-link">📁 Αρχείο Εξέτασης ΚΕΠ →</a><button id="logoutButton" class="btn btn-secondary" type="button">Αποσύνδεση</button></div>
+      <div class="header-actions">
+        <a href="archive.html" class="btn btn-secondary archive-link">📁 Αρχείο Εξέτασης ΚΕΠ →</a>
+        <button id="logoutButton" class="btn btn-secondary" type="button">Αποσύνδεση</button>
+      </div>
     </header>
     <section class="card">
       <div class="field"><label for="registry">Μητρώο εξεταζόμενου</label><input id="registry" inputmode="numeric" autocomplete="off"></div>
@@ -37,6 +72,6 @@
 <script>
 (function(){function updateDateTime(){var now=new Date();var text='Ημερομηνία & ώρα: '+now.toLocaleDateString('el-GR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+now.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});document.querySelectorAll('.datetime').forEach(function(el){el.textContent=text;});}updateDateTime();setInterval(updateDateTime,1000);})();
 </script>
-<script type="module" src="https://cdn.jsdelivr.net/gh/Anco-Solutions/KEP-AEN@rebuild/supabase-clean-frontend/rebuild/app.js?v=20260912-4"></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/Anco-Solutions/KEP-AEN@rebuild/supabase-clean-frontend/rebuild/app.js?v=20260912-5"></script>
 </body>
 </html>
