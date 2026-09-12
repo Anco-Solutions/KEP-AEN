@@ -4,12 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SeaService Calculator</title>
-<link rel="stylesheet" href="styles.css?v=2">
+<link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
 <main class="app">
   <section id="authCard" class="card">
     <h1>SeaService Calculator</h1>
+    <div id="authDateTime" class="datetime"></div>
     <h2>Σύνδεση</h2>
     <div class="field"><label for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="username"></div>
     <div class="field"><label for="loginPassword">Κωδικός</label><input id="loginPassword" type="password" autocomplete="current-password"></div>
@@ -18,10 +19,14 @@
   </section>
 
   <section id="appShell" hidden>
-    <header class="card">
+    <header class="card app-header">
       <h1>SeaService Calculator</h1>
-      <div id="signedInAs" class="muted"></div>
-      <button id="logoutButton" class="btn btn-secondary" type="button" style="margin-top:10px">Αποσύνδεση</button>
+      <div id="calculationDateTime" class="datetime"></div>
+      <div id="signedInAs" class="signed-in"></div>
+      <div class="header-actions">
+        <a href="archive.html" class="btn btn-secondary archive-link">📁 Αρχείο Εξέτασης ΚΕΠ →</a>
+        <button id="logoutButton" class="btn btn-secondary" type="button">Αποσύνδεση</button>
+      </div>
     </header>
 
     <section class="card">
@@ -34,8 +39,8 @@
           <label class="kep-option"><input type="radio" name="kep" value="1"> ΚΕΠ 1</label>
           <label class="kep-option"><input type="radio" name="kep" value="2"> ΚΕΠ 2</label>
         </div>
-        <div id="examiner1Box" class="examiner"><label for="examiner1">Εξεταστής</label><select id="examiner1"></select></div>
-        <div id="examiner2Box" class="examiner"><label for="examiner2">Εξεταστής</label><select id="examiner2"></select></div>
+        <div id="examiner1Box" class="examiner"><label for="examiner1">Εξεταστής</label><select id="examiner1"><option value="">— Επιλέξτε εξεταστή —</option></select></div>
+        <div id="examiner2Box" class="examiner"><label for="examiner2">Εξεταστής</label><select id="examiner2"><option value="">— Επιλέξτε εξεταστή —</option></select></div>
       </div>
 
       <div id="manualPrevious" class="card hidden" style="margin-left:0;margin-right:0">
@@ -57,30 +62,40 @@
       <div class="field"><label for="rank">Βαθμός</label><select id="rank"><option>Δόκιμος Μηχανικός</option><option>Καθαριστής</option><option>Μηχανοδηγός / Λιπαντής</option><option>Βοηθός Ηλεκτρολόγου</option><option>Δόκιμος Ηλεκτρολόγος</option></select></div>
       <div class="actions"><button id="addTrip" class="btn btn-secondary" type="button">＋ Προσθήκη Ταξιδιού</button><button id="calculate" class="btn btn-primary" type="button">Υπολογισμός Υπηρεσίας</button></div>
       <div id="tripList" style="margin-top:12px"></div>
-      <div id="serviceSummary" class="muted" style="margin-top:12px"></div>
+      <div id="serviceSummary" class="service-summary" style="margin-top:12px"></div>
       <div id="result" class="result pending" style="margin-top:12px">Δεν έχει γίνει ακόμη υπολογισμός.</div>
+
+      <section id="examPanel" class="card exam-panel">
+        <h2>Στοιχεία Εξέτασης ΚΕΠ</h2>
+        <div class="field"><label>Δικαιολογητικά</label><div class="radio-row">
+          <label><input type="radio" name="docs" value="unchecked"> Δεν έχουν ελεγχθεί</label>
+          <label><input type="radio" name="docs" value="full"> Πλήρη</label>
+          <label><input type="radio" name="docs" value="incomplete"> Ελλιπή</label>
+        </div></div>
+        <div class="field"><label>Εξέταση</label><div class="radio-row">
+          <label><input type="radio" name="examState" value="pending" checked> Εκκρεμεί</label>
+          <label><input id="examCompleted" type="radio" name="examState" value="completed"> Ολοκληρώθηκε</label>
+        </div></div>
+        <div id="gradeWrap" class="field grade-wrap"><label for="grade">Βαθμός εξέτασης (0–10)</label><input id="grade" type="number" min="0" max="10" step="0.01" inputmode="decimal"><div id="classification" class="muted" style="margin-top:6px"></div></div>
+        <div id="decision" class="decision">ΤΕΛΙΚΗ ΑΠΟΦΑΣΗ: Σε εκκρεμότητα</div>
+      </section>
     </section>
 
-    <section id="examPanel" class="card exam-panel">
-      <h2>Στοιχεία Εξέτασης ΚΕΠ</h2>
-      <div class="field"><label>Δικαιολογητικά</label><div class="radio-row">
-        <label><input type="radio" name="docs" value="unchecked"> Δεν έχουν ελεγχθεί</label>
-        <label><input type="radio" name="docs" value="full"> Πλήρη</label>
-        <label><input type="radio" name="docs" value="incomplete"> Ελλιπή</label>
-      </div></div>
-      <div class="field"><label>Εξέταση</label><div class="radio-row">
-        <label><input type="radio" name="examState" value="pending" checked> Εκκρεμεί</label>
-        <label><input id="examCompleted" type="radio" name="examState" value="completed"> Ολοκληρώθηκε</label>
-      </div></div>
-      <div id="gradeWrap" class="field grade-wrap"><label for="grade">Βαθμός εξέτασης (0–10)</label><input id="grade" type="number" min="0" max="10" step="0.01" inputmode="decimal"><div id="classification" class="muted" style="margin-top:6px"></div></div>
-      <div id="decision" class="decision">ΤΕΛΙΚΗ ΑΠΟΦΑΣΗ: Σε εκκρεμότητα</div>
-    </section>
-
-    <footer class="actions" style="margin-top:18px">
+    <footer class="actions footer-actions">
       <button id="newEntry" class="btn btn-secondary" type="button">＋ Νέα καταχώριση</button>
     </footer>
   </section>
 </main>
-<script type="module" src="app.js?v=2"></script>
+<script>
+(function(){
+  function updateDateTime(){
+    var text='Ημερομηνία & ώρα: '+new Date().toLocaleDateString('el-GR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+new Date().toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+    document.querySelectorAll('.datetime').forEach(function(el){el.textContent=text;});
+  }
+  updateDateTime();
+  setInterval(updateDateTime,1000);
+})();
+</script>
+<script type="module" src="app.js?v=3"></script>
 </body>
 </html>
