@@ -1,3 +1,58 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+const SUPABASE_URL = 'https://yblvmtaxorbdctvrpqer.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_g5YEf2H_2yWoDM1DOzKtQw_qsCvc6ty';
+const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+async function loadProfile(user){
+  const { data, error } = await supabase.from('profiles').select('id,full_name,role,active').eq('id', user.id).single();
+  if(error) throw error;
+  if(!data.active) throw new Error('Ο λογαριασμός σας δεν είναι ενεργός.');
+  if(!['admin','teacher'].includes(data.role)) throw new Error('Ο λογαριασμός σας δεν έχει δικαίωμα πρόσβασης.');
+  return data;
+}
+
+function setAuthMessage(text, error=false){
+  const el=document.getElementById('authMessage');
+  if(el){el.textContent=text;el.className=error?'error':'muted';}
+}
+
+async function applySession(session){
+  const authCard=document.getElementById('authCard');
+  const shell=document.getElementById('appShell');
+  if(!session){
+    authCard.hidden=false;shell.hidden=true;return;
+  }
+  try{
+    const profile=await loadProfile(session.user);
+    document.getElementById('signedInAs').textContent=`Συνδεδεμένος: ${profile.full_name || session.user.email} (${profile.role})`;
+    authCard.hidden=true;shell.hidden=false;
+  }catch(e){
+    await supabase.auth.signOut();
+    authCard.hidden=false;shell.hidden=true;
+    setAuthMessage(e.message || 'Δεν επιτρέπεται η πρόσβαση.',true);
+  }
+}
+
+async function initAuth(){
+  document.getElementById('loginButton').addEventListener('click',async()=>{
+    const email=document.getElementById('loginEmail').value.trim();
+    const password=document.getElementById('loginPassword').value;
+    if(!email||!password){setAuthMessage('Συμπληρώστε email και κωδικό.',true);return;}
+    const button=document.getElementById('loginButton');
+    button.disabled=true;setAuthMessage('Γίνεται σύνδεση…');
+    const {data,error}=await supabase.auth.signInWithPassword({email,password});
+    button.disabled=false;
+    if(error){setAuthMessage('Αποτυχία σύνδεσης: '+error.message,true);return;}
+    document.getElementById('loginPassword').value='';
+    await applySession(data.session);
+  });
+  document.getElementById('logoutButton').addEventListener('click',async()=>{await supabase.auth.signOut();});
+  supabase.auth.onAuthStateChange((_event,session)=>{ applySession(session); });
+  const {data}=await supabase.auth.getSession();
+  await applySession(data.session);
+}
+
 const $ = (id) => document.getElementById(id);
 
 const EXAMINERS_KEY = 'seaServiceExaminers';
@@ -193,3 +248,5 @@ const tests=[
  ['16/05/2024→12/11/2024','2024-05-16','2024-11-12','5m27d']
 ];
 console.assert(tests.every(([,a,b,expected])=>{const x=calculateTrips([{embark:a,discharge:b}]);return `${x.months}m${x.days}d`===expected;}),'NAT calculation self-check failed');
+
+initAuth();
