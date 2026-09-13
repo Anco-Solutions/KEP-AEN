@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SeaService Calculator — Test</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Anco-Solutions/KEP-AEN@rebuild/supabase-clean-frontend/rebuild/styles.css?v=20260913-4">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Anco-Solutions/KEP-AEN@rebuild/supabase-clean-frontend/rebuild/styles.css?v=20260913-5">
 <style>
 body{background:#f1f3f8!important}
 .app{max-width:820px!important;padding:16px 14px 40px!important}
@@ -26,6 +26,8 @@ input,select{min-height:42px!important;padding:8px 10px!important;font-size:16px
 .footer-actions{width:100%!important}.footer-actions .btn{width:100%!important;min-height:48px!important;font-size:16px!important}
 .site-footer{margin:8px 0 0!important;text-align:left!important;font-size:12px!important;line-height:1.4!important;color:#8a94a3!important;padding:4px 10px 0!important}
 .site-footer .author{font-weight:800!important;font-style:italic!important;color:#687384!important}
+.app::after{display:none!important;content:none!important}
+.app-footer+.app-footer{display:none!important}
 @media(max-width:600px){
   .app{padding:10px 10px 30px!important}
   #authCard{padding:20px 16px 22px!important}
@@ -68,6 +70,6 @@ input,select{min-height:42px!important;padding:8px 10px!important;font-size:16px
 <script>
 (function(){function updateDateTime(){var now=new Date();var text='Ημερομηνία & ώρα: '+now.toLocaleDateString('el-GR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+now.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});document.querySelectorAll('.datetime').forEach(function(el){el.textContent=text;});}updateDateTime();setInterval(updateDateTime,1000);})();
 </script>
-<script type="module" src="https://cdn.jsdelivr.net/gh/Anco-Solutions/KEP-AEN@rebuild/supabase-clean-frontend/rebuild/app.js?v=20260913-4"></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/Anco-Solutions/KEP-AEN@rebuild/supabase-clean-frontend/rebuild/app.js?v=20260913-5"></script>
 </body>
 </html>
