@@ -17,6 +17,13 @@ function addNav(profile){
   header.appendChild(nav);
 }
 
+function readTrips(){
+  return [...document.querySelectorAll('#tripList .trip')].map(row=>{
+    const m=row.innerText.match(/(\d{4}-\d{2}-\d{2})\s*→\s*(\d{4}-\d{2}-\d{2})/);
+    return m?{embark:m[1],discharge:m[2]}:null;
+  }).filter(Boolean);
+}
+
 async function saveCurrent(){
   const profile=await sessionProfile();
   if(!profile){alert('Η σύνδεση έχει λήξει. Συνδεθείτε ξανά.');return;}
@@ -25,7 +32,7 @@ async function saveCurrent(){
   const kep=document.querySelector('input[name="kep"]:checked')?.value;
   const examinerName=document.getElementById(kep==='1'?'examiner1':'examiner2')?.value || '';
   if(!registry||!fullName||!kep||!examinerName){alert('Συμπληρώστε Μητρώο, Ονοματεπώνυμο, ΚΕΠ και Εξεταστή.');return;}
-  const trips=[...(window.__seaTrips||[])];
+  const trips=readTrips();
   const serviceText=document.getElementById('serviceSummary')?.textContent||'';
   const resultText=document.getElementById('result')?.innerText||'';
   const docs=document.querySelector('input[name="docs"]:checked')?.value||'unchecked';
@@ -57,8 +64,6 @@ function wire(){
     const b=document.createElement('button');b.id='saveArchive';b.type='button';b.className='btn btn-primary';b.textContent='📁 Αποθήκευση Αρχείου';
     b.addEventListener('click',saveCurrent); footer.prepend(b);
   }
-  const originalTrips=window.TRIPS;
-  Object.defineProperty(window,'__seaTrips',{get:()=>window.TRIPS||originalTrips||[]});
 }
 
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wire); else wire();
