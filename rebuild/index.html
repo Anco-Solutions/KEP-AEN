@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SeaService Calculator</title>
-<link rel="stylesheet" href="styles.css?v=3">
+<link rel="stylesheet" href="styles.css?v=20260913-8">
 </head>
 <body>
 <main class="app">
@@ -85,17 +85,19 @@
       <button id="newEntry" class="btn btn-secondary" type="button">＋ Νέα καταχώριση</button>
     </footer>
   </section>
+  <footer class="site-footer">© 2026 <span class="author">Tassos Ballas</span> · All rights reserved.</footer>
 </main>
 <script>
 (function(){
   function updateDateTime(){
-    var text='Ημερομηνία & ώρα: '+new Date().toLocaleDateString('el-GR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+new Date().toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+    var now=new Date();
+    var text='Ημερομηνία & ώρα: '+now.toLocaleDateString('el-GR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+now.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
     document.querySelectorAll('.datetime').forEach(function(el){el.textContent=text;});
   }
-  updateDateTime();
-  setInterval(updateDateTime,1000);
+  updateDateTime();setInterval(updateDateTime,1000);
 })();
 </script>
-<script type="module" src="app.js?v=3"></script>
+<script type="module" src="app.js?v=20260913-8"></script>
+<script type="module" src="app-enhancements.js?v=20260913-1"></script>
 </body>
 </html>
