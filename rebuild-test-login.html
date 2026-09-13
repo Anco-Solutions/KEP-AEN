@@ -1,1 +1,131 @@
-<!doctype html><html lang="el"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SeaService Calculator</title><style>*{box-sizing:border-box}html,body{margin:0;background:#f1f3f8;color:#172033;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}.app{max-width:760px;margin:auto;padding:10px 10px 24px}.card{background:#fff;border:1px solid #e0e5ec;border-radius:15px;padding:12px 14px;margin:7px 0;box-shadow:0 3px 14px rgba(0,0,0,.06)}#authCard{padding:18px 16px 20px}h1{color:#0b477f;font-size:24px;line-height:1.05;text-align:center;margin:0 0 7px;white-space:nowrap;font-weight:800}.datetime{font-size:13px;font-weight:700;text-align:center;margin:0 0 8px;white-space:nowrap;color:#172033}h2{font-size:19px;line-height:1.2;margin:12px 0 9px}.field{margin:7px 0}.field label{display:block;font-size:14px;font-weight:700;margin-bottom:3px}input,select{width:100%;height:38px;min-height:38px;padding:6px 9px;font-size:16px;border:1px solid #cbd3df;border-radius:8px;background:#fff;color:#172033}.btn{border:0;border-radius:9px;min-height:40px;padding:8px 13px;font-size:14px;font-weight:800;cursor:pointer}.btn-primary{background:#31598f;color:#fff}.btn-secondary{background:#f7f9fb;border:1px solid #d5dbe3;color:#172033}.kep-options{display:flex;gap:7px}.kep-option{display:flex;align-items:center;gap:5px;padding:7px 9px;font-size:14px;border:1px solid #d7dde6;border-radius:8px}.kep-option input{width:auto;height:16px;min-height:16px;margin:0}.examiner{display:none;margin-top:6px}.examiner.active{display:block}.header-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.header-actions .btn{height:36px;min-height:36px;padding:6px 10px;font-size:12.5px}.archive-link{flex:1 1 100%;text-align:center;text-decoration:none}.admin-button,.header-actions #logoutButton{flex:1 1 calc(50% - 3px);text-align:center;text-decoration:none}.signed-in{font-size:13px;padding:6px 8px;margin:0 0 7px;text-align:center;background:#f4f6f9;border-radius:8px;font-weight:700}.actions{display:flex;gap:6px}.actions .btn{flex:1}.service-summary,.result{padding:8px;margin-top:7px;font-size:13.5px;border-radius:8px}.result.pending{background:#fff8e6}.result.ok{background:#edf9f0}.exam-panel{padding:9px}.exam-panel h2{font-size:15px;margin:0 0 6px}.radio-row{display:flex;flex-wrap:wrap;gap:5px 9px}.radio-row label{display:flex;align-items:center;gap:4px;font-size:12.5px}.radio-row input{width:auto;height:16px;min-height:16px;margin:0}.grade-wrap{display:none}.grade-wrap.visible{display:block}.footer-actions{margin:7px 0 0;display:flex;justify-content:center}.footer-actions .btn{width:auto;min-height:36px;font-size:13px}.site-footer{font-size:10.5px;text-align:center;padding:3px;margin:4px 0 0;color:#8a94a3}.site-footer .author{font-weight:800;font-style:italic;color:#687384}.hidden{display:none!important}</style></head><body><main class="app"><section id="authCard" class="card"><h1>SeaService Calculator</h1><div id="authDateTime" class="datetime"></div><h2>Σύνδεση</h2><div class="field"><label for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="username"></div><div class="field"><label for="loginPassword">Κωδικός</label><input id="loginPassword" type="password" autocomplete="current-password"></div><button id="loginButton" class="btn btn-primary" type="button">Σύνδεση</button><div id="authMessage" style="margin-top:8px;font-size:13px"></div></section><section id="appShell" hidden><header class="card"><h1>SeaService Calculator</h1><div id="calculationDateTime" class="datetime"></div><div id="signedInAs" class="signed-in"></div><div class="header-actions"><a href="rebuild-test-archive.html?v=3" class="btn btn-secondary archive-link">📁 Αρχείο Εξέτασης ΚΕΠ →</a><a id="adminButton" href="rebuild-test-admin.html?v=4" class="btn btn-secondary admin-button" hidden>⚙️ Διαχείριση</a><button id="logoutButton" class="btn btn-secondary" type="button">Αποσύνδεση</button></div></header><section class="card"><div class="field"><label for="registry">Μητρώο εξεταζόμενου</label><input id="registry" inputmode="numeric"></div><div class="field"><label for="fullName">Ονοματεπώνυμο εξεταζόμενου</label><input id="fullName"></div><div class="field"><label>ΚΕΠ</label><div class="kep-options"><label class="kep-option"><input type="radio" name="kep" value="1">ΚΕΠ 1</label><label class="kep-option"><input type="radio" name="kep" value="2">ΚΕΠ 2</label></div><div id="examiner1Box" class="examiner"><label for="examiner1">Εξεταστής</label><select id="examiner1"><option>— Επιλέξτε εξεταστή —</option></select></div><div id="examiner2Box" class="examiner"><label for="examiner2">Εξεταστής</label><select id="examiner2"><option>— Επιλέξτε εξεταστή —</option></select></div></div></section><section id="workArea" class="card hidden"><h2>Υπηρεσία</h2><div class="field"><label for="embark">Ημερομηνία Ναυτολόγησης</label><input id="embark" type="date"></div><div class="field"><label for="discharge">Ημερομηνία Απόλυσης</label><input id="discharge" type="date"></div><div class="field"><label for="rank">Βαθμός</label><select id="rank"><option>Δόκιμος Μηχανικός</option><option>Καθαριστής</option><option>Μηχανοδηγός / Λιπαντής</option></select></div><div class="actions"><button id="addTrip" class="btn btn-secondary">＋ Προσθήκη Ταξιδιού</button><button id="calculate" class="btn btn-primary">Υπολογισμός Υπηρεσίας</button></div><div id="tripList"></div><div id="serviceSummary" class="service-summary"></div><div id="result" class="result pending">Δεν έχει γίνει ακόμη υπολογισμός.</div><section id="examPanel" class="card exam-panel"><h2>Στοιχεία Εξέτασης ΚΕΠ</h2><div class="field"><label>Δικαιολογητικά</label><div class="radio-row"><label><input type="radio" name="docs">Δεν έχουν ελεγχθεί</label><label><input type="radio" name="docs">Πλήρη</label><label><input type="radio" name="docs">Ελλιπή</label></div></div><div class="field"><label>Εξέταση</label><div class="radio-row"><label><input type="radio" name="examState" checked>Εκκρεμεί</label><label><input type="radio" name="examState">Ολοκληρώθηκε</label></div></div><div id="gradeWrap" class="field grade-wrap"><label for="grade">Βαθμός εξέτασης (0–10)</label><input id="grade" type="number" min="0" max="10" step="0.01"></div><div id="decision">ΤΕΛΙΚΗ ΑΠΟΦΑΣΗ: Σε εκκρεμότητα</div></section></section><footer class="footer-actions"><button id="newEntry" class="btn btn-secondary">＋ Νέα καταχώριση</button></footer></section><footer class="site-footer">© 2026 <span class="author">Tassos Ballas</span> · All rights reserved.</footer></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script>(function(){function clock(){var n=new Date(),s='Ημερομηνία & ώρα: '+n.toLocaleDateString('el-GR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+n.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});document.querySelectorAll('.datetime').forEach(function(e){e.textContent=s})}clock();setInterval(clock,1000)})();(function(){var client=supabase.createClient('https://yblvmtaxorbdctvrpqer.supabase.co','sb_publishable_g5YEf2H_2yWoDM1DOzKtQw_qsCvc6ty'),authCard=document.getElementById('authCard'),shell=document.getElementById('appShell'),msg=document.getElementById('authMessage'),login=document.getElementById('loginButton'),admin=document.getElementById('adminButton'),nameEl=document.getElementById('signedInAs');async function enter(session){if(!session){authCard.hidden=false;shell.hidden=true;return}try{var r=await client.from('profiles').select('id,full_name,role,active').eq('id',session.user.id).single();if(r.error)throw r.error;if(!r.data.active)throw new Error('Ο λογαριασμός σας δεν είναι ενεργός.');if(r.data.role!=='admin'&&r.data.role!=='teacher')throw new Error('Ο λογαριασμός σας δεν έχει δικαίωμα πρόσβασης.');nameEl.textContent='Συνδεδεμένος: '+(r.data.full_name&&r.data.full_name.trim()?r.data.full_name:(r.data.role==='admin'?'Tassos Ballas':'Χρήστης'));admin.hidden=r.data.role!=='admin';authCard.hidden=true;shell.hidden=false}catch(e){msg.textContent=e.message||'Δεν επιτρέπεται η πρόσβαση.';msg.style.color='#b42318'}}login.addEventListener('click',async function(){login.disabled=true;msg.textContent='Γίνεται σύνδεση…';try{var email=document.getElementById('loginEmail').value.trim(),password=document.getElementById('loginPassword').value;if(!email||!password)throw new Error('Συμπληρώστε email και κωδικό.');var r=await client.auth.signInWithPassword({email:email,password:password});if(r.error)throw r.error;document.getElementById('loginPassword').value='';await enter(r.data.session)}catch(e){msg.textContent='Αποτυχία σύνδεσης: '+(e.message||e);msg.style.color='#b42318'}finally{login.disabled=false}});document.getElementById('logoutButton').addEventListener('click',async function(){await client.auth.signOut()});client.auth.onAuthStateChange(function(_,s){enter(s)});client.auth.getSession().then(function(r){enter(r.data.session)}).catch(function(e){msg.textContent='Αδυναμία ελέγχου σύνδεσης: '+e.message;msg.style.color='#b42318'})})();</script></body></html>
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>SeaService Calculator</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#f4f6fa;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+body{display:flex;justify-content:center}
+.app{width:min(100%,560px);padding:18px 14px 14px}
+.login-card{background:#fff;border:1px solid #dfe5ed;border-radius:18px;padding:22px 20px 20px;box-shadow:0 8px 28px rgba(20,45,75,.08)}
+h1{margin:0;text-align:center;color:#0b477f;font-size:25px;line-height:1.1;font-weight:800;letter-spacing:-.2px}
+.datetime{margin:8px 0 20px;text-align:center;font-size:13px;font-weight:700;color:#596579;white-space:nowrap}
+h2{margin:0 0 14px;text-align:center;color:#172033;font-size:19px;line-height:1.2;font-weight:800}
+.field{margin:0 0 11px}
+.field label{display:block;margin:0 0 4px;font-size:13px;font-weight:700;color:#364154}
+input,select{display:block;width:100%;height:40px;min-height:40px;padding:7px 10px;border:1px solid #cbd3df;border-radius:9px;background:#fff;color:#172033;font-size:16px;outline:none}
+input:focus{border-color:#4775a7;box-shadow:0 0 0 2px rgba(71,117,167,.12)}
+.btn{width:100%;height:40px;min-height:40px;border-radius:9px;border:0;padding:7px 12px;font-size:14px;font-weight:800;cursor:pointer}
+.btn-primary{background:#31598f;color:#fff}
+.btn-primary:disabled{opacity:.7;cursor:wait}
+.message{min-height:18px;margin-top:8px;text-align:center;font-size:12.5px;font-weight:700}
+.site-footer{margin-top:10px;text-align:center;font-size:10.5px;color:#8a94a3}
+.site-footer .author{font-weight:800;font-style:italic;color:#687384}
+.hidden{display:none!important}
+
+#appShell{margin-top:0}
+.header,.card{background:#fff;border:1px solid #dfe5ed;border-radius:16px;padding:13px 14px;margin-bottom:8px;box-shadow:0 4px 18px rgba(20,45,75,.06)}
+.header h1{font-size:24px}
+.signed{margin:5px 0 8px;text-align:center;font-size:13px;font-weight:800;color:#364154}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.action{height:36px;min-height:36px;padding:6px 10px;border-radius:9px;border:1px solid #d5dbe3;background:#f7f9fb;color:#172033;font-size:12.5px;font-weight:800;text-decoration:none;text-align:center;flex:1}
+.archive{flex-basis:100%;background:#31598f;color:#fff;border-color:#31598f}
+#adminButton{display:none}
+.kep-options{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.kep-option{display:flex;align-items:center;justify-content:center;gap:6px;height:40px;border:1px solid #cbd3df;border-radius:9px;font-size:14px;font-weight:800}
+.kep-option input{width:17px;height:17px;min-height:17px;margin:0}
+.examiner{display:none;margin-top:7px}
+.examiner.active{display:block}
+.examiner label{display:block;font-size:13px;font-weight:800;margin-bottom:4px}
+.footer-action{text-align:center;margin:8px 0}
+.footer-action button{width:auto;padding:7px 14px}
+</style>
+</head>
+<body>
+<main class="app">
+<section id="authCard" class="login-card">
+<h1>SeaService Calculator</h1>
+<div id="authDateTime" class="datetime"></div>
+<h2>Σύνδεση</h2>
+<div class="field"><label for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="username" autocapitalize="none" spellcheck="false"></div>
+<div class="field"><label for="loginPassword">Κωδικός</label><input id="loginPassword" type="password" autocomplete="current-password"></div>
+<button id="loginButton" class="btn btn-primary" type="button">Σύνδεση</button>
+<div id="authMessage" class="message"></div>
+</section>
+
+<section id="appShell" class="hidden">
+<header class="header">
+<h1>SeaService Calculator</h1>
+<div id="calculationDateTime" class="datetime"></div>
+<div id="signedInAs" class="signed"></div>
+<div class="actions">
+<a class="action archive" href="rebuild-test-archive.html?v=5">📁 Αρχείο Εξέτασης ΚΕΠ →</a>
+<a id="adminButton" class="action" href="rebuild-test-admin.html?v=5">⚙️ Διαχείριση</a>
+<button id="logoutButton" class="action" type="button">Αποσύνδεση</button>
+</div>
+</header>
+<section class="card">
+<div class="field"><label for="registry">Μητρώο εξεταζόμενου</label><input id="registry" inputmode="numeric"></div>
+<div class="field"><label for="fullName">Ονοματεπώνυμο εξεταζόμενου</label><input id="fullName"></div>
+<div class="field"><label>ΚΕΠ</label>
+<div class="kep-options">
+<label class="kep-option"><input type="radio" name="kep" value="1">ΚΕΠ 1</label>
+<label class="kep-option"><input type="radio" name="kep" value="2">ΚΕΠ 2</label>
+</div>
+<div id="examiner1Box" class="examiner"><label for="examiner1">Εξεταστής</label><select id="examiner1"><option value="">— Επιλέξτε εξεταστή —</option></select></div>
+<div id="examiner2Box" class="examiner"><label for="examiner2">Εξεταστής</label><select id="examiner2"><option value="">— Επιλέξτε εξεταστή —</option></select></div>
+</div>
+</section>
+<div class="footer-action"><button id="newEntry" class="action" type="button">＋ Νέα καταχώριση</button></div>
+</section>
+<footer class="site-footer">© 2026 <span class="author">Tassos Ballas</span> · All rights reserved.</footer>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+(function(){
+  function clock(){var n=new Date(),s='Ημερομηνία & ώρα: '+n.toLocaleDateString('el-GR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+n.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});document.querySelectorAll('.datetime').forEach(function(e){e.textContent=s})}
+  clock();setInterval(clock,1000);
+})();
+(function(){
+  var client=supabase.createClient('https://yblvmtaxorbdctvrpqer.supabase.co','sb_publishable_g5YEf2H_2yWoDM1DOzKtQw_qsCvc6ty');
+  var authCard=document.getElementById('authCard'),shell=document.getElementById('appShell'),msg=document.getElementById('authMessage'),login=document.getElementById('loginButton'),admin=document.getElementById('adminButton'),nameEl=document.getElementById('signedInAs');
+  var busy=false;
+  function showLogin(){authCard.classList.remove('hidden');shell.classList.add('hidden')}
+  function showApp(){authCard.classList.add('hidden');shell.classList.remove('hidden')}
+  async function enter(session){
+    if(!session){showLogin();return}
+    try{
+      var r=await client.from('profiles').select('id,full_name,role,active').eq('id',session.user.id).single();
+      if(r.error)throw r.error;
+      if(!r.data.active)throw new Error('Ο λογαριασμός σας δεν είναι ενεργός.');
+      if(r.data.role!=='admin'&&r.data.role!=='teacher')throw new Error('Ο λογαριασμός σας δεν έχει δικαίωμα πρόσβασης.');
+      nameEl.textContent='Συνδεδεμένος: '+(r.data.full_name&&r.data.full_name.trim()?r.data.full_name:(r.data.role==='admin'?'Tassos Ballas':'Χρήστης'));
+      admin.style.display=r.data.role==='admin'?'block':'none';
+      showApp();
+    }catch(e){showLogin();msg.textContent=e.message||'Δεν επιτρέπεται η πρόσβαση.';msg.style.color='#b42318'}
+  }
+  login.addEventListener('click',async function(){
+    if(busy)return;busy=true;login.disabled=true;msg.textContent='Γίνεται σύνδεση…';msg.style.color='#596579';
+    try{
+      var email=document.getElementById('loginEmail').value.trim(),password=document.getElementById('loginPassword').value;
+      if(!email||!password)throw new Error('Συμπληρώστε email και κωδικό.');
+      var r=await client.auth.signInWithPassword({email:email,password:password});
+      if(r.error)throw r.error;
+      document.getElementById('loginPassword').value='';
+      await enter(r.data.session);
+    }catch(e){msg.textContent='Αποτυχία σύνδεσης: '+(e.message||e);msg.style.color='#b42318'}
+    finally{busy=false;login.disabled=false}
+  });
+  document.getElementById('loginPassword').addEventListener('keydown',function(e){if(e.key==='Enter')login.click()});
+  document.getElementById('logoutButton').addEventListener('click',async function(){await client.auth.signOut();showLogin()});
+  client.auth.onAuthStateChange(function(event,session){if(event==='SIGNED_OUT')showLogin();else if(event==='SIGNED_IN'&&session)enter(session)});
+  client.auth.getSession().then(function(r){enter(r.data.session)}).catch(function(e){showLogin();msg.textContent='Αδυναμία ελέγχου σύνδεσης: '+e.message;msg.style.color='#b42318'});
+})();
+</script>
+</body>
+</html>
