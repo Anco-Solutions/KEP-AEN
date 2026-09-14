@@ -1189,7 +1189,6 @@ setTimeout(
 </script>
 
 
-
 <!-- =====================================================
      ΚΕΠ 1 / ΚΕΠ 2 → ΣΥΝΕΧΕΙΑ
 ===================================================== -->
@@ -1198,80 +1197,48 @@ setTimeout(
 
 (function(){
 
-  var radios =
-    document.querySelectorAll(
-      'input[name="kep"]'
-    );
-
-
-  var next =
-    document.getElementById(
-      'kepNext'
-    );
-
-
-  if(!next)
-    return;
-
-
   function updateNext(){
+
+    var next =
+      document.getElementById('kepNext');
+
+    if(!next) return;
 
     var selected =
       document.querySelector(
         'input[name="kep"]:checked'
       );
 
-
     if(!selected){
 
-      next.classList.remove(
-        'visible'
-      );
+      next.classList.remove('visible');
 
-      next.style.display =
-        'none';
+      next.style.display = 'none';
 
-      next.href =
-        '#';
+      next.href = '#';
 
       next.textContent =
         '➡️ Συνέχεια στο ΚΕΠ';
 
       return;
-
     }
 
+    next.classList.add('visible');
 
-    next.classList.add(
-      'visible'
-    );
+    next.style.display = 'flex';
 
-
-    next.style.display =
-      'flex';
-
-
-    if(
-      selected.value === '1'
-    ){
+    if(selected.value === '1'){
 
       next.href =
         'rebuild-test-kep.html?kep=1';
 
-
       next.textContent =
         '➡️ Συνέχεια στο ΚΕΠ 1';
 
-    }
-
-
-    else if(
-      selected.value === '2'
-    ){
+    }else if(selected.value === '2'){
 
       next.href =
         'rebuild-test-kep.html?kep=2';
-
 
       next.textContent =
         '➡️ Συνέχεια στο ΚΕΠ 2';
@@ -1281,48 +1248,43 @@ setTimeout(
   }
 
 
-  radios.forEach(
-    function(radio){
+  /* Ακούμε το change σε όλη τη σελίδα.
+     Έτσι δεν χάνεται η λειτουργία αν το app.js
+     ξαναδημιουργήσει τα radio buttons. */
 
-      radio.addEventListener(
-        'change',
-        updateNext
-      );
+  document.addEventListener(
+    'change',
+    function(e){
+
+      if(
+        e.target &&
+        e.target.name === 'kep'
+      ){
+
+        updateNext();
+
+      }
 
     }
   );
 
 
-  /*
-   * Πολύ σημαντικό:
-   * ελέγχουμε και την αρχική κατάσταση,
-   * ώστε αν το app.js έχει ήδη επιλέξει
-   * ΚΕΠ 1, να εμφανιστεί αμέσως το κουμπί.
-   */
+  /* Αρχικός έλεγχος */
 
   updateNext();
 
 
-  /*
-   * Το app.js μπορεί να ενημερώσει
-   * την επιλογή λίγο αργότερα.
-   * Για αυτό ξανακάνουμε έναν έλεγχο.
-   */
+  /* Έλεγχοι ασφαλείας μετά την αρχικοποίηση
+     της εφαρμογής */
 
-  setTimeout(
-    updateNext,
-    300
-  );
+  setTimeout(updateNext,300);
 
-  setTimeout(
-    updateNext,
-    1000
-  );
+  setTimeout(updateNext,1000);
 
-  setTimeout(
-    updateNext,
-    2000
-  );
+  setTimeout(updateNext,2000);
+
+  setTimeout(updateNext,3000);
+
 
 })();
 
