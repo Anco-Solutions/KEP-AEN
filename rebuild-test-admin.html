@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>Διαχείριση — SeaService Calculator</title>
 
 <link rel="stylesheet"
@@ -11,46 +12,16 @@ href="https://cdn.jsdelivr.net/gh/Anco-Solutions/KEP-AEN@rebuild/supabase-clean-
 <style>
 .admin-grid{
   display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-template-columns:1fr 1fr;
   gap:10px;
 }
 
 .admin-card{
   border:1px solid #d6dce4;
   border-radius:12px;
-  padding:14px;
+  padding:12px;
+  margin-top:10px;
   background:#fff;
-  margin-top:12px;
-}
-
-.admin-card h3{
-  margin-top:0;
-}
-
-.item-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding:10px 0;
-  border-bottom:1px solid #e5e7eb;
-}
-
-.item-row:last-child{
-  border-bottom:0;
-}
-
-.item-main{
-  min-width:0;
-}
-
-.item-name{
-  font-weight:800;
-}
-
-.item-code{
-  font-size:.85rem;
-  color:#667085;
 }
 
 .form-row{
@@ -60,47 +31,35 @@ href="https://cdn.jsdelivr.net/gh/Anco-Solutions/KEP-AEN@rebuild/supabase-clean-
   margin-top:10px;
 }
 
-.form-row.one{
-  grid-template-columns:1fr;
-}
-
 .admin-input,
 .admin-select{
   width:100%;
   box-sizing:border-box;
   padding:10px 12px;
-  border:1px solid #cfd6df;
+  border:1px solid #ccd3dc;
   border-radius:9px;
   background:#fff;
   font:inherit;
 }
 
-.assignment-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-top:12px;
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
 }
 
-.assignment-box{
-  border:1px solid #d6dce4;
-  border-radius:10px;
-  padding:10px;
-  background:#fafbfc;
+.item-name{
+  font-weight:800;
 }
 
-.assignment-box strong{
-  display:block;
-  margin-bottom:8px;
+.item-code,
+.muted{
+  color:#667085;
 }
 
-.check-row{
-  display:block;
-  padding:6px 0;
-}
-
-.check-row input{
-  margin-right:7px;
+.small{
+  font-size:.88rem;
 }
 
 .actions{
@@ -110,33 +69,89 @@ href="https://cdn.jsdelivr.net/gh/Anco-Solutions/KEP-AEN@rebuild/supabase-clean-
   margin-top:10px;
 }
 
-.muted{
-  color:#667085;
+.aen-box{
+  border:1px solid #d6dce4;
+  border-radius:12px;
+  margin-top:10px;
+  background:#fff;
+  overflow:hidden;
 }
 
-.status-ok{
-  color:#137333;
+.aen-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:12px 14px;
+  cursor:pointer;
 }
 
-.status-error{
-  color:#b42318;
+.aen-body{
+  display:none;
+  padding:0 14px 14px;
+  border-top:1px solid #e5e7eb;
 }
 
-.small{
-  font-size:.88rem;
+.aen-box.open .aen-body{
+  display:block;
+}
+
+.school-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:8px 0;
+  border-bottom:1px solid #eef0f3;
+}
+
+.school-row:last-child{
+  border-bottom:0;
+}
+
+.teacher-card{
+  border:1px solid #d6dce4;
+  border-radius:12px;
+  padding:14px;
+  margin-top:12px;
+  background:#fff;
+}
+
+.teacher-aen{
+  border:1px solid #e1e5ea;
+  border-radius:10px;
+  margin-top:10px;
+  overflow:hidden;
+}
+
+.teacher-aen summary{
+  cursor:pointer;
+  padding:10px;
+  font-weight:800;
+}
+
+.teacher-schools{
+  padding:4px 12px 10px;
+}
+
+.school-check{
+  display:block;
+  padding:6px 0;
 }
 
 @media(max-width:600px){
+
   .admin-grid,
-  .form-row,
-  .assignment-grid{
+  .form-row{
     grid-template-columns:1fr;
   }
 
-  .item-row{
+  .row,
+  .school-row{
     align-items:flex-start;
     flex-direction:column;
   }
+
 }
 </style>
 </head>
@@ -147,130 +162,100 @@ href="https://cdn.jsdelivr.net/gh/Anco-Solutions/KEP-AEN@rebuild/supabase-clean-
 
 <header class="card app-header">
 
-<h1 style="text-align:center">Διαχείριση</h1>
+<h1 style="text-align:center">
+Διαχείριση
+</h1>
 
 <div id="who" class="signed-in"></div>
 
 <nav class="app-nav">
-  <a href="rebuild-test.html?v=20260913-10">🏠 Νέα Εξέταση</a>
-  <button id="logout" class="btn btn-secondary">Αποσύνδεση</button>
+
+<a href="rebuild-test.html?v=20260913-10">
+🏠 Νέα Εξέταση
+</a>
+
+<button id="logout" class="btn btn-secondary">
+Αποσύνδεση
+</button>
+
 </nav>
 
 </header>
 
 
-<!-- =========================
+<!-- =====================================================
      ΑΕΝ
-========================= -->
+===================================================== -->
 
 <section class="card">
 
-<h2>ΑΕΝ</h2>
+<h2>
+ΑΕΝ
+</h2>
 
 <p class="muted">
-Διαχείριση των Ακαδημιών Εμπορικού Ναυτικού.
+Ο διαχειριστής ορίζει τις ΑΕΝ και τις σχολές που ανήκουν
+ξεχωριστά σε κάθε ΑΕΝ.
 </p>
 
 <div id="aenStatus" class="muted"></div>
 
+
 <div class="admin-card">
 
-<h3>Νέα ΑΕΝ</h3>
+<h3>
+Νέα ΑΕΝ
+</h3>
 
 <div class="form-row">
 
 <input
- id="newAenName"
- class="admin-input"
- type="text"
- placeholder="Ονομασία ΑΕΝ">
+id="newAenName"
+class="admin-input"
+type="text"
+placeholder="Ονομασία ΑΕΝ">
 
 <input
- id="newAenCode"
- class="admin-input"
- type="text"
- placeholder="Κωδικός ΑΕΝ">
+id="newAenCode"
+class="admin-input"
+type="text"
+placeholder="Κωδικός ΑΕΝ">
 
 </div>
 
 <div class="actions">
-<button id="addAen" class="btn btn-primary">
+
+<button
+id="addAen"
+class="btn btn-primary">
+
 Προσθήκη ΑΕΝ
+
 </button>
+
 </div>
 
 </div>
+
 
 <div id="aenList"></div>
 
 </section>
 
 
-<!-- =========================
-     ΣΧΟΛΕΣ
-========================= -->
-
-<section class="card">
-
-<h2>Σχολές</h2>
-
-<p class="muted">
-Οι σχολές ανήκουν σε συγκεκριμένη ΑΕΝ.
-</p>
-
-<div id="schoolStatus" class="muted"></div>
-
-<div class="admin-card">
-
-<h3>Νέα Σχολή</h3>
-
-<div class="form-row">
-
-<select id="newSchoolAen" class="admin-select">
-<option value="">Επιλέξτε ΑΕΝ</option>
-</select>
-
-<input
- id="newSchoolName"
- class="admin-input"
- type="text"
- placeholder="Ονομασία σχολής">
-
-</div>
-
-<div class="form-row one">
-
-<input
- id="newSchoolCode"
- class="admin-input"
- type="text"
- placeholder="Κωδικός σχολής">
-
-</div>
-
-<div class="actions">
-<button id="addSchool" class="btn btn-primary">
-Προσθήκη Σχολής
-</button>
-</div>
-
-</div>
-
-<div id="schoolList"></div>
-
-</section>
-
-
-<!-- =========================
+<!-- =====================================================
      ΚΑΘΗΓΗΤΕΣ
-========================= -->
+===================================================== -->
 
 <section class="card">
 
-<h2>Καθηγητές</h2>
+<h2>
+Καθηγητές
+</h2>
 
 <p class="muted">
-Διαχείριση ρόλου, ενεργής πρόσβασης και αναθέσεων ΑΕΝ / σχολών.
+Πρώτα επιλέγεις ΑΕΝ και μετά εμφανίζονται μόνο οι σχολές
+που έχουν οριστεί για τη συγκεκριμένη ΑΕΝ.
 </p>
 
 <div id="teacherStatus" class="muted"></div>
@@ -280,24 +265,59 @@ href="https://cdn.jsdelivr.net/gh/Anco-Solutions/KEP-AEN@rebuild/supabase-clean-
 </section>
 
 
-<!-- =========================
-     ΑΛΛΕΣ ΔΙΑΧΕΙΡΙΣΤΙΚΕΣ ΛΕΙΤΟΥΡΓΙΕΣ
-========================= -->
+<!-- =====================================================
+     ΥΠΟΛΟΙΠΗ ΔΙΑΧΕΙΡΙΣΗ
+===================================================== -->
 
 <section class="card">
 
-<h2>Υπόλοιπη διαχείριση</h2>
+<h2>
+Υπόλοιπη διαχείριση
+</h2>
 
 <div class="admin-grid">
 
-<a href="rebuild-test-audit.html?v=1"
-style="min-height:72px;display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;border:1px solid #d6dce4;border-radius:12px;background:#fff;color:#172033;font-weight:800;padding:12px">
-🕘<br>Ιστορικό Ενεργειών
+<a
+href="rebuild-test-audit.html?v=1"
+style="
+min-height:72px;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+text-decoration:none;
+border:1px solid #d6dce4;
+border-radius:12px;
+background:#fff;
+color:#172033;
+font-weight:800;
+padding:12px">
+
+🕘<br>
+Ιστορικό Ενεργειών
+
 </a>
 
-<a href="rebuild-test-archive.html?v=1"
-style="min-height:72px;display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;border:1px solid #d6dce4;border-radius:12px;background:#fff;color:#172033;font-weight:800;padding:12px">
-📁<br>Αρχείο Εξετάσεων
+
+<a
+href="rebuild-test-archive.html?v=1"
+style="
+min-height:72px;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+text-decoration:none;
+border:1px solid #d6dce4;
+border-radius:12px;
+background:#fff;
+color:#172033;
+font-weight:800;
+padding:12px">
+
+📁<br>
+Αρχείο Εξετάσεων
+
 </a>
 
 </div>
@@ -306,7 +326,13 @@ style="min-height:72px;display:flex;align-items:center;justify-content:center;te
 
 
 <footer class="site-footer">
-© 2026 <span class="author">Tassos Ballas</span> · All rights reserved.
+
+© 2026
+<span class="author">
+Tassos Ballas
+</span>
+· All rights reserved.
+
 </footer>
 
 </main>
@@ -317,47 +343,50 @@ style="min-height:72px;display:flex;align-items:center;justify-content:center;te
 import {
   requireUser,
   supabase
-} from 'https://cdn.jsdelivr.net/gh/Anco-Solutions/KEP-AEN@rebuild/supabase-clean-frontend-v2/rebuild/portal.js?v=1';
+}
+from
+'https://cdn.jsdelivr.net/gh/Anco-Solutions/KEP-AEN@rebuild/supabase-clean-frontend-v2/rebuild/portal.js?v=1';
 
 
-/* =========================================================
+/* =====================================================
    AUTH
-========================================================= */
+===================================================== */
 
 const p = await requireUser('admin');
 
-if (!p) {
+if(!p){
   throw new Error('Μη εξουσιοδοτημένος χρήστης.');
 }
 
-const who = document.getElementById('who');
 
-who.textContent =
+document.getElementById('who').textContent =
   'Συνδεδεμένος: ' +
   (p.full_name?.trim() || 'Tassos Ballas');
 
 
-document.getElementById('logout').onclick = async () => {
+document.getElementById('logout').onclick =
+  async () => {
 
-  await supabase.auth.signOut();
+    await supabase.auth.signOut();
 
-  location.href = 'rebuild-test.html?v=20260913-10';
+    location.href =
+      'rebuild-test.html?v=20260913-10';
 
-};
+  };
 
 
-/* =========================================================
+/* =====================================================
    STATE
-========================================================= */
+===================================================== */
 
 let aens = [];
 let schools = [];
 let teachers = [];
 
 
-/* =========================================================
+/* =====================================================
    HELPERS
-========================================================= */
+===================================================== */
 
 function esc(value){
 
@@ -371,63 +400,61 @@ function esc(value){
 }
 
 
-function setStatus(id,text,type='muted'){
-
-  const el = document.getElementById(id);
-
-  el.textContent = text;
-
-  el.className = type;
-
-}
-
-
-/* =========================================================
+/* =====================================================
    LOAD AEN
-========================================================= */
+===================================================== */
 
 async function loadAens(){
 
-  setStatus('aenStatus','Φόρτωση ΑΕΝ…');
+  const status =
+    document.getElementById('aenStatus');
 
-  const {data,error} = await supabase
-    .from('aens')
-    .select('id,name,code,active,created_at')
-    .order('name');
+  status.textContent =
+    'Φόρτωση ΑΕΝ…';
+
+
+  const {data,error} =
+    await supabase
+      .from('aens')
+      .select(
+        'id,name,code,active,created_at'
+      )
+      .order('name');
+
 
   if(error){
 
-    setStatus(
-      'aenStatus',
-      'Σφάλμα φόρτωσης ΑΕΝ: '+error.message,
-      'status-error'
-    );
+    status.textContent =
+      'Σφάλμα φόρτωσης ΑΕΝ: ' +
+      error.message;
 
     return;
 
   }
 
+
   aens = data || [];
 
-  renderAens();
-  populateAenSelects();
 
-  setStatus(
-    'aenStatus',
-    `${aens.length} ΑΕΝ`,
-    'status-ok'
-  );
+  renderAens();
+
+
+  status.textContent =
+    aens.length +
+    ' ΑΕΝ';
 
 }
 
 
-/* =========================================================
+/* =====================================================
    RENDER AEN
-========================================================= */
+===================================================== */
 
 function renderAens(){
 
-  const list = document.getElementById('aenList');
+  const list =
+    document.getElementById('aenList');
+
 
   if(!aens.length){
 
@@ -438,392 +465,441 @@ function renderAens(){
 
   }
 
-  list.innerHTML = aens.map(aen => `
 
-    <div class="admin-card">
+  list.innerHTML =
+    aens.map(aen => {
 
-      <div class="item-row">
+      const aenSchools =
+        schools.filter(
+          s => s.aen_id === aen.id
+        );
 
-        <div class="item-main">
 
-          <div class="item-name">
-            ${esc(aen.name)}
+      return `
+
+      <div class="aen-box">
+
+        <div
+          class="aen-head"
+          data-open-aen="${esc(aen.id)}">
+
+          <div>
+
+            <div class="item-name">
+              ${esc(aen.name)}
+            </div>
+
+            <div class="item-code">
+
+              Κωδικός:
+              ${esc(aen.code || '—')}
+
+              ·
+
+              ${aenSchools.length}
+              σχολές
+
+              ·
+
+              ${aen.active
+                ? '🟢 Ενεργή'
+                : '🔴 Ανενεργή'}
+
+            </div>
+
           </div>
 
-          <div class="item-code">
-            Κωδικός: ${esc(aen.code || '—')}
-          </div>
-
-          <div class="small">
-            ${aen.active ? '🟢 Ενεργή' : '🔴 Ανενεργή'}
-          </div>
+          <span>
+            ▾
+          </span>
 
         </div>
 
-        <div class="actions">
 
-          <button
-            class="btn btn-secondary"
-            data-toggle-aen="${aen.id}">
-            ${aen.active ? 'Απενεργοποίηση' : 'Ενεργοποίηση'}
-          </button>
+        <div class="aen-body">
+
+
+          <!-- ΠΡΟΣΘΗΚΗ ΣΧΟΛΗΣ -->
+
+          <div class="admin-card">
+
+            <h3>
+              Προσθήκη σχολής
+            </h3>
+
+            <div class="form-row">
+
+              <input
+                id="school-name-${esc(aen.id)}"
+                class="admin-input"
+                type="text"
+                placeholder="Ονομασία σχολής">
+
+              <input
+                id="school-code-${esc(aen.id)}"
+                class="admin-input"
+                type="text"
+                placeholder="Κωδικός σχολής">
+
+            </div>
+
+
+            <div class="actions">
+
+              <button
+                class="btn btn-primary"
+                data-add-school="${esc(aen.id)}">
+
+                Προσθήκη σχολής
+
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <!-- ΣΧΟΛΕΣ ΤΗΣ ΣΥΓΚΕΚΡΙΜΕΝΗΣ ΑΕΝ -->
+
+          <h3>
+            Σχολές ${esc(aen.name)}
+          </h3>
+
+
+          ${
+            aenSchools.length
+
+            ?
+
+            aenSchools.map(school => `
+
+              <div class="school-row">
+
+                <div>
+
+                  <div class="item-name">
+                    ${esc(school.name)}
+                  </div>
+
+                  <div class="item-code">
+                    Κωδικός:
+                    ${esc(school.code || '—')}
+                  </div>
+
+                </div>
+
+
+                <button
+                  class="btn btn-secondary"
+                  data-delete-school="${esc(school.id)}">
+
+                  Αφαίρεση
+
+                </button>
+
+              </div>
+
+            `).join('')
+
+            :
+
+            `
+            <div class="muted">
+              Δεν έχουν οριστεί σχολές για αυτή την ΑΕΝ.
+            </div>
+            `
+          }
+
 
         </div>
 
       </div>
 
-    </div>
+      `;
 
-  `).join('');
+    }).join('');
 
+
+  /* ΑΝΟΙΓΜΑ / ΚΛΕΙΣΙΜΟ ΑΕΝ */
 
   document
-    .querySelectorAll('[data-toggle-aen]')
+    .querySelectorAll('[data-open-aen]')
     .forEach(button => {
 
-      button.onclick = async () => {
+      button.onclick = () => {
 
-        const id = button.dataset.toggleAen;
-
-        const current = aens.find(x => x.id === id);
-
-        if(!current) return;
-
-        const {error} = await supabase
-          .from('aens')
-          .update({active:!current.active})
-          .eq('id',id);
-
-        if(error){
-
-          alert(error.message);
-          return;
-
-        }
-
-        await loadAens();
-        await loadSchools();
-        await loadTeachers();
+        button
+          .parentElement
+          .classList
+          .toggle('open');
 
       };
+
+    });
+
+
+  /* ΠΡΟΣΘΗΚΗ ΣΧΟΛΗΣ */
+
+  document
+    .querySelectorAll('[data-add-school]')
+    .forEach(button => {
+
+      button.onclick =
+        async () => {
+
+          const aenId =
+            button.dataset.addSchool;
+
+
+          const name =
+            document
+              .getElementById(
+                'school-name-' + aenId
+              )
+              .value
+              .trim();
+
+
+          const code =
+            document
+              .getElementById(
+                'school-code-' + aenId
+              )
+              .value
+              .trim();
+
+
+          if(!name){
+
+            alert(
+              'Συμπληρώστε την ονομασία της σχολής.'
+            );
+
+            return;
+
+          }
+
+
+          const {error} =
+            await supabase
+              .from('schools')
+              .insert({
+
+                aen_id: aenId,
+
+                name: name,
+
+                code: code || null,
+
+                active: true
+
+              });
+
+
+          if(error){
+
+            alert(error.message);
+
+            return;
+
+          }
+
+
+          await loadSchools();
+
+          await loadTeachers();
+
+        };
+
+    });
+
+
+  /* ΑΦΑΙΡΕΣΗ ΣΧΟΛΗΣ */
+
+  document
+    .querySelectorAll('[data-delete-school]')
+    .forEach(button => {
+
+      button.onclick =
+        async () => {
+
+          if(
+            !confirm(
+              'Να αφαιρεθεί αυτή η σχολή από την ΑΕΝ;'
+            )
+          ){
+
+            return;
+
+          }
+
+
+          const {error} =
+            await supabase
+              .from('schools')
+              .delete()
+              .eq(
+                'id',
+                button.dataset.deleteSchool
+              );
+
+
+          if(error){
+
+            alert(error.message);
+
+            return;
+
+          }
+
+
+          await loadSchools();
+
+          await loadTeachers();
+
+        };
 
     });
 
 }
 
 
-/* =========================================================
-   AEN SELECTS
-========================================================= */
-
-function populateAenSelects(){
-
-  const select =
-    document.getElementById('newSchoolAen');
-
-  select.innerHTML =
-    '<option value="">Επιλέξτε ΑΕΝ</option>' +
-
-    aens
-      .filter(a => a.active)
-      .map(a =>
-        `<option value="${esc(a.id)}">
-          ${esc(a.name)}
-        </option>`
-      )
-      .join('');
-
-}
-
-
-/* =========================================================
+/* =====================================================
    ADD AEN
-========================================================= */
+===================================================== */
 
 document.getElementById('addAen').onclick =
   async () => {
 
     const name =
-      document.getElementById('newAenName')
-      .value.trim();
+      document
+        .getElementById('newAenName')
+        .value
+        .trim();
+
 
     const code =
-      document.getElementById('newAenCode')
-      .value.trim();
+      document
+        .getElementById('newAenCode')
+        .value
+        .trim();
 
 
     if(!name){
 
-      alert('Συμπληρώστε την ονομασία της ΑΕΝ.');
+      alert(
+        'Συμπληρώστε την ονομασία της ΑΕΝ.'
+      );
+
       return;
 
     }
 
 
-    const {error} = await supabase
-      .from('aens')
-      .insert({
-        name,
-        code: code || null,
-        active:true
-      });
+    const {error} =
+      await supabase
+        .from('aens')
+        .insert({
+
+          name: name,
+
+          code: code || null,
+
+          active: true
+
+        });
 
 
     if(error){
 
       alert(error.message);
+
       return;
 
     }
 
 
-    document.getElementById('newAenName').value='';
-    document.getElementById('newAenCode').value='';
+    document
+      .getElementById('newAenName')
+      .value = '';
+
+
+    document
+      .getElementById('newAenCode')
+      .value = '';
+
 
     await loadAens();
 
   };
 
 
-/* =========================================================
+/* =====================================================
    LOAD SCHOOLS
-========================================================= */
+===================================================== */
 
 async function loadSchools(){
 
-  setStatus('schoolStatus','Φόρτωση σχολών…');
+  const {data,error} =
+    await supabase
+      .from('schools')
+      .select(
+        'id,aen_id,name,code,active,created_at'
+      )
+      .order('name');
 
-  const {data,error} = await supabase
-    .from('schools')
-    .select('id,aen_id,name,code,active,created_at')
-    .order('name');
 
   if(error){
 
-    setStatus(
-      'schoolStatus',
-      'Σφάλμα φόρτωσης σχολών: '+error.message,
-      'status-error'
-    );
+    document
+      .getElementById('aenStatus')
+      .textContent =
+        'Σφάλμα φόρτωσης σχολών: ' +
+        error.message;
 
     return;
 
   }
+
 
   schools = data || [];
 
-  renderSchools();
 
-  setStatus(
-    'schoolStatus',
-    `${schools.length} σχολές`,
-    'status-ok'
-  );
+  renderAens();
 
 }
 
 
-/* =========================================================
-   RENDER SCHOOLS
-========================================================= */
-
-function renderSchools(){
-
-  const list =
-    document.getElementById('schoolList');
-
-  if(!schools.length){
-
-    list.innerHTML =
-      '<div class="muted">Δεν υπάρχουν σχολές.</div>';
-
-    return;
-
-  }
-
-
-  list.innerHTML = schools.map(school => {
-
-    const aen =
-      aens.find(a => a.id === school.aen_id);
-
-    return `
-
-      <div class="admin-card">
-
-        <div class="item-row">
-
-          <div class="item-main">
-
-            <div class="item-name">
-              ${esc(school.name)}
-            </div>
-
-            <div class="item-code">
-              ΑΕΝ: ${esc(aen?.name || '—')}
-              · Κωδικός:
-              ${esc(school.code || '—')}
-            </div>
-
-            <div class="small">
-              ${school.active ? '🟢 Ενεργή' : '🔴 Ανενεργή'}
-            </div>
-
-          </div>
-
-          <div class="actions">
-
-            <button
-              class="btn btn-secondary"
-              data-toggle-school="${school.id}">
-              ${school.active
-                ? 'Απενεργοποίηση'
-                : 'Ενεργοποίηση'}
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    `;
-
-  }).join('');
-
-
-  document
-    .querySelectorAll('[data-toggle-school]')
-    .forEach(button => {
-
-      button.onclick = async () => {
-
-        const id =
-          button.dataset.toggleSchool;
-
-        const current =
-          schools.find(x => x.id === id);
-
-        if(!current) return;
-
-
-        const {error} = await supabase
-          .from('schools')
-          .update({
-            active:!current.active
-          })
-          .eq('id',id);
-
-
-        if(error){
-
-          alert(error.message);
-          return;
-
-        }
-
-
-        await loadSchools();
-        await loadTeachers();
-
-      };
-
-    });
-
-}
-
-
-/* =========================================================
-   ADD SCHOOL
-========================================================= */
-
-document.getElementById('addSchool').onclick =
-  async () => {
-
-    const aen_id =
-      document.getElementById('newSchoolAen')
-      .value;
-
-    const name =
-      document.getElementById('newSchoolName')
-      .value.trim();
-
-    const code =
-      document.getElementById('newSchoolCode')
-      .value.trim();
-
-
-    if(!aen_id){
-
-      alert('Επιλέξτε ΑΕΝ.');
-      return;
-
-    }
-
-
-    if(!name){
-
-      alert('Συμπληρώστε την ονομασία της σχολής.');
-      return;
-
-    }
-
-
-    const {error} = await supabase
-      .from('schools')
-      .insert({
-        aen_id,
-        name,
-        code:code || null,
-        active:true
-      });
-
-
-    if(error){
-
-      alert(error.message);
-      return;
-
-    }
-
-
-    document.getElementById('newSchoolAen').value='';
-    document.getElementById('newSchoolName').value='';
-    document.getElementById('newSchoolCode').value='';
-
-
-    await loadSchools();
-
-  };
-
-
-/* =========================================================
+/* =====================================================
    LOAD TEACHERS
-========================================================= */
+===================================================== */
 
 async function loadTeachers(){
 
-  setStatus(
-    'teacherStatus',
-    'Φόρτωση καθηγητών…'
-  );
+  const status =
+    document.getElementById(
+      'teacherStatus'
+    );
 
 
-  const {data,error} = await supabase
-    .from('profiles')
-    .select(
-      'id,full_name,email,role,active,created_at'
-    )
-    .order('full_name');
+  status.textContent =
+    'Φόρτωση καθηγητών…';
+
+
+  const {data,error} =
+    await supabase
+      .from('profiles')
+      .select(
+        'id,full_name,email,role,active,created_at'
+      )
+      .order('full_name');
 
 
   if(error){
 
-    setStatus(
-      'teacherStatus',
-      'Σφάλμα φόρτωσης καθηγητών: '+error.message,
-      'status-error'
-    );
+    status.textContent =
+      'Σφάλμα καθηγητών: ' +
+      error.message;
 
     return;
 
@@ -833,63 +909,74 @@ async function loadTeachers(){
   teachers = data || [];
 
 
-  renderTeachers();
+  await renderTeachers();
 
 
-  setStatus(
-    'teacherStatus',
-    `${teachers.length} λογαριασμοί`,
-    'status-ok'
-  );
+  status.textContent =
+    teachers.length +
+    ' λογαριασμοί';
 
 }
 
 
-/* =========================================================
-   LOAD ASSIGNMENTS
-========================================================= */
+/* =====================================================
+   GET TEACHER ASSIGNMENTS
+===================================================== */
 
-async function getTeacherAssignments(teacherId){
+async function getAssignments(
+  teacherId
+){
 
   const [
     aenResult,
     schoolResult
-  ] = await Promise.all([
+  ] =
+    await Promise.all([
 
-    supabase
-      .from('teacher_aen_access')
-      .select('aen_id')
-      .eq('teacher_id',teacherId),
+      supabase
+        .from('teacher_aen_access')
+        .select('aen_id')
+        .eq(
+          'teacher_id',
+          teacherId
+        ),
 
-    supabase
-      .from('teacher_school_assignments')
-      .select('school_id')
-      .eq('teacher_id',teacherId)
+      supabase
+        .from('teacher_school_assignments')
+        .select('school_id')
+        .eq(
+          'teacher_id',
+          teacherId
+        )
 
-  ]);
+    ]);
 
 
   return {
 
-    aens:(aenResult.data || [])
-      .map(x => x.aen_id),
+    aens:
+      (aenResult.data || [])
+        .map(x => x.aen_id),
 
-    schools:(schoolResult.data || [])
-      .map(x => x.school_id)
+    schools:
+      (schoolResult.data || [])
+        .map(x => x.school_id)
 
   };
 
 }
 
 
-/* =========================================================
+/* =====================================================
    RENDER TEACHERS
-========================================================= */
+===================================================== */
 
 async function renderTeachers(){
 
   const list =
-    document.getElementById('teacherList');
+    document.getElementById(
+      'teacherList'
+    );
 
 
   if(!teachers.length){
@@ -902,168 +989,117 @@ async function renderTeachers(){
   }
 
 
-  list.innerHTML = teachers.map(teacher => `
+  list.innerHTML =
+    teachers.map(teacher => `
 
-    <div class="admin-card">
-
-      <div class="item-main">
+      <div class="teacher-card">
 
         <div class="item-name">
+
           ${esc(
             teacher.full_name ||
             'Χωρίς ονοματεπώνυμο'
           )}
+
         </div>
+
 
         <div class="small">
-          ${esc(teacher.email || '')}
-        </div>
 
-      </div>
-
-
-      <div class="form-row">
-
-        <div>
-
-          <label>
-            Ρόλος
-          </label>
-
-          <select
-            class="admin-select"
-            data-role="${esc(teacher.id)}">
-
-            <option value="teacher"
-              ${teacher.role === 'teacher'
-                ? 'selected'
-                : ''}>
-              Καθηγητής
-            </option>
-
-            <option value="admin"
-              ${teacher.role === 'admin'
-                ? 'selected'
-                : ''}>
-              Διαχειριστής
-            </option>
-
-          </select>
+          ${esc(
+            teacher.email || ''
+          )}
 
         </div>
 
 
-        <div>
+        <div class="form-row">
 
-          <label>
-            Πρόσβαση
-          </label>
+          <div>
 
-          <label class="check-row">
+            <label>
+              Ρόλος
+            </label>
 
-            <input
-              type="checkbox"
-              data-active="${esc(teacher.id)}"
-              ${teacher.active ? 'checked' : ''}>
+            <select
+              class="admin-select"
+              data-role="${esc(teacher.id)}">
 
-            Ενεργός λογαριασμός
+              <option
+                value="teacher"
+                ${teacher.role === 'teacher'
+                  ? 'selected'
+                  : ''}>
 
-          </label>
+                Καθηγητής
+
+              </option>
+
+              <option
+                value="admin"
+                ${teacher.role === 'admin'
+                  ? 'selected'
+                  : ''}>
+
+                Διαχειριστής
+
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div>
+
+            <label>
+              Πρόσβαση
+            </label>
+
+            <label class="school-check">
+
+              <input
+                type="checkbox"
+                data-active="${esc(teacher.id)}"
+                ${teacher.active
+                  ? 'checked'
+                  : ''}>
+
+              Ενεργός λογαριασμός
+
+            </label>
+
+          </div>
 
         </div>
 
-      </div>
 
+        <div
+          id="assignments-${esc(teacher.id)}">
 
-      <div
-        id="assignments-${esc(teacher.id)}"
-        class="assignment-grid">
-
-        <div class="muted">
           Φόρτωση αναθέσεων…
+
+        </div>
+
+
+        <div class="actions">
+
+          <button
+            class="btn btn-primary"
+            data-save="${esc(teacher.id)}">
+
+            Αποθήκευση αναθέσεων
+
+          </button>
+
         </div>
 
       </div>
 
-
-      <div class="actions">
-
-        <button
-          class="btn btn-primary"
-          data-save="${esc(teacher.id)}">
-          Αποθήκευση αναθέσεων
-        </button>
-
-      </div>
-
-    </div>
-
-  `).join('');
+    `).join('');
 
 
-  /* Ρόλοι */
-
-  document
-    .querySelectorAll('[data-role]')
-    .forEach(select => {
-
-      select.onchange = async () => {
-
-        const {error} =
-          await supabase
-            .from('profiles')
-            .update({
-              role:select.value
-            })
-            .eq('id',select.dataset.role);
-
-
-        if(error){
-
-          alert(error.message);
-
-        }
-
-      };
-
-    });
-
-
-  /* Active */
-
-  document
-    .querySelectorAll('[data-active]')
-    .forEach(check => {
-
-      check.onchange = async () => {
-
-        const oldValue =
-          !check.checked;
-
-
-        const {error} =
-          await supabase
-            .from('profiles')
-            .update({
-              active:check.checked
-            })
-            .eq('id',check.dataset.active);
-
-
-        if(error){
-
-          alert(error.message);
-
-          check.checked = oldValue;
-
-        }
-
-      };
-
-    });
-
-
-  /* Αναθέσεις */
+  /* ΦΟΡΤΩΣΗ ΑΝΑΘΕΣΕΩΝ */
 
   for(const teacher of teachers){
 
@@ -1074,26 +1110,100 @@ async function renderTeachers(){
   }
 
 
+  /* ΡΟΛΟΣ */
+
+  document
+    .querySelectorAll('[data-role]')
+    .forEach(select => {
+
+      select.onchange =
+        async () => {
+
+          const {error} =
+            await supabase
+              .from('profiles')
+              .update({
+                role: select.value
+              })
+              .eq(
+                'id',
+                select.dataset.role
+              );
+
+
+          if(error){
+
+            alert(error.message);
+
+          }
+
+        };
+
+    });
+
+
+  /* ACTIVE */
+
+  document
+    .querySelectorAll('[data-active]')
+    .forEach(check => {
+
+      check.onchange =
+        async () => {
+
+          const oldValue =
+            !check.checked;
+
+
+          const {error} =
+            await supabase
+              .from('profiles')
+              .update({
+                active: check.checked
+              })
+              .eq(
+                'id',
+                check.dataset.active
+              );
+
+
+          if(error){
+
+            alert(error.message);
+
+            check.checked =
+              oldValue;
+
+          }
+
+        };
+
+    });
+
+
+  /* SAVE ASSIGNMENTS */
+
   document
     .querySelectorAll('[data-save]')
     .forEach(button => {
 
-      button.onclick = async () => {
+      button.onclick =
+        async () => {
 
-        await saveTeacherAssignments(
-          button.dataset.save
-        );
+          await saveTeacherAssignments(
+            button.dataset.save
+          );
 
-      };
+        };
 
     });
 
 }
 
 
-/* =========================================================
-   RENDER TEACHER ASSIGNMENTS
-========================================================= */
+/* =====================================================
+   TEACHER ASSIGNMENT UI
+===================================================== */
 
 async function renderTeacherAssignments(
   teacherId
@@ -1101,165 +1211,170 @@ async function renderTeacherAssignments(
 
   const container =
     document.getElementById(
-      `assignments-${teacherId}`
+      'assignments-' + teacherId
     );
 
 
-  if(!container) return;
+  if(!container){
+    return;
+  }
 
 
   const current =
-    await getTeacherAssignments(
+    await getAssignments(
       teacherId
     );
 
 
   const activeAens =
-    aens.filter(a => a.active);
+    aens.filter(
+      a => a.active
+    );
 
 
-  const activeSchools =
-    schools.filter(s => s.active);
+  container.innerHTML =
+    activeAens.map(aen => {
+
+      const aenSchools =
+        schools.filter(
+          school =>
+            school.aen_id === aen.id &&
+            school.active
+        );
 
 
-  container.innerHTML = `
+      return `
 
-    <div class="assignment-box">
+      <details class="teacher-aen">
 
-      <strong>ΑΕΝ</strong>
+        <summary>
 
-      ${
-        activeAens.length
-        ?
-        activeAens.map(a => `
-
-          <label class="check-row">
+          <label>
 
             <input
               type="checkbox"
               data-teacher-aen="${esc(teacherId)}"
-              value="${esc(a.id)}"
-              ${current.aens.includes(a.id)
+              value="${esc(aen.id)}"
+              ${current.aens.includes(aen.id)
                 ? 'checked'
                 : ''}>
 
-            ${esc(a.name)}
+            ${esc(aen.name)}
 
           </label>
 
-        `).join('')
-        :
-        '<span class="muted">Δεν υπάρχουν ενεργές ΑΕΝ.</span>'
-      }
-
-    </div>
+        </summary>
 
 
-    <div class="assignment-box">
+        <div class="teacher-schools">
 
-      <strong>Σχολές</strong>
+          ${
+            aenSchools.length
 
-      ${
-        activeSchools.length
-        ?
-        activeSchools.map(s => {
+            ?
 
-          const a =
-            aens.find(x => x.id === s.aen_id);
+            aenSchools.map(school => `
 
-          return `
+              <label class="school-check">
 
-            <label class="check-row">
+                <input
+                  type="checkbox"
+                  data-teacher-school="${esc(teacherId)}"
+                  data-parent-aen="${esc(aen.id)}"
+                  value="${esc(school.id)}"
+                  ${current.schools.includes(school.id)
+                    ? 'checked'
+                    : ''}>
 
-              <input
-                type="checkbox"
-                data-teacher-school="${esc(teacherId)}"
-                value="${esc(s.id)}"
-                ${current.schools.includes(s.id)
-                  ? 'checked'
-                  : ''}>
+                ${esc(school.name)}
 
-              ${esc(s.name)}
-              <span class="muted">
-                (${esc(a?.name || '—')})
-              </span>
+              </label>
 
-            </label>
+            `).join('')
 
-          `;
+            :
 
-        }).join('')
-        :
-        '<span class="muted">Δεν υπάρχουν ενεργές σχολές.</span>'
-      }
+            `
+            <span class="muted">
+              Δεν υπάρχουν σχολές σε αυτή την ΑΕΝ.
+            </span>
+            `
+          }
 
-    </div>
+        </div>
 
-  `;
+      </details>
+
+      `;
+
+    }).join('');
+
+
+  if(!activeAens.length){
+
+    container.innerHTML =
+      '<div class="muted">Δεν υπάρχουν ενεργές ΑΕΝ.</div>';
+
+  }
 
 }
 
 
-/* =========================================================
+/* =====================================================
    SAVE TEACHER ASSIGNMENTS
-========================================================= */
+===================================================== */
 
 async function saveTeacherAssignments(
   teacherId
 ){
 
-  const aenIds =
+  const selectedAens =
     Array.from(
       document.querySelectorAll(
         `[data-teacher-aen="${teacherId}"]:checked`
       )
-    )
-    .map(x => x.value);
+    );
 
 
-  const schoolIds =
+  const selectedSchools =
     Array.from(
       document.querySelectorAll(
         `[data-teacher-school="${teacherId}"]:checked`
       )
-    )
-    .map(x => x.value);
+    );
 
 
-  const teacher =
-    teachers.find(x => x.id === teacherId);
+  const aenIds =
+    selectedAens.map(
+      x => x.value
+    );
 
 
-  if(!teacher){
-
-    alert('Δεν βρέθηκε ο καθηγητής.');
-    return;
-
-  }
+  const schoolIds =
+    selectedSchools.map(
+      x => x.value
+    );
 
 
   /*
-   * Οι σχολές πρέπει να ανήκουν σε ΑΕΝ
-   * που έχει επιλεγεί για τον καθηγητή.
+   * Έλεγχος:
+   * κάθε επιλεγμένη σχολή πρέπει να ανήκει
+   * σε ΑΕΝ που έχει επιλεγεί.
    */
 
-  const invalidSchools =
-    schoolIds.filter(schoolId => {
-
-      const school =
-        schools.find(s => s.id === schoolId);
-
-      return school &&
-        !aenIds.includes(school.aen_id);
-
-    });
+  const invalidSchool =
+    selectedSchools.some(
+      school =>
+        !aenIds.includes(
+          school.dataset.parentAen
+        )
+    );
 
 
-  if(invalidSchools.length){
+  if(invalidSchool){
 
     alert(
-      'Υπάρχει σχολή που ανήκει σε ΑΕΝ ' +
-      'η οποία δεν έχει ανατεθεί στον καθηγητή.'
+      'Η σχολή πρέπει να ανήκει σε επιλεγμένη ΑΕΝ.'
     );
 
     return;
@@ -1267,125 +1382,139 @@ async function saveTeacherAssignments(
   }
 
 
-  const saveButton =
-    document.querySelector(
-      `[data-save="${teacherId}"]`
+  /* ΔΙΑΓΡΑΦΗ ΠΑΛΙΩΝ ΑΕΝ */
+
+  let result =
+    await supabase
+      .from('teacher_aen_access')
+      .delete()
+      .eq(
+        'teacher_id',
+        teacherId
+      );
+
+
+  if(result.error){
+
+    alert(
+      result.error.message
     );
 
-
-  if(saveButton){
-
-    saveButton.disabled = true;
-    saveButton.textContent =
-      'Αποθήκευση…';
+    return;
 
   }
 
 
-  try {
+  /* ΑΠΟΘΗΚΕΥΣΗ ΝΕΩΝ ΑΕΝ */
 
+  if(aenIds.length){
 
-    /* Διαγραφή παλιών ΑΕΝ */
-
-    let result =
+    result =
       await supabase
         .from('teacher_aen_access')
-        .delete()
-        .eq('teacher_id',teacherId);
+        .insert(
+
+          aenIds.map(
+            aen_id => ({
+              teacher_id:
+                teacherId,
+
+              aen_id:
+                aen_id
+            })
+          )
+
+        );
 
 
-    if(result.error)
-      throw result.error;
+    if(result.error){
 
+      alert(
+        result.error.message
+      );
 
-    /* Νέες ΑΕΝ */
-
-    if(aenIds.length){
-
-      result =
-        await supabase
-          .from('teacher_aen_access')
-          .insert(
-            aenIds.map(aen_id => ({
-              teacher_id:teacherId,
-              aen_id
-            }))
-          );
-
-
-      if(result.error)
-        throw result.error;
+      return;
 
     }
 
+  }
 
-    /* Διαγραφή παλιών σχολών */
+
+  /* ΔΙΑΓΡΑΦΗ ΠΑΛΙΩΝ ΣΧΟΛΩΝ */
+
+  result =
+    await supabase
+      .from('teacher_school_assignments')
+      .delete()
+      .eq(
+        'teacher_id',
+        teacherId
+      );
+
+
+  if(result.error){
+
+    alert(
+      result.error.message
+    );
+
+    return;
+
+  }
+
+
+  /* ΑΠΟΘΗΚΕΥΣΗ ΝΕΩΝ ΣΧΟΛΩΝ */
+
+  if(schoolIds.length){
 
     result =
       await supabase
         .from('teacher_school_assignments')
-        .delete()
-        .eq('teacher_id',teacherId);
+        .insert(
+
+          schoolIds.map(
+            school_id => ({
+
+              teacher_id:
+                teacherId,
+
+              school_id:
+                school_id
+
+            })
+          )
+
+        );
 
 
-    if(result.error)
-      throw result.error;
+    if(result.error){
 
+      alert(
+        result.error.message
+      );
 
-    /* Νέες σχολές */
-
-    if(schoolIds.length){
-
-      result =
-        await supabase
-          .from('teacher_school_assignments')
-          .insert(
-            schoolIds.map(school_id => ({
-              teacher_id:teacherId,
-              school_id
-            }))
-          );
-
-
-      if(result.error)
-        throw result.error;
-
-    }
-
-
-    alert(
-      'Οι αναθέσεις αποθηκεύτηκαν επιτυχώς.'
-    );
-
-
-  }catch(error){
-
-    alert(
-      'Σφάλμα αποθήκευσης: ' +
-      error.message
-    );
-
-  }finally{
-
-    if(saveButton){
-
-      saveButton.disabled = false;
-      saveButton.textContent =
-        'Αποθήκευση αναθέσεων';
+      return;
 
     }
 
   }
 
+
+  alert(
+    'Οι αναθέσεις αποθηκεύτηκαν επιτυχώς.'
+  );
+
 }
 
 
-/* =========================================================
+/* =====================================================
    INITIAL LOAD
-========================================================= */
+===================================================== */
 
 await loadAens();
+
 await loadSchools();
+
 await loadTeachers();
 
 </script>
